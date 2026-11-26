@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events &amp; Workshops | Analytix Club</title>
+  <meta name="description" content="Explore hands-on technical bootcamps, workshops, and guest lectures organized by Analytix Club.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sticky Pill Header -->
+  <header class="header-wrapper">
+    <div class="header-container">
+      <div class="header-pill">
+        <a href="index.html" class="brand-link" aria-label="Analytix Club Home">
+          <img src="assets/logo.svg" alt="Analytix Club" class="brand-logo-img">
+        </a>
+
+        <div class="header-right">
+          <div class="header-auth-pills" id="nav-auth-actions">
+            <a href="login.html" class="btn-sm-outline">Sign In</a>
+            <a href="register.html" class="btn-sm-primary">Join Club</a>
+          </div>
+
+          <button type="button" 
+                  aria-label="Open navigation menu" 
+                  aria-expanded="false" 
+                  aria-controls="nav-dropdown" 
+                  class="nav-toggle-btn" 
+                  id="nav-toggle-btn">
+            <span class="nav-toggle-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Dropdown -->
+      <nav id="nav-dropdown" class="nav-dropdown" aria-label="Main navigation">
+        <a href="index.html" class="nav-dropdown-item">
+          <span>🏠</span> Home
+        </a>
+        <a href="index.html#about" class="nav-dropdown-item">
+          <span>ℹ️</span> About Analytix
+        </a>
+        <a href="index.html#teams" class="nav-dropdown-item">
+          <span>👥</span> The Three Pillars
+        </a>
+        <a href="events.html" class="nav-dropdown-item active">
+          <span>📅</span> Events &amp; Workshops
+        </a>
+        <a href="hackathons.html" class="nav-dropdown-item">
+          <span>🚀</span> Hackathons
+        </a>
+        <a href="announcements.html" class="nav-dropdown-item">
+          <span>📢</span> Announcements
+        </a>
+        <a href="leaderboard.html" class="nav-dropdown-item">
+          <span>🏆</span> Merit Leaderboard
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="login.html" class="nav-dropdown-item">
+          <span>🔑</span> Sign In
+        </a>
+        <a href="register.html" class="nav-dropdown-item" style="color: var(--accent-secondary); font-weight: 700;">
+          <span>⚡</span> Join Club (2026–27)
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Main Container -->
+  <main class="container" style="padding-top: 20px; padding-bottom: 56px;">
+
+    <!-- Back Link (Exact MVJCE Style) -->
+    <div class="content-max-w" style="margin-bottom: 16px;">
+      <a href="index.html" class="btn-sm-outline" style="border: none; padding-left: 0; gap: 8px; color: var(--muted);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 19-7-7 7-7"></path>
+          <path d="M19 12H5"></path>
+        </svg>
+        <span>Back to homepage</span>
+      </a>
+    </div>
+
+    <!-- Page Header Card (MVJCE Organizing-Team / Directory style) -->
+    <div class="content-max-w">
+      <header class="hero-card" style="min-height: auto; padding: 40px 32px; text-align: left; align-items: flex-start; margin-bottom: 24px;">
+        <div aria-hidden="true" class="hero-grid-pattern"></div>
+        <div class="hero-content" style="align-items: flex-start; text-align: left; max-width: 100%;">
+          <p class="hero-eyebrow" style="margin-bottom: 8px;">CALENDAR &amp; SCHEDULE · 2026–27</p>
+          <h1 class="hero-title" style="font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.1;">
+            Club Events &amp; Workshops
+          </h1>
+          <p class="section-subtext" style="margin-top: 8px; font-size: 14px; max-width: 580px;">
+            Hands-on bootcamps, technical guest lectures, project showcase days, and sprint sessions. Register to confirm your seat.
+          </p>
+        </div>
+      </header>
+
+      <!-- Events Grid Container -->
+      <div class="cards-grid-2" id="events-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-wrapper">
+    <div class="container footer-inner">
+      <span>&copy; 2026 Analytix Club · Data &amp; Analytics Club · 2026–27</span>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="hackathons.html">Hackathons</a>
+        <a href="announcements.html">Bulletins</a>
+        <a href="leaderboard.html">Leaderboard</a>
+      </nav>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="https://github.com/sathushetty7/club_website" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Analytix GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+          </svg>
+          <span>ANALYTIX</span>
+        </a>
+
+        <button type="button" 
+                id="theme-toggle-btn"
+                aria-label="Toggle visual theme" 
+                title="Toggle visual theme"
+                class="nav-toggle-btn" 
+                style="width: 34px; height: 34px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/events.js"></script>
+</body>
+</html>

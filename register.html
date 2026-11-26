@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Analytix Club | Member Registration 2026–27</title>
+  <meta name="description" content="Register as an official member of Analytix Club. Join the Tech, Design, or MOC team for the 2026-27 academic year.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sticky Pill Header -->
+  <header class="header-wrapper">
+    <div class="header-container">
+      <div class="header-pill">
+        <a href="index.html" class="brand-link" aria-label="Analytix Club Home">
+          <img src="assets/logo.svg" alt="Analytix Club" class="brand-logo-img">
+        </a>
+        <div class="header-right">
+          <a href="login.html" class="btn-sm-outline">Already a Member? Sign In</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Register Main Wrapper -->
+  <main class="auth-wrapper">
+    <div class="auth-box auth-box-wide">
+      <div class="apple-logo-badge">⚡</div>
+      <h1 class="auth-title">Join Analytix Club</h1>
+      <p class="auth-subtitle">Create your member profile to participate in bootcamps, hackathons &amp; projects (Term 2026–27)</p>
+
+      <div id="register-alert" class="alert alert-error" style="display: none;"></div>
+      <div id="register-success" class="alert alert-success" style="display: none;"></div>
+
+      <form id="register-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="full_name" class="form-label">Full Name *</label>
+            <input type="text" id="full_name" class="form-control" placeholder="e.g. Sneha Patel" required>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">College / Personal Email *</label>
+            <input type="email" id="email" class="form-control" placeholder="name@college.edu" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="position: relative;">
+            <label for="password" class="form-label">Password *</label>
+            <div style="position: relative;">
+              <input type="password" id="password" class="form-control" placeholder="Min. 6 characters" minlength="6" required>
+              <button type="button" class="apple-pwd-toggle" style="top: 8px; right: 8px;" onclick="togglePwdVisibility('password', this)">👁️</button>
+            </div>
+          </div>
+          <div class="form-group" style="position: relative;">
+            <label for="confirm_password" class="form-label">Confirm Password *</label>
+            <div style="position: relative;">
+              <input type="password" id="confirm_password" class="form-control" placeholder="Re-enter password" minlength="6" required>
+              <button type="button" class="apple-pwd-toggle" style="top: 8px; right: 8px;" onclick="togglePwdVisibility('confirm_password', this)">👁️</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="department" class="form-label">Department / Branch</label>
+            <input type="text" id="department" class="form-control" placeholder="e.g. Computer Science, AI, ECE">
+          </div>
+          <div class="form-group">
+            <label for="year" class="form-label">Year of Study</label>
+            <select id="year" class="form-control">
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year" selected>2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+              <option value="Postgraduate">Postgraduate</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" id="phone" class="form-control" placeholder="+91 98765 43210">
+          </div>
+          <div class="form-group">
+            <label for="skills" class="form-label">Key Skills / Interests</label>
+            <input type="text" id="skills" class="form-control" placeholder="e.g. Python, Figma, Video Editing, SQL">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="bio" class="form-label">Short Bio / What excites you about Analytix?</label>
+          <textarea id="bio" class="form-control" rows="2" placeholder="Tell us about yourself and what you'd love to learn or contribute..."></textarea>
+        </div>
+
+        <button type="submit" id="btn-register" class="apple-btn-submit" style="margin-top: 10px;">
+          <span>Submit Membership Registration</span>
+          <span>→</span>
+        </button>
+      </form>
+
+      <div class="apple-footer-link">
+        Already have an account? <a href="login.html">Sign In</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-wrapper">
+    <div class="container footer-inner">
+      <span>&copy; 2026 Analytix Club · Data &amp; Analytics Club · 2026–27</span>
+      <div class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="login.html">Sign In</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    function togglePwdVisibility(fieldId, btn) {
+      const input = document.getElementById(fieldId);
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Auth.redirectIfLoggedIn();
+
+      const form = document.getElementById('register-form');
+      const alertBox = document.getElementById('register-alert');
+      const submitBtn = document.getElementById('btn-register');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox.style.display = 'none';
+
+        const pwd = document.getElementById('password').value;
+        const confirmPwd = document.getElementById('confirm_password').value;
+
+        if (pwd !== confirmPwd) {
+          alertBox.textContent = 'Passwords do not match. Please verify.';
+          alertBox.style.display = 'block';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span:first-child').textContent = 'Creating member profile...';
+
+        const payload = {
+          full_name: document.getElementById('full_name').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          password: pwd,
+          department: document.getElementById('department').value.trim(),
+          year: document.getElementById('year').value,
+          phone: document.getElementById('phone').value.trim(),
+          skills: document.getElementById('skills').value.trim(),
+          bio: document.getElementById('bio').value.trim()
+        };
+
+        try {
+          await Auth.register(payload);
+        } catch (err) {
+          alertBox.textContent = err.message || 'Registration failed. Please check your inputs.';
+          alertBox.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.querySelector('span:first-child').textContent = 'Submit Membership Registration';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

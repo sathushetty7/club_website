@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="anx-badge-grad-sq" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1769FF" />
+      <stop offset="100%" stop-color="#55A0FF" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#anx-badge-grad-sq)" />
+  <path d="M32 14 L18 49 H26.5 L29.5 41 H34.5 L37.5 49 H46 L32 14 Z M32 26 L33.8 35 H30.2 L32 26 Z" fill="#FFFFFF" />
+  <circle cx="32" cy="14" r="2.8" fill="#DCE9FF" />
+</svg>

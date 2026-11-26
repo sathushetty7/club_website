@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANALYTIX | Data & Analytics Club · 2026–27</title>
+  <meta name="description" content="Official website of Analytix Club - Where Data Turns Into Impact & Innovation. Workshops, hackathons, merit leaderboard and active student projects.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- =========================================================================
+       1. STICKY PILL HEADER & FLOATING NAVIGATION (Exact MVJCE Reference Layout)
+       ========================================================================= -->
+  <header class="header-wrapper">
+    <div class="header-container">
+      <div class="header-pill">
+        <!-- Logo on left -->
+        <a href="index.html" class="brand-link" aria-label="Analytix Club Home">
+          <img src="assets/logo.svg" alt="Analytix Club" class="brand-logo-img">
+        </a>
+
+        <!-- Right actions -->
+        <div class="header-right">
+          <!-- Auth action buttons (Desktop) -->
+          <div class="header-auth-pills" id="nav-auth-actions">
+            <a href="login.html" class="btn-sm-outline">Sign In</a>
+            <a href="register.html" class="btn-sm-primary">Join Club</a>
+          </div>
+
+          <!-- Circular Navigation Toggle Button -->
+          <button type="button" 
+                  aria-label="Open navigation menu" 
+                  aria-expanded="false" 
+                  aria-controls="nav-dropdown" 
+                  class="nav-toggle-btn" 
+                  id="nav-toggle-btn">
+            <span class="nav-toggle-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Floating Navigation Dropdown Menu (Exact MVJCE Spec) -->
+      <nav id="nav-dropdown" class="nav-dropdown" aria-label="Main navigation">
+        <a href="index.html" class="nav-dropdown-item active">
+          <span>🏠</span> Home
+        </a>
+        <a href="#about" class="nav-dropdown-item">
+          <span>ℹ️</span> About Analytix
+        </a>
+        <a href="#teams" class="nav-dropdown-item">
+          <span>👥</span> The Three Pillars
+        </a>
+        <a href="events.html" class="nav-dropdown-item">
+          <span>📅</span> Events & Workshops
+        </a>
+        <a href="hackathons.html" class="nav-dropdown-item">
+          <span>🚀</span> Hackathons
+        </a>
+        <a href="announcements.html" class="nav-dropdown-item">
+          <span>📢</span> Announcements
+        </a>
+        <a href="#leaderboard" class="nav-dropdown-item">
+          <span>🏆</span> Merit Leaderboard
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="login.html" class="nav-dropdown-item">
+          <span>🔑</span> Sign In
+        </a>
+        <a href="register.html" class="nav-dropdown-item" style="color: var(--accent-secondary); font-weight: 700;">
+          <span>⚡</span> Join Club (2026–27)
+        </a>
+        <a href="admin-dashboard.html" class="nav-dropdown-item">
+          <span>🛡️</span> Admin Portal
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN BODY CONTENT (Exact MVJCE Centered Architecture)
+       ========================================================================= -->
+  <main class="container" style="padding-top: 12px; padding-bottom: 48px;">
+
+    <!-- =======================================================================
+         2. HERO BANNER SECTION (Exact MVJCE Composition & Ratios)
+         ======================================================================= -->
+    <div class="hero-wrapper">
+      <section aria-labelledby="hero-main-title" class="hero-card">
+        <!-- Subtle 32px grid lines -->
+        <div aria-hidden="true" class="hero-grid-pattern"></div>
+        <div aria-hidden="true" class="hero-radial-shade"></div>
+
+        <!-- Corner Watermark SVGs (Analytix Data Nodes) -->
+        <div aria-hidden="true" class="hero-watermark-top">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="80" stroke="#1769FF" stroke-opacity="0.35" stroke-width="1.5" />
+            <circle cx="100" cy="100" r="50" stroke="#55A0FF" stroke-opacity="0.25" stroke-width="1" />
+            <circle cx="60" cy="60" r="8" fill="#1769FF" fill-opacity="0.4" />
+            <circle cx="140" cy="80" r="10" fill="#55A0FF" fill-opacity="0.3" />
+            <circle cx="100" cy="150" r="12" fill="#1769FF" fill-opacity="0.25" />
+            <line x1="60" y1="60" x2="140" y2="80" stroke="#55A0FF" stroke-opacity="0.3" stroke-width="1.5" />
+            <line x1="140" y1="80" x2="100" y2="150" stroke="#55A0FF" stroke-opacity="0.3" stroke-width="1.5" />
+            <line x1="100" y1="150" x2="60" y2="60" stroke="#55A0FF" stroke-opacity="0.3" stroke-width="1.5" />
+          </svg>
+        </div>
+
+        <div aria-hidden="true" class="hero-watermark-bottom">
+          <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 220 C60 160, 100 190, 140 120 C180 50, 210 80, 230 20" stroke="#55A0FF" stroke-opacity="0.25" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M20 220 H230 V230 H20 Z" fill="#1769FF" fill-opacity="0.1" />
+            <circle cx="140" cy="120" r="6" fill="#1769FF" fill-opacity="0.7" />
+            <circle cx="230" cy="20" r="6" fill="#55A0FF" fill-opacity="0.9" />
+          </svg>
+        </div>
+
+        <!-- Hero Content Center -->
+        <div class="hero-content">
+          <p class="hero-eyebrow">DATA &amp; ANALYTICS CLUB · 2026–27</p>
+          <h1 id="hero-main-title" class="hero-title">
+            <span class="title-white">ANALYTIX</span>
+            <span class="subtitle-gradient">WHERE DATA PLAYS</span>
+          </h1>
+
+          <!-- Hero CTA with glowing halo effect -->
+          <div class="hero-cta-group">
+            <div aria-hidden="true" class="btn-halo-glow"></div>
+            <a href="events.html" class="btn-primary-pill" aria-label="Explore Analytix Club Events">
+              <span>Explore Events</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Hero Up Next Ticker (MVJCE Spec) -->
+          <div class="hero-ticker">
+            <span class="ticker-tag">Up next</span>
+            <a href="events.html" class="ticker-link">
+              <span>Data Crunch: ML Bootcamp · Nov 15</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </a>
+            <span class="ticker-dot">·</span>
+            <a href="hackathons.html" class="ticker-link">
+              <span>HackAnalytix 36H Sprint · Dec 05</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =======================================================================
+         3. CLUB PULSE & METRICS STRIP
+         ======================================================================= -->
+    <div class="content-max-w">
+      <div class="pulse-card">
+        <div class="pulse-header">
+          <div class="pulse-title">
+            <span>⚡</span> Club Pulse &amp; Term Status
+          </div>
+          <span class="pulse-badge">Active Term 2026–27</span>
+        </div>
+        <p class="pulse-desc">
+          Analytix Club brings together passionate programmers, creative designers, and dynamic organizers. We build intelligent software, compete in national hackathons, and host hands-on tech bootcamps.
+        </p>
+        <div class="stat-grid">
+          <div class="stat-box">
+            <span class="stat-num" id="stat-members-count">4</span>
+            <span class="stat-label">Club Members</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="stat-events-count">2</span>
+            <span class="stat-label">Active Events</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="stat-hackathons-count">1</span>
+            <span class="stat-label">Open Hackathons</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="stat-teams-count">3</span>
+            <span class="stat-label">Club Pillars</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         4. OVERALL MERIT LEADERBOARD (Exact MVJCE Table Spec)
+         ======================================================================= -->
+    <section id="leaderboard" class="section-block" aria-label="Merit Leaderboard">
+      <div class="leaderboard-table-card">
+        <div class="leaderboard-card-header">
+          <h2 class="leaderboard-card-title">Overall Merit Leaderboard</h2>
+          <span style="font-size: 11px; font-weight: 700; color: var(--accent-secondary); text-transform: uppercase; letter-spacing: 0.1em;">Sprint 2026–27</span>
+        </div>
+
+        <div class="leaderboard-columns-header">
+          <span>Rank</span>
+          <span>Member / Department</span>
+          <span style="text-align: right;">Points</span>
+        </div>
+
+        <!-- Rendered dynamically from authentic records -->
+        <div id="home-leaderboard-rows">
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank top-1">1</span>
+            <div class="leaderboard-user-info">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Arjun Sharma" class="leaderboard-avatar">
+              <div class="leaderboard-names">
+                <span class="leaderboard-member-name">Arjun Sharma (Club Lead)</span>
+                <span class="leaderboard-member-dept">Tech Team · Computer Science &amp; Engineering</span>
+              </div>
+            </div>
+            <span class="leaderboard-points">340 <span>pts</span></span>
+          </div>
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank top-2">2</span>
+            <div class="leaderboard-user-info">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" alt="Priya Nair" class="leaderboard-avatar">
+              <div class="leaderboard-names">
+                <span class="leaderboard-member-name">Priya Nair</span>
+                <span class="leaderboard-member-dept">Design Team · Information Technology</span>
+              </div>
+            </div>
+            <span class="leaderboard-points">290 <span>pts</span></span>
+          </div>
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank top-3">3</span>
+            <div class="leaderboard-user-info">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80" alt="Sneha Kulkarni" class="leaderboard-avatar">
+              <div class="leaderboard-names">
+                <span class="leaderboard-member-name">Sneha Kulkarni</span>
+                <span class="leaderboard-member-dept">MOC Team · Electronics &amp; Communication</span>
+              </div>
+            </div>
+            <span class="leaderboard-points">245 <span>pts</span></span>
+          </div>
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">4</span>
+            <div class="leaderboard-user-info">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="Rohit Verma" class="leaderboard-avatar">
+              <div class="leaderboard-names">
+                <span class="leaderboard-member-name">Rohit Verma</span>
+                <span class="leaderboard-member-dept">Tech Team · Data Science &amp; AI</span>
+              </div>
+            </div>
+            <span class="leaderboard-points">210 <span>pts</span></span>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 14px;">
+        <a href="leaderboard.html" class="btn-sm-outline">View Full Leaderboard &amp; Points Criteria →</a>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         5. ABOUT ANALYTIX (Club Values & Mission)
+         ======================================================================= -->
+    <section id="about" class="section-block" aria-labelledby="about-title">
+      <div class="section-head">
+        <span class="section-tagline">About Analytix</span>
+        <h2 id="about-title" class="section-heading">Built by Students, for Future Leaders</h2>
+        <p class="section-subtext">
+          We bridge the gap between classroom theory and industry-grade engineering through real projects, mentor guidance, and team collaboration.
+        </p>
+      </div>
+
+      <div class="teams-grid">
+        <div class="team-card">
+          <div class="team-icon-badge">💻</div>
+          <h3 class="team-name">Practical Workshops</h3>
+          <p class="team-desc">Regular hands-on bootcamps on Machine Learning, Full-Stack FastAPI/PostgreSQL architectures, and cloud deployments.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-icon-badge">🚀</div>
+          <h3 class="team-name">Hackathon Culture</h3>
+          <p class="team-desc">Dedicated sprint squads, team formation support, and mentorship for prestigious national &amp; global hackathons.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-icon-badge">🏆</div>
+          <h3 class="team-name">Merit Leaderboard</h3>
+          <p class="team-desc">Transparent recognition system where active contributions earn club points, badges, certificates, and priority project roles.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         6. THE THREE PILLARS (Our Club Teams)
+         ======================================================================= -->
+    <section id="teams" class="section-block" aria-labelledby="teams-title">
+      <div class="section-head">
+        <span class="section-tagline">The Three Pillars</span>
+        <h2 id="teams-title" class="section-heading">Our Specialized Verticals</h2>
+        <p class="section-subtext">
+          Every member is assigned to a specialized vertical tailored to their unique passion, skills, and growth goals.
+        </p>
+      </div>
+
+      <div class="teams-grid">
+        <!-- Tech Team -->
+        <div class="team-card">
+          <div class="team-icon-badge">⚙️</div>
+          <h3 class="team-name">Tech Team</h3>
+          <p class="team-desc">
+            Develops the club's open-source websites, builds machine learning prototypes, handles cloud infrastructure, and conducts coding workshops.
+          </p>
+          <div class="team-skills-row">
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">FastAPI</span>
+            <span class="skill-tag">Data Science</span>
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">AI/ML</span>
+          </div>
+        </div>
+
+        <!-- Design Team -->
+        <div class="team-card">
+          <div class="team-icon-badge">🎨</div>
+          <h3 class="team-name">Design Team</h3>
+          <p class="team-desc">
+            Designs stunning event posters, digital assets, social media branding, and user-centric wireframes and prototypes in Figma.
+          </p>
+          <div class="team-skills-row">
+            <span class="skill-tag">Figma</span>
+            <span class="skill-tag">UI/UX Design</span>
+            <span class="skill-tag">Poster Design</span>
+            <span class="skill-tag">Branding</span>
+            <span class="skill-tag">Motion</span>
+          </div>
+        </div>
+
+        <!-- MOC Team -->
+        <div class="team-card">
+          <div class="team-icon-badge">📢</div>
+          <h3 class="team-name">MOC Team</h3>
+          <p class="team-desc">
+            Media, Organization, and Content. Masters event logistics, stage anchoring, sponsor outreach, content copywriting, and club public relations.
+          </p>
+          <div class="team-skills-row">
+            <span class="skill-tag">Event Hosting</span>
+            <span class="skill-tag">Public Relations</span>
+            <span class="skill-tag">Content Writing</span>
+            <span class="skill-tag">Logistics</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         7. UPCOMING EVENTS & WORKSHOPS (MVJCE Cards Grid)
+         ======================================================================= -->
+    <section id="events" class="section-block" aria-labelledby="events-title">
+      <div class="section-head">
+        <span class="section-tagline">Happening Soon</span>
+        <h2 id="events-title" class="section-heading">Upcoming Club Events</h2>
+        <p class="section-subtext">Join our hands-on bootcamps, speaker sessions, and project showcase days.</p>
+      </div>
+
+      <div class="cards-grid-2" id="home-events-grid">
+        <!-- Populated via API -->
+        <div class="event-item-card">
+          <div class="event-item-thumb">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80" class="event-item-img" alt="Data Crunch 2026">
+            <span class="event-item-badge">Published</span>
+          </div>
+          <div class="event-item-body">
+            <div class="event-item-meta">
+              <span>📅 Nov 15, 2026</span>
+              <span>📍 Auditorium Hall B</span>
+            </div>
+            <h3 class="event-item-title">Data Crunch 2026: Hands-on Machine Learning Bootcamp</h3>
+            <p class="event-item-desc">An intensive weekend bootcamp covering exploratory data analysis, feature engineering, and deploying ML models with FastAPI.</p>
+            <div class="event-item-footer">
+              <span class="event-item-deadline">Deadline: Nov 14, 2026</span>
+              <a href="events.html" class="btn-sm-primary">View &amp; Register →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="event-item-card">
+          <div class="event-item-thumb">
+            <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=800&auto=format&fit=crop&q=80" class="event-item-img" alt="Design Sprint">
+            <span class="event-item-badge">Published</span>
+          </div>
+          <div class="event-item-body">
+            <div class="event-item-meta">
+              <span>📅 Nov 22, 2026</span>
+              <span>📍 Design Studio Lab 3</span>
+            </div>
+            <h3 class="event-item-title">Design Sprint: Crafting Engaging Data Visualizations</h3>
+            <p class="event-item-desc">Learn how to turn boring spreadsheets into compelling, narrative-driven UI dashboards using Figma and interactive charts.</p>
+            <div class="event-item-footer">
+              <span class="event-item-deadline">Deadline: Nov 21, 2026</span>
+              <a href="events.html" class="btn-sm-primary">View &amp; Register →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <a href="events.html" class="btn-sm-outline">View All Scheduled Events →</a>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         8. HACKATHONS & CODING ARENAS
+         ======================================================================= -->
+    <section id="hackathons" class="section-block" aria-labelledby="hackathons-title">
+      <div class="section-head">
+        <span class="section-tagline">Competitive Arenas</span>
+        <h2 id="hackathons-title" class="section-heading">Hackathons &amp; Sprints</h2>
+        <p class="section-subtext">Compete in internal and national hackathons alongside fellow Analytix members.</p>
+      </div>
+
+      <div class="event-item-card">
+        <div class="event-item-thumb" style="height: 200px;">
+          <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80" class="event-item-img" alt="HackAnalytix">
+          <span class="event-item-badge">HYBRID ARENA</span>
+        </div>
+        <div class="event-item-body">
+          <div class="event-item-meta">
+            <span>📅 Starts: Dec 05, 2026</span>
+            <span>📍 Main Campus Innovation Hub</span>
+          </div>
+          <h3 class="event-item-title">HackAnalytix 36-Hour National Hackathon</h3>
+          <div style="font-size: 12px; font-weight: 600; color: var(--accent-secondary); margin-bottom: 8px;">Organized by Analytix Club x Tech Titans</div>
+          <p class="event-item-desc">Build real-world solutions across AI/ML, FinTech, and Smart Campus automation. Cash prizes worth ₹1,50,000 + internship offers for top teams.</p>
+          <div class="event-item-footer">
+            <span class="event-item-deadline">Deadline: Nov 30, 2026</span>
+            <a href="hackathons.html" class="btn-sm-primary">Apply Team Now →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         9. OFFICIAL ANNOUNCEMENTS & NOTICES
+         ======================================================================= -->
+    <section id="announcements" class="section-block" aria-labelledby="announcements-title">
+      <div class="section-head">
+        <span class="section-tagline">Updates &amp; Circulars</span>
+        <h2 id="announcements-title" class="section-heading">Latest Club Bulletins</h2>
+        <p class="section-subtext">Important circulars, opportunities, and recruitment announcements.</p>
+      </div>
+
+      <div id="home-announcements-list">
+        <!-- Rendered dynamically -->
+        <div class="announcement-item-card">
+          <div class="announcement-icon-wrap">📢</div>
+          <div class="announcement-main">
+            <div class="announcement-top-row">
+              <h4 class="announcement-title-txt">Welcome to Analytix Club Academic Year 2026-27!</h4>
+              <span class="skill-tag">Notice</span>
+              <span class="announcement-date-txt">· Nov 26, 2026</span>
+            </div>
+            <p class="announcement-desc-txt">Orientation meet for all new recruits will be held this Wednesday at 4:30 PM. Check your email for room details.</p>
+          </div>
+        </div>
+
+        <div class="announcement-item-card">
+          <div class="announcement-icon-wrap">📢</div>
+          <div class="announcement-main">
+            <div class="announcement-top-row">
+              <h4 class="announcement-title-txt">Call for Project Mentors: Tech, Design &amp; MOC</h4>
+              <span class="skill-tag">Opportunity</span>
+              <span class="announcement-date-txt">· Nov 26, 2026</span>
+            </div>
+            <p class="announcement-desc-txt">Senior members interested in leading teams for upcoming inter-college competitions can apply via the dashboard.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 18px;">
+        <a href="announcements.html" class="btn-sm-outline">Read All Bulletins →</a>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         10. JOIN CLUB CTA BANNER
+         ======================================================================= -->
+    <div class="content-max-w" style="margin-top: 48px;">
+      <div class="cta-banner-card">
+        <div aria-hidden="true" class="cta-banner-glow"></div>
+        <h2 class="cta-banner-title">Ready to Shape the Future of Data &amp; Tech?</h2>
+        <p class="cta-banner-sub">
+          Join Analytix Club today to participate in bootcamps, compete in national hackathons, and collaborate with like-minded peers across engineering &amp; design.
+        </p>
+        <div class="cta-actions">
+          <a href="register.html" class="btn-primary-pill" style="min-height: 44px; padding: 10px 24px;">Become a Member</a>
+          <a href="login.html" class="btn-sm-outline" style="padding: 10px 20px;">Already Registered? Sign In</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       11. FOOTER (Exact MVJCE Reference Layout)
+       ========================================================================= -->
+  <footer class="footer-wrapper">
+    <div class="container footer-inner">
+      <span>&copy; 2026 Analytix Club · Data &amp; Analytics Club · 2026–27</span>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="index.html">Home</a>
+        <a href="#about">About</a>
+        <a href="#teams">Teams</a>
+        <a href="events.html">Events</a>
+        <a href="hackathons.html">Hackathons</a>
+        <a href="announcements.html">Bulletins</a>
+        <a href="leaderboard.html">Leaderboard</a>
+      </nav>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- Social link pill -->
+        <a href="https://github.com/sathushetty7/club_website" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Analytix GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+          </svg>
+          <span>ANALYTIX</span>
+        </a>
+
+        <!-- Dark / Light Mode Toggle Button (MVJCE Spec) -->
+        <button type="button" 
+                id="theme-toggle-btn"
+                aria-label="Toggle visual theme" 
+                title="Toggle visual theme"
+                class="nav-toggle-btn" 
+                style="width: 34px; height: 34px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/events.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+{
+  "/api/stats": {
+    "members_count": 4,
+    "events_count": 2,
+    "hackathons_count": 1,
+    "teams_count": 3
+  },
+  "/api/events": [
+    {
+      "title": "Data Crunch 2026: Hands-on Machine Learning Bootcamp",
+      "description": "An intensive weekend bootcamp covering exploratory data analysis, feature engineering, and deploying ML models with FastAPI. Open to all students.",
+      "venue": "Auditorium Hall B & Virtual Stream",
+      "event_date": "2026-11-15T10:00:00Z",
+      "registration_deadline": "2026-11-14T18:00:00Z",
+      "instructions": "Bring your laptop with Python 3.10+ installed and VS Code ready. Extension cords and high-speed Wi-Fi provided.",
+      "status": "published",
+      "poster_url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80",
+      "photos": [
+        "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80"
+      ],
+      "id": "10000000-0000-0000-0000-000000000001",
+      "created_by": "00000000-0000-0000-0000-000000000001",
+      "created_at": "2026-11-26T13:37:55.938181Z",
+      "registrations_count": 1,
+      "is_registered": false,
+      "my_registration_status": null
+    },
+    {
+      "title": "Design Sprint: Crafting Engaging Data Visualizations",
+      "description": "Learn how to turn boring spreadsheets into compelling, narrative-driven UI dashboards using Figma and interactive charts.",
+      "venue": "Design Studio Lab 3",
+      "event_date": "2026-11-22T14:00:00Z",
+      "registration_deadline": "2026-11-21T23:59:00Z",
+      "instructions": "No prior design experience required. Bring your laptop and your curiosity!",
+      "status": "published",
+      "poster_url": "https://images.unsplash.com/photo-1542744094-3a31f272c490?w=800&auto=format&fit=crop&q=80",
+      "photos": [],
+      "id": "10000000-0000-0000-0000-000000000002",
+      "created_by": "00000000-0000-0000-0000-000000000001",
+      "created_at": "2026-11-26T13:37:55.938181Z",
+      "registrations_count": 0,
+      "is_registered": false,
+      "my_registration_status": null
+    }
+  ],
+  "/api/hackathons": [
+    {
+      "title": "HackAnalytix 36-Hour National Hackathon",
+      "organizer": "Analytix Club x Tech Titans",
+      "description": "Build real-world solutions across AI/ML, FinTech, and Smart Campus automation. Cash prizes worth \u20b91,50,000 + internship offers for top teams.",
+      "start_date": "2026-12-05T09:00:00Z",
+      "deadline": "2026-11-30T23:59:00Z",
+      "location": "Main Campus Innovation Hub",
+      "mode": "hybrid",
+      "registration_link": "https://analytixclub.edu/hackanalytix-2026",
+      "eligibility": "Open to all undergraduate and postgraduate students in teams of 2-4 members.",
+      "required_skills": "Python, React / Web Dev, AI/ML APIs, Database Design",
+      "status": "published",
+      "poster_url": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80",
+      "id": "20000000-0000-0000-0000-000000000001",
+      "created_by": "00000000-0000-0000-0000-000000000001",
+      "created_at": "2026-11-26T13:37:55.938181Z",
+      "is_registered": false,
+      "my_registration_status": null
+    }
+  ],
+  "/api/announcements": [
+    {
+      "title": "Welcome to Analytix Club Academic Year 2026-27!",
+      "description": "Orientation meet for all new recruits will be held this Wednesday at 4:30 PM. Check your email for room details.",
+      "category": "Notice",
+      "image_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
+      "status": "published",
+      "id": "30000000-0000-0000-0000-000000000001",
+      "created_by": "00000000-0000-0000-0000-000000000001",
+      "created_at": "2026-11-26T13:37:55.938181Z"
+    },
+    {
+      "title": "Call for Project Mentors: Tech, Design & MOC",
+      "description": "Senior members interested in leading teams for upcoming inter-college competitions can apply via the dashboard.",
+      "category": "Opportunity",
+      "image_url": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&auto=format&fit=crop&q=80",
+      "status": "published",
+      "id": "30000000-0000-0000-0000-000000000002",
+      "created_by": "00000000-0000-0000-0000-000000000001",
+      "created_at": "2026-11-26T13:37:55.938181Z"
+    }
+  ],
+  "/api/members/teams": {
+    "tech": [
+      {
+        "id": "00000000-0000-0000-0000-000000000001",
+        "full_name": "Arjun Sharma (Club Lead)",
+        "profile_photo": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "department": "Computer Science & Engineering",
+        "year": "4th Year",
+        "skills": "Python, FastAPI, Machine Learning, Leadership",
+        "bio": "Lead coordinator of Analytix Club. Passionate about AI & Big Data.",
+        "role": "admin",
+        "team": "Tech"
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000003",
+        "full_name": "Rohit Verma",
+        "profile_photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+        "department": "Data Science & AI",
+        "year": "2nd Year",
+        "skills": "Python, Pandas, SQL, Scikit-learn",
+        "bio": "Data geek exploring deep learning architectures and predictive modeling.",
+        "role": "member",
+        "team": "Tech"
+      }
+    ],
+    "design": [
+      {
+        "id": "00000000-0000-0000-0000-000000000002",
+        "full_name": "Priya Nair",
+        "profile_photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+        "department": "Information Technology",
+        "year": "3rd Year",
+        "skills": "Figma, UI/UX, CSS, Graphic Design",
+        "bio": "Creative thinker and UI enthusiast. Love designing engaging posters and intuitive digital interfaces.",
+        "role": "member",
+        "team": "Design"
+      }
+    ],
+    "moc": [
+      {
+        "id": "00000000-0000-0000-0000-000000000004",
+        "full_name": "Sneha Kulkarni",
+        "profile_photo": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
+        "department": "Electronics & Communication",
+        "year": "3rd Year",
+        "skills": "Public Speaking, Content Writing, Event Logistics",
+        "bio": "MOC team coordinator handling event coverage, stage moderation, and press releases.",
+        "role": "member",
+        "team": "MOC"
+      }
+    ]
+  },
+  "/api/health": {
+    "status": "healthy",
+    "version": "1.0.0",
+    "environment": "development",
+    "supabase_configured": false,
+    "database_connected": false,
+    "mode": "development"
+  }
+}

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merit Leaderboard | Analytix Club</title>
+  <meta name="description" content="Analytix Club Member Merit Leaderboard. Real-time contribution points across Tech, Design, and Media verticals.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sticky Pill Header -->
+  <header class="header-wrapper">
+    <div class="header-container">
+      <div class="header-pill">
+        <a href="index.html" class="brand-link" aria-label="Analytix Club Home">
+          <img src="assets/logo.svg" alt="Analytix Club" class="brand-logo-img">
+        </a>
+
+        <div class="header-right">
+          <div class="header-auth-pills" id="nav-auth-actions">
+            <a href="login.html" class="btn-sm-outline">Sign In</a>
+            <a href="register.html" class="btn-sm-primary">Join Club</a>
+          </div>
+
+          <button type="button" 
+                  aria-label="Open navigation menu" 
+                  aria-expanded="false" 
+                  aria-controls="nav-dropdown" 
+                  class="nav-toggle-btn" 
+                  id="nav-toggle-btn">
+            <span class="nav-toggle-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Dropdown -->
+      <nav id="nav-dropdown" class="nav-dropdown" aria-label="Main navigation">
+        <a href="index.html" class="nav-dropdown-item">
+          <span>🏠</span> Home
+        </a>
+        <a href="index.html#about" class="nav-dropdown-item">
+          <span>ℹ️</span> About Analytix
+        </a>
+        <a href="index.html#teams" class="nav-dropdown-item">
+          <span>👥</span> The Three Pillars
+        </a>
+        <a href="events.html" class="nav-dropdown-item">
+          <span>📅</span> Events &amp; Workshops
+        </a>
+        <a href="hackathons.html" class="nav-dropdown-item">
+          <span>🚀</span> Hackathons
+        </a>
+        <a href="announcements.html" class="nav-dropdown-item">
+          <span>📢</span> Announcements
+        </a>
+        <a href="leaderboard.html" class="nav-dropdown-item active">
+          <span>🏆</span> Merit Leaderboard
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="login.html" class="nav-dropdown-item">
+          <span>🔑</span> Sign In
+        </a>
+        <a href="register.html" class="nav-dropdown-item" style="color: var(--accent-secondary); font-weight: 700;">
+          <span>⚡</span> Join Club (2026–27)
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Main Container -->
+  <main class="container" style="padding-top: 20px; padding-bottom: 56px;">
+
+    <!-- Back Link -->
+    <div class="content-max-w" style="margin-bottom: 16px;">
+      <a href="index.html" class="btn-sm-outline" style="border: none; padding-left: 0; gap: 8px; color: var(--muted);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 19-7-7 7-7"></path>
+          <path d="M19 12H5"></path>
+        </svg>
+        <span>Back to homepage</span>
+      </a>
+    </div>
+
+    <div class="content-max-w">
+      <!-- Page Header Card -->
+      <header class="hero-card" style="min-height: auto; padding: 40px 32px; text-align: left; align-items: flex-start; margin-bottom: 24px;">
+        <div aria-hidden="true" class="hero-grid-pattern"></div>
+        <div class="hero-content" style="align-items: flex-start; text-align: left; max-width: 100%;">
+          <p class="hero-eyebrow" style="margin-bottom: 8px;">MERIT &amp; CONTRIBUTION RECOGNITION · 2026–27</p>
+          <h1 class="hero-title" style="font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.1;">
+            Club Merit Leaderboard
+          </h1>
+          <p class="section-subtext" style="margin-top: 8px; font-size: 14px; max-width: 580px;">
+            Recognizing active contributions, bootcamp completions, open-source commits, and hackathon victories. Points convert to priority team roles and official certificates.
+          </p>
+        </div>
+      </header>
+
+      <!-- Overall Table Card (MVJCE Style) -->
+      <div class="leaderboard-table-card">
+        <div class="leaderboard-card-header">
+          <h2 class="leaderboard-card-title">Standings &amp; Points Tally</h2>
+          <span style="font-size: 11px; font-weight: 700; color: var(--accent-secondary); text-transform: uppercase; letter-spacing: 0.1em;">Live Database Sync</span>
+        </div>
+
+        <div class="leaderboard-columns-header">
+          <span>Rank</span>
+          <span>Member / Vertical</span>
+          <span style="text-align: right;">Points</span>
+        </div>
+
+        <div id="leaderboard-page-rows">
+          <!-- Rendered dynamically -->
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank top-1">1</span>
+            <div class="leaderboard-user-info">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Arjun Sharma" class="leaderboard-avatar">
+              <div class="leaderboard-names">
+                <span class="leaderboard-member-name">Arjun Sharma (Club Lead)</span>
+                <span class="leaderboard-member-dept">Tech Team · Computer Science &amp; Engineering</span>
+              </div>
+            </div>
+            <span class="leaderboard-points">340 <span>pts</span></span>
+          </div>
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank top-2">2</span>
+            <div class="leaderboard-user-info">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" alt="Priya Nair" class="leaderboard-avatar">
+              <div class="leaderboard-names">
+                <span class="leaderboard-member-name">Priya Nair</span>
+                <span class="leaderboard-member-dept">Design Team · Information Technology</span>
+              </div>
+            </div>
+            <span class="leaderboard-points">290 <span>pts</span></span>
+          </div>
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank top-3">3</span>
+            <div class="leaderboard-user-info">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150" alt="Sneha Kulkarni" class="leaderboard-avatar">
+              <div class="leaderboard-names">
+                <span class="leaderboard-member-name">Sneha Kulkarni</span>
+                <span class="leaderboard-member-dept">MOC Team · Electronics &amp; Communication</span>
+              </div>
+            </div>
+            <span class="leaderboard-points">245 <span>pts</span></span>
+          </div>
+          <div class="leaderboard-row">
+            <span class="leaderboard-rank">4</span>
+            <div class="leaderboard-user-info">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Rohit Verma" class="leaderboard-avatar">
+              <div class="leaderboard-names">
+                <span class="leaderboard-member-name">Rohit Verma</span>
+                <span class="leaderboard-member-dept">Tech Team · Data Science &amp; AI</span>
+              </div>
+            </div>
+            <span class="leaderboard-points">210 <span>pts</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Point Scoring Breakdown Card -->
+      <div class="pulse-card" style="margin-top: 24px;">
+        <div class="pulse-header">
+          <div class="pulse-title">
+            <span>ℹ️</span> Merit Point System Breakdown
+          </div>
+          <span class="pulse-badge">Scoring Rules</span>
+        </div>
+        <p class="pulse-desc">
+          How points are earned across the academic year:
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; font-size: 13px;">
+          <div style="padding: 12px; border-radius: var(--radius-md); background: var(--surface-card); border: 1px solid var(--line);">
+            <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">🚀 Hackathon Win</div>
+            <div style="color: var(--accent-secondary); font-weight: 800; font-size: 16px;">+100 Points</div>
+            <div style="color: var(--muted); font-size: 11px;">Podium finish at national/inter-college hackathon</div>
+          </div>
+          <div style="padding: 12px; border-radius: var(--radius-md); background: var(--surface-card); border: 1px solid var(--line);">
+            <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">💻 Project Contribution</div>
+            <div style="color: var(--accent-secondary); font-weight: 800; font-size: 16px;">+50 Points</div>
+            <div style="color: var(--muted); font-size: 11px;">Merged PR to official club repositories</div>
+          </div>
+          <div style="padding: 12px; border-radius: var(--radius-md); background: var(--surface-card); border: 1px solid var(--line);">
+            <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">📢 Event Organization</div>
+            <div style="color: var(--accent-secondary); font-weight: 800; font-size: 16px;">+40 Points</div>
+            <div style="color: var(--muted); font-size: 11px;">MOC &amp; logistics lead for club workshops</div>
+          </div>
+          <div style="padding: 12px; border-radius: var(--radius-md); background: var(--surface-card); border: 1px solid var(--line);">
+            <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">🎨 Design Asset Delivery</div>
+            <div style="color: var(--accent-secondary); font-weight: 800; font-size: 16px;">+30 Points</div>
+            <div style="color: var(--muted); font-size: 11px;">Approved event banner, UI wireframe or branding</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-wrapper">
+    <div class="container footer-inner">
+      <span>&copy; 2026 Analytix Club · Data &amp; Analytics Club · 2026–27</span>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="hackathons.html">Hackathons</a>
+        <a href="announcements.html">Bulletins</a>
+        <a href="leaderboard.html">Leaderboard</a>
+      </nav>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="https://github.com/sathushetty7/club_website" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Analytix GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+          </svg>
+          <span>ANALYTIX</span>
+        </a>
+
+        <button type="button" 
+                id="theme-toggle-btn"
+                aria-label="Toggle visual theme" 
+                title="Toggle visual theme"
+                class="nav-toggle-btn" 
+                style="width: 34px; height: 34px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/events.js"></script>
+</body>
+</html>

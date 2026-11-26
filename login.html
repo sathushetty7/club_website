@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | Analytix Club</title>
+  <meta name="description" content="Sign in with your Analytix ID to access your member dashboard, register for hackathons and track your points.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sticky Pill Header -->
+  <header class="header-wrapper">
+    <div class="header-container">
+      <div class="header-pill">
+        <a href="index.html" class="brand-link" aria-label="Analytix Club Home">
+          <img src="assets/logo.svg" alt="Analytix Club" class="brand-logo-img">
+        </a>
+        <div class="header-right">
+          <a href="index.html" class="btn-sm-outline">← Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Main Wrapper -->
+  <main class="apple-auth-wrapper">
+    <div class="apple-auth-card">
+      <div class="apple-logo-badge">A</div>
+      <h1 class="apple-auth-title">Sign in with Analytix ID</h1>
+      <p class="apple-auth-subtitle">Enter your registered email and password to access your dashboard</p>
+
+      <!-- Alert Box -->
+      <div id="login-alert" class="alert alert-error" style="display: none;"></div>
+      <div id="login-success" class="alert alert-success" style="display: none;"></div>
+
+      <!-- Login Form -->
+      <form id="email-login-form">
+        <div class="apple-input-container">
+          <div class="apple-field-row">
+            <input type="email" id="email" class="apple-input" placeholder="Email address" required autocomplete="email">
+            <span class="apple-field-icon">✉️</span>
+          </div>
+          <div class="apple-field-row">
+            <input type="password" id="password" class="apple-input" placeholder="Password" required autocomplete="current-password">
+            <button type="button" class="apple-pwd-toggle" id="toggle-pwd-btn" onclick="togglePasswordVisibility('password', this)" title="Show/Hide password">👁️</button>
+          </div>
+        </div>
+
+        <div class="apple-forgot-row">
+          <a href="forgot-password.html" class="apple-forgot-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" id="btn-email-login" class="apple-btn-submit">
+          <span>Sign In</span>
+          <span>→</span>
+        </button>
+      </form>
+
+      <div class="apple-footer-link">
+        Don’t have an Analytix ID? <a href="register.html">Create yours now</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-wrapper">
+    <div class="container footer-inner">
+      <span>&copy; 2026 Analytix Club · Data &amp; Analytics Club · 2026–27</span>
+      <div class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="register.html">Join Club</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    function togglePasswordVisibility(fieldId, btn) {
+      const input = document.getElementById(fieldId);
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // If already logged in, redirect directly to dashboard
+      Auth.redirectIfLoggedIn();
+
+      const alertBox = document.getElementById('login-alert');
+      const successBox = document.getElementById('login-success');
+      const emailForm = document.getElementById('email-login-form');
+      const emailBtn = document.getElementById('btn-email-login');
+
+      emailForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox.style.display = 'none';
+        successBox.style.display = 'none';
+        emailBtn.disabled = true;
+        emailBtn.querySelector('span:first-child').textContent = 'Verifying credentials...';
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        try {
+          await Auth.login(email, password);
+        } catch (error) {
+          alertBox.textContent = error.message || 'Invalid email or password.';
+          alertBox.style.display = 'block';
+          emailBtn.disabled = false;
+          emailBtn.querySelector('span:first-child').textContent = 'Sign In';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
