@@ -1,43 +1,58 @@
 /**
- * ANALYTIX CLUB - CORE DESIGN SYSTEM & STYLESHEET
- * Replicating MVJCE Championship visual layout with Analytix Brand & Theme Tokens
- * Theme: Midnight Navy (#080D1A) + Electric Blue (#1769FF) + White (#FFFFFF)
- * Strict Requirement: Absolutely NO green/teal, no galaxy/neon excess.
+ * ANALYTIX CLUB - COSMIC GALAXY DESIGN SYSTEM & STYLESHEET
+ * Replicating MVJCE Championship visual layout with Analytix Cosmic Galaxy Identity
+ * Palette: Deep Space (#08080D), Galaxy Purple (#49317C), Deep Violet (#24133F),
+ *          Nebula Blue (#243B70), Cosmic Gold (#C18B49), Nebula Pink (#D16BB5),
+ *          Starlight Lavender (#B9A7E8), White Typography (#F7F5FF)
+ * Strict Requirement: Absolutely NO green/teal, no generic SaaS look.
  */
 
 :root {
-  /* Core Theme Tokens */
-  --bg: #080D1A;
-  --bg-secondary: #111C32;
-  --surface: #111C32;
-  --surface-card: #1D2B45;
-  --surface-raised: #243653;
-  --line: rgba(255, 255, 255, 0.10);
-  --border: rgba(255, 255, 255, 0.10);
+  /* Dominant Cosmic Backgrounds */
+  --bg: #08080D;
+  --bg-secondary: #101019;
+  --surface: #101019;
+  --surface-card: #171522;
+  --surface-raised: #211B30;
+  --line: rgba(185, 167, 232, 0.16);
+  --border: rgba(185, 167, 232, 0.16);
 
-  --accent: #1769FF;
-  --accent-secondary: #55A0FF;
-  --accent-soft: rgba(23, 105, 255, 0.12);
-  --accent-soft-solid: #DCE9FF;
-  --accent-hover: #1054d4;
-  --accent-glow: rgba(23, 105, 255, 0.40);
+  /* Galaxy Spectrum Accents */
+  --deep-violet: #24133F;
+  --galaxy-purple: #49317C;
+  --nebula-blue: #243B70;
+  --cosmic-gold: #C18B49;
+  --nebula-pink: #D16BB5;
+  --starlight-lavender: #B9A7E8;
 
-  --text: #FFFFFF;
-  --text-primary: #FFFFFF;
-  --text-secondary: #AAB8CE;
-  --muted: #8998B2;
+  /* Primary Interactive Elements */
+  --accent: #49317C;
+  --accent-secondary: #B9A7E8;
+  --accent-hover: #5c3e9c;
+  --accent-glow: rgba(73, 49, 124, 0.50);
+  --accent-soft: rgba(73, 49, 124, 0.22);
+  --accent-gold: #C18B49;
+  --accent-pink: #D16BB5;
 
-  --button-bg: #1769FF;
-  --button-text: #FFFFFF;
+  /* High Readability Typography */
+  --text: #F7F5FF;
+  --text-primary: #F7F5FF;
+  --text-secondary: #B7B1C8;
+  --ink: #F7F5FF;
+  --ink-secondary: #B7B1C8;
+  --muted: #8E87A5;
 
-  /* Semantic status tokens (Blue / Navy / Neutral, NO GREEN) */
-  --status-active: #1769FF;
-  --status-approved-bg: rgba(23, 105, 255, 0.18);
-  --status-approved-text: #55A0FF;
-  --status-pending-bg: rgba(85, 160, 255, 0.15);
-  --status-pending-text: #DCE9FF;
-  --status-error-bg: rgba(239, 68, 68, 0.15);
-  --status-error-text: #F87171;
+  --button-bg: #49317C;
+  --button-text: #F7F5FF;
+
+  /* Status Indicators (Violet / Gold / Pink / Lavender) */
+  --status-active: #B9A7E8;
+  --status-approved-bg: rgba(73, 49, 124, 0.35);
+  --status-approved-text: #B9A7E8;
+  --status-pending-bg: rgba(193, 139, 73, 0.20);
+  --status-pending-text: #E0AB6A;
+  --status-error-bg: rgba(209, 107, 181, 0.25);
+  --status-error-text: #F896D8;
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -53,17 +68,96 @@
   --radius-3xl: 28px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.25);
-  --shadow-card: 0 10px 32px rgba(4, 7, 15, 0.45);
-  --shadow-popover: 0 14px 36px rgba(0, 0, 0, 0.65);
-  --shadow-hero: 0 20px 60px -15px rgba(4, 7, 15, 0.85);
-  --shadow-glow: 0 0 25px rgba(23, 105, 255, 0.32);
+  /* Cosmic Shadows & Soft Violet Glows */
+  --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 10px 32px rgba(8, 8, 13, 0.70);
+  --shadow-popover: 0 14px 36px rgba(4, 4, 8, 0.85);
+  --shadow-hero: 0 20px 60px -15px rgba(36, 19, 63, 0.45);
+  --shadow-glow: 0 0 25px rgba(73, 49, 124, 0.40);
+  --shadow-gold: 0 0 20px rgba(193, 139, 73, 0.30);
 
   /* Transitions */
   --transition-fast: 0.15s cubic-bezier(0, 0, 0.2, 1);
   --transition-normal: 0.25s cubic-bezier(0, 0, 0.2, 1);
   --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Light Mode Theme Overrides */
+html[data-theme="light"] {
+  --bg: #F6F4FB;
+  --bg-secondary: #ECE7F8;
+  --surface: #FFFFFF;
+  --surface-card: #FFFFFF;
+  --surface-raised: #EFEBF9;
+  --line: rgba(73, 49, 124, 0.16);
+  --border: rgba(73, 49, 124, 0.16);
+
+  --accent: #49317C;
+  --accent-secondary: #5C3E9C;
+  --accent-hover: #382362;
+  --accent-glow: rgba(73, 49, 124, 0.22);
+  --accent-soft: rgba(73, 49, 124, 0.10);
+  --starlight-lavender: #5C3E9C;
+
+  --text: #151126;
+  --text-primary: #151126;
+  --text-secondary: #4B4366;
+  --ink: #151126;
+  --ink-secondary: #4B4366;
+  --muted: #6C6487;
+
+  --shadow-subtle: 0 4px 16px rgba(36, 19, 63, 0.08);
+  --shadow-card: 0 10px 30px rgba(36, 19, 63, 0.10);
+  --shadow-popover: 0 14px 36px rgba(36, 19, 63, 0.16);
+  --shadow-hero: 0 20px 60px -15px rgba(73, 49, 124, 0.18);
+}
+
+html[data-theme="light"] .header-pill {
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 28px rgba(36, 19, 63, 0.08);
+}
+
+html[data-theme="light"] .nav-toggle-btn {
+  background-color: var(--surface-raised);
+  color: var(--text);
+}
+
+html[data-theme="light"] .apple-dropdown {
+  background-color: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 16px 40px rgba(36, 19, 63, 0.15);
+}
+
+html[data-theme="light"] .hero-card {
+  background: radial-gradient(ellipse 75% 65% at 50% 45%, rgba(185, 167, 232, 0.35) 0%, rgba(236, 231, 248, 0.85) 55%, #FFFFFF 100%);
+  border-color: rgba(73, 49, 124, 0.20);
+}
+
+html[data-theme="light"] .hero-title {
+  background: linear-gradient(135deg, #151126 0%, #49317C 55%, #C18B49 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html[data-theme="light"] .section-heading,
+html[data-theme="light"] .leaderboard-member-name,
+html[data-theme="light"] .card-title,
+html[data-theme="light"] .team-card-title,
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3 {
+  color: var(--text);
+}
+
+html[data-theme="light"] .brand-logo-img {
+  background: #101019;
+  padding: 4px 8px;
+  border-radius: 10px;
+}
+
+html[data-theme="light"] .footer-wrapper {
+  background-color: var(--surface);
+  border-top: 1px solid var(--line);
 }
 
 /* Base Reset & Defaults */
@@ -108,41 +202,46 @@ img, svg {
   max-width: 100%;
 }
 
-/* Layout Containers */
+/* Containers (Full Page Width) */
 .container {
   width: 100%;
-  max-width: 1088px;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 @media (min-width: 640px) {
   .container {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 56px;
+    padding-right: 56px;
   }
 }
 
 .content-max-w {
-  max-width: 760px;
+  width: 100%;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Header & Navigation (Exact MVJCE Sticky Pill) */
+/* =============================================================================
+   1. STICKY HEADER BAR (Full-Width Navbar)
+   ============================================================================= */
 .header-wrapper {
   position: sticky;
   top: 0;
   z-index: 50;
-  padding: 12px 12px 0 12px;
-}
-
-@media (min-width: 640px) {
-  .header-wrapper {
-    padding: 12px 20px 0 20px;
-  }
+  width: 100%;
+  padding: 0;
 }
 
 .header-container {
@@ -150,30 +249,43 @@ img, svg {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  max-width: 760px;
+  max-width: 100%;
 }
 
 .header-pill {
   display: flex;
   height: 68px;
+  width: 100%;
   align-items: center;
   justify-content: space-between;
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--line);
-  background-color: rgba(17, 28, 50, 0.92);
-  padding-left: 16px;
-  padding-right: 16px;
-  box-shadow: 0 10px 32px rgba(4, 7, 15, 0.35);
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background-color: rgba(16, 16, 25, 0.92);
+  padding-left: 20px;
+  padding-right: 20px;
+  box-shadow: 0 10px 32px rgba(8, 8, 13, 0.65);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.header-pill:hover {
+  border-bottom-color: rgba(185, 167, 232, 0.30);
 }
 
 @media (min-width: 640px) {
   .header-pill {
     height: 76px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-pill {
+    padding-left: 56px;
+    padding-right: 56px;
   }
 }
 
@@ -186,14 +298,14 @@ img, svg {
 }
 
 .brand-logo-img {
-  height: 44px;
+  height: 48px;
   width: auto;
   object-fit: contain;
 }
 
 @media (min-width: 640px) {
   .brand-logo-img {
-    height: 52px;
+    height: 56px;
   }
 }
 
@@ -203,17 +315,176 @@ img, svg {
   gap: 12px;
 }
 
-/* Header quick auth desktop buttons */
 .header-auth-pills {
   display: none;
   align-items: center;
   gap: 8px;
 }
 
+.header-auth-pills:has(.apple-account-menu) {
+  display: flex;
+}
+
 @media (min-width: 640px) {
   .header-auth-pills {
     display: flex;
   }
+}
+
+/* Logged-in Navbar Account Pill & Dropdown */
+.apple-account-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.apple-account-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.apple-account-pill:hover {
+  border-color: var(--starlight-lavender);
+  background: rgba(73, 49, 124, 0.35);
+}
+
+.apple-account-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--galaxy-purple), var(--nebula-blue));
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  border: 1px solid rgba(185, 167, 232, 0.25);
+}
+
+.apple-account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.apple-chevron {
+  font-size: 9px;
+  color: var(--muted);
+  transition: transform var(--transition-fast);
+}
+
+.apple-account-menu.open .apple-chevron {
+  transform: rotate(180deg);
+}
+
+.apple-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 260px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background-color: rgba(16, 16, 25, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 8px;
+  box-shadow: 0 20px 50px rgba(8, 8, 13, 0.9);
+  z-index: 60;
+}
+
+.apple-account-menu.open .apple-dropdown {
+  display: block;
+  animation: dropdownFadeIn 0.16s ease-out;
+}
+
+.apple-dropdown-user {
+  padding: 10px 12px;
+}
+
+.apple-dropdown-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.apple-dropdown-email {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+  word-break: break-all;
+}
+
+.apple-dropdown-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.apple-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(193, 139, 73, 0.18);
+  color: var(--cosmic-gold);
+  border: 1px solid rgba(193, 139, 73, 0.35);
+}
+
+.apple-dropdown-divider {
+  height: 1px;
+  background-color: var(--line);
+  margin: 6px 4px;
+}
+
+.apple-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.apple-dropdown-item:hover {
+  background-color: var(--surface-raised);
+  color: var(--ink);
+}
+
+.apple-dropdown-item-danger {
+  color: #f87171;
+}
+
+.apple-dropdown-item-danger:hover {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
 }
 
 .nav-toggle-btn {
@@ -225,16 +496,19 @@ img, svg {
   justify-content: center;
   border-radius: var(--radius-full);
   color: var(--text);
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  border: 1px solid var(--line);
+  background-color: rgba(33, 27, 48, 0.6);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .nav-toggle-btn:hover {
   background-color: var(--surface-raised);
+  border-color: var(--starlight-lavender);
 }
 
 .nav-toggle-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--accent);
+  box-shadow: 0 0 0 2px var(--starlight-lavender);
 }
 
 .nav-toggle-icon {
@@ -251,7 +525,7 @@ img, svg {
 /* Floating Navigation Dropdown (Exact MVJCE Spec) */
 .nav-dropdown {
   position: absolute;
-  right: 0;
+  right: 20px;
   top: calc(100% + 8px);
   z-index: 60;
   width: min(260px, calc(100vw - 24px));
@@ -266,6 +540,18 @@ img, svg {
   transform: translateY(-8px) scale(0.96);
   pointer-events: none;
   transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1), transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 640px) {
+  .nav-dropdown {
+    right: 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nav-dropdown {
+    right: 56px;
+  }
 }
 
 .nav-dropdown.open {
@@ -294,7 +580,7 @@ img, svg {
 
 .nav-dropdown-item.active {
   background-color: var(--accent-soft);
-  color: var(--accent-secondary);
+  color: var(--starlight-lavender);
   font-weight: 700;
 }
 
@@ -304,11 +590,13 @@ img, svg {
   margin: 6px 0;
 }
 
-/* Hero Section (Exact MVJCE Banner Composition) */
+/* =============================================================================
+   2. HERO BANNER SECTION (Exact MVJCE Composition & Cosmic Galaxy Theme)
+   ============================================================================= */
 .hero-wrapper {
   position: relative;
   width: 100%;
-  max-width: 760px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -323,11 +611,11 @@ img, svg {
   justify-content: center;
   overflow: hidden;
   border-radius: var(--radius-3xl);
-  border: 1px solid rgba(23, 105, 255, 0.25);
+  border: 1px solid rgba(185, 167, 232, 0.22);
   padding: 48px 20px;
   text-align: center;
-  color: #FFFFFF;
-  background: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(23, 105, 255, 0.28) 0%, rgba(17, 28, 50, 0.95) 75%, #080D1A 100%);
+  color: var(--text);
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(73, 49, 124, 0.38) 0%, rgba(36, 19, 63, 0.70) 50%, rgba(16, 16, 25, 0.98) 85%, #08080D 100%);
   box-shadow: var(--shadow-hero);
   transition: all 0.5s ease-out;
 }
@@ -342,23 +630,23 @@ img, svg {
 
 .hero-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(85, 160, 255, 0.45);
-  box-shadow: 0 24px 70px -10px rgba(23, 105, 255, 0.35);
+  border-color: rgba(185, 167, 232, 0.40);
+  box-shadow: 0 24px 70px -10px rgba(73, 49, 124, 0.45);
 }
 
 .hero-card:active {
   transform: translateY(0) scale(0.995);
 }
 
-/* Background Subtle Grid */
+/* Subtle Restrained Star-Grid Pattern */
 .hero-grid-pattern {
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0.65;
   background-image: 
-    linear-gradient(to right, rgba(85, 160, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(85, 160, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(185, 167, 232, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(185, 167, 232, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -366,10 +654,10 @@ img, svg {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, transparent 30%, rgba(8, 13, 26, 0.45) 100%);
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(8, 8, 13, 0.50) 100%);
 }
 
-/* Decorative Watermark SVGs in Corners */
+/* Corner Watermark SVGs */
 .hero-watermark-top {
   position: absolute;
   top: -24px;
@@ -437,7 +725,7 @@ img, svg {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.28em;
-  color: var(--accent-secondary);
+  color: var(--cosmic-gold);
 }
 
 @media (min-width: 640px) {
@@ -455,7 +743,7 @@ img, svg {
   text-transform: uppercase;
   line-height: 1.04;
   letter-spacing: -0.045em;
-  color: #FFFFFF;
+  color: var(--text);
 }
 
 .hero-title .title-white {
@@ -465,7 +753,7 @@ img, svg {
 
 .subtitle-gradient {
   display: block;
-  background: linear-gradient(180deg, #FFFFFF 0%, #AAB8CE 60%, #55A0FF 100%);
+  background: linear-gradient(180deg, #F7F5FF 0%, #B9A7E8 55%, #D16BB5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -480,8 +768,8 @@ img, svg {
   position: absolute;
   inset: -6px;
   border-radius: var(--radius-full);
-  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-  opacity: 0.35;
+  background: radial-gradient(circle, var(--galaxy-purple) 0%, transparent 70%);
+  opacity: 0.45;
   filter: blur(14px);
   pointer-events: none;
   transition: all 0.3s ease-out;
@@ -489,7 +777,7 @@ img, svg {
 
 .hero-card:hover .btn-halo-glow {
   transform: scale(1.25);
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .btn-primary-pill {
@@ -499,21 +787,21 @@ img, svg {
   align-items: center;
   gap: 12px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(85, 160, 255, 0.40);
-  background-color: rgba(17, 28, 50, 0.95);
+  border: 1px solid rgba(185, 167, 232, 0.35);
+  background: linear-gradient(135deg, #49317C 0%, #24133F 100%);
   padding: 12px 28px;
   font-size: 14px;
   font-weight: 600;
-  color: #FFFFFF;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  color: #F7F5FF;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease-out;
 }
 
 .btn-primary-pill:hover {
   transform: translateY(-2px);
-  border-color: var(--accent-secondary);
-  background-color: var(--surface-card);
-  box-shadow: 0 0 25px rgba(23, 105, 255, 0.35);
+  border-color: var(--starlight-lavender);
+  background: linear-gradient(135deg, #5c3e9c 0%, #2c174d 100%);
+  box-shadow: 0 0 25px rgba(73, 49, 124, 0.45);
 }
 
 .btn-primary-pill:active {
@@ -522,7 +810,7 @@ img, svg {
 
 .btn-primary-pill:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--accent-secondary), 0 0 0 4px var(--bg);
+  box-shadow: 0 0 0 2px var(--starlight-lavender), 0 0 0 4px var(--bg);
 }
 
 /* "Up Next" / Pulse Bar */
@@ -537,7 +825,7 @@ img, svg {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.70);
+  color: rgba(247, 245, 255, 0.75);
 }
 
 @media (min-width: 640px) {
@@ -550,7 +838,7 @@ img, svg {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: var(--accent-secondary);
+  color: var(--cosmic-gold);
 }
 
 .ticker-link {
@@ -562,14 +850,16 @@ img, svg {
 }
 
 .ticker-link:hover {
-  color: #FFFFFF;
+  color: #F7F5FF;
 }
 
 .ticker-dot {
-  color: rgba(85, 160, 255, 0.45);
+  color: rgba(185, 167, 232, 0.45);
 }
 
-/* Club Pulse & Stats Strip (matching reference component card) */
+/* =============================================================================
+   3. CLUB PULSE & METRICS STRIP
+   ============================================================================= */
 .pulse-card {
   border-radius: var(--radius-xl);
   border: 1px solid var(--line);
@@ -589,7 +879,7 @@ img, svg {
 
 .pulse-title {
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--text);
   font-size: 15px;
   display: flex;
   align-items: center;
@@ -606,8 +896,8 @@ img, svg {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background-color: var(--status-approved-bg);
-  color: var(--status-approved-text);
-  border: 1px solid rgba(85, 160, 255, 0.25);
+  color: var(--starlight-lavender);
+  border: 1px solid rgba(185, 167, 232, 0.25);
 }
 
 .pulse-desc {
@@ -640,7 +930,7 @@ img, svg {
   display: block;
   font-size: 24px;
   font-weight: 900;
-  color: #FFFFFF;
+  color: #F7F5FF;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
@@ -654,10 +944,12 @@ img, svg {
   margin-top: 4px;
 }
 
-/* Sections & Typography */
+/* =============================================================================
+   4. SECTIONS & TYPOGRAPHY
+   ============================================================================= */
 .section-block {
   width: 100%;
-  max-width: 760px;
+  max-width: 100%;
   margin: 32px auto 0 auto;
 }
 
@@ -672,7 +964,7 @@ img, svg {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: var(--accent-secondary);
+  color: var(--starlight-lavender);
   margin-bottom: 4px;
 }
 
@@ -680,7 +972,7 @@ img, svg {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: #FFFFFF;
+  color: #F7F5FF;
 }
 
 @media (min-width: 640px) {
@@ -696,13 +988,15 @@ img, svg {
   line-height: 1.6;
 }
 
-/* Overall Merit Leaderboard (Exact MVJCE Table Spec) */
+/* =============================================================================
+   5. OVERALL MERIT LEADERBOARD (Exact MVJCE Table Spec)
+   ============================================================================= */
 .leaderboard-table-card {
   overflow: hidden;
   border-radius: var(--radius-xl);
   border: 1px solid var(--line);
   background-color: var(--surface);
-  box-shadow: 0 8px 26px rgba(4, 7, 15, 0.45);
+  box-shadow: 0 8px 26px rgba(8, 8, 13, 0.6);
 }
 
 .leaderboard-card-header {
@@ -718,7 +1012,7 @@ img, svg {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: #FFFFFF;
+  color: #F7F5FF;
 }
 
 .leaderboard-columns-header {
@@ -763,7 +1057,7 @@ img, svg {
 }
 
 .leaderboard-row:hover {
-  background-color: rgba(36, 54, 83, 0.45);
+  background-color: rgba(33, 27, 48, 0.45);
 }
 
 .leaderboard-rank {
@@ -779,19 +1073,20 @@ img, svg {
 }
 
 .leaderboard-rank.top-1 {
-  background: linear-gradient(135deg, #1769FF, #55A0FF);
+  background: linear-gradient(135deg, #C18B49, #e0aa6b);
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(23, 105, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(193, 139, 73, 0.4);
 }
 
 .leaderboard-rank.top-2 {
-  background-color: rgba(85, 160, 255, 0.25);
+  background: linear-gradient(135deg, #49317C, #6e4db5);
   color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(73, 49, 124, 0.35);
 }
 
 .leaderboard-rank.top-3 {
-  background-color: rgba(85, 160, 255, 0.15);
-  color: var(--text-secondary);
+  background: linear-gradient(135deg, #243B70, #3c5ea7);
+  color: #FFFFFF;
 }
 
 .leaderboard-user-info {
@@ -818,7 +1113,7 @@ img, svg {
 .leaderboard-member-name {
   font-size: 13px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #F7F5FF;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -837,16 +1132,18 @@ img, svg {
   font-size: 13px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  color: #FFFFFF;
+  color: #F7F5FF;
 }
 
 .leaderboard-points span {
-  color: var(--accent-secondary);
+  color: var(--cosmic-gold);
   font-size: 11px;
   margin-left: 2px;
 }
 
-/* Three Pillars / Teams Section */
+/* =============================================================================
+   6. THREE PILLARS / TEAMS SECTION
+   ============================================================================= */
 .teams-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -872,8 +1169,8 @@ img, svg {
 
 .team-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(85, 160, 255, 0.40);
-  box-shadow: 0 16px 36px rgba(4, 7, 15, 0.55);
+  border-color: rgba(185, 167, 232, 0.40);
+  box-shadow: 0 16px 36px rgba(8, 8, 13, 0.70);
 }
 
 .team-icon-badge {
@@ -883,17 +1180,17 @@ img, svg {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-md);
-  background: rgba(23, 105, 255, 0.15);
-  color: var(--accent-secondary);
+  background: rgba(73, 49, 124, 0.28);
+  color: var(--starlight-lavender);
   font-size: 20px;
   margin-bottom: 16px;
-  border: 1px solid rgba(85, 160, 255, 0.2);
+  border: 1px solid rgba(185, 167, 232, 0.22);
 }
 
 .team-name {
   font-size: 17px;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #F7F5FF;
   margin-bottom: 8px;
 }
 
@@ -919,10 +1216,12 @@ img, svg {
   border: 1px solid var(--line);
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--accent-soft-solid);
+  color: var(--starlight-lavender);
 }
 
-/* Event & Hackathon Cards (MVJCE Sports Card Layout) */
+/* =============================================================================
+   7. EVENT & HACKATHON CARDS (MVJCE Sports Card Layout)
+   ============================================================================= */
 .cards-grid-2 {
   display: grid;
   grid-template-columns: 1fr;
@@ -948,8 +1247,8 @@ img, svg {
 
 .event-item-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(85, 160, 255, 0.35);
-  box-shadow: 0 16px 36px rgba(4, 7, 15, 0.55);
+  border-color: rgba(185, 167, 232, 0.40);
+  box-shadow: 0 16px 36px rgba(8, 8, 13, 0.70);
 }
 
 .event-item-thumb {
@@ -981,9 +1280,9 @@ img, svg {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background-color: rgba(8, 13, 26, 0.85);
-  color: var(--accent-secondary);
-  border: 1px solid rgba(85, 160, 255, 0.3);
+  background-color: rgba(8, 8, 13, 0.85);
+  color: var(--starlight-lavender);
+  border: 1px solid rgba(185, 167, 232, 0.3);
   backdrop-filter: blur(8px);
 }
 
@@ -1000,14 +1299,14 @@ img, svg {
   gap: 12px;
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--accent-secondary);
+  color: var(--starlight-lavender);
   margin-bottom: 8px;
 }
 
 .event-item-title {
   font-size: 16px;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #F7F5FF;
   margin-bottom: 8px;
   line-height: 1.35;
 }
@@ -1042,16 +1341,17 @@ img, svg {
   gap: 6px;
   padding: 7px 16px;
   border-radius: var(--radius-full);
-  background-color: var(--button-bg);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #49317C 0%, #24133F 100%);
+  color: #F7F5FF;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  border: 1px solid rgba(185, 167, 232, 0.25);
+  box-shadow: 0 4px 12px rgba(73, 49, 124, 0.35);
+  transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
 .btn-sm-primary:hover {
-  background-color: var(--accent-hover);
+  background: linear-gradient(135deg, #5c3e9c 0%, #2c174d 100%);
   transform: translateY(-1px);
 }
 
@@ -1062,7 +1362,7 @@ img, svg {
   padding: 7px 16px;
   border-radius: var(--radius-full);
   background-color: transparent;
-  color: #FFFFFF;
+  color: #F7F5FF;
   font-size: 12px;
   font-weight: 600;
   border: 1px solid var(--line);
@@ -1071,10 +1371,12 @@ img, svg {
 
 .btn-sm-outline:hover {
   background-color: var(--surface-raised);
-  border-color: var(--accent-secondary);
+  border-color: var(--starlight-lavender);
 }
 
-/* Announcements List Cards */
+/* =============================================================================
+   8. ANNOUNCEMENTS LIST CARDS
+   ============================================================================= */
 .announcement-item-card {
   display: flex;
   gap: 16px;
@@ -1088,7 +1390,7 @@ img, svg {
 }
 
 .announcement-item-card:hover {
-  border-color: rgba(85, 160, 255, 0.35);
+  border-color: rgba(185, 167, 232, 0.35);
   transform: translateX(2px);
 }
 
@@ -1100,8 +1402,8 @@ img, svg {
   height: 40px;
   flex-shrink: 0;
   border-radius: var(--radius-md);
-  background-color: rgba(23, 105, 255, 0.12);
-  color: var(--accent-secondary);
+  background-color: rgba(73, 49, 124, 0.25);
+  color: var(--starlight-lavender);
   font-size: 18px;
 }
 
@@ -1121,7 +1423,7 @@ img, svg {
 .announcement-title-txt {
   font-size: 14.5px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #F7F5FF;
 }
 
 .announcement-date-txt {
@@ -1135,13 +1437,15 @@ img, svg {
   line-height: 1.55;
 }
 
-/* CTA Join Banner */
+/* =============================================================================
+   9. CTA JOIN BANNER
+   ============================================================================= */
 .cta-banner-card {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-2xl);
-  border: 1px solid rgba(85, 160, 255, 0.3);
-  background: linear-gradient(135deg, rgba(17, 28, 50, 0.95) 0%, rgba(29, 43, 69, 0.85) 100%);
+  border: 1px solid rgba(185, 167, 232, 0.28);
+  background: radial-gradient(ellipse at 50% 0%, rgba(73, 49, 124, 0.45) 0%, rgba(23, 21, 34, 0.95) 70%, #08080D 100%);
   padding: 40px 24px;
   text-align: center;
   box-shadow: var(--shadow-card);
@@ -1161,7 +1465,7 @@ img, svg {
   width: 320px;
   height: 320px;
   border-radius: var(--radius-full);
-  background: radial-gradient(circle, rgba(23, 105, 255, 0.35) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(73, 49, 124, 0.45) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -1169,7 +1473,7 @@ img, svg {
   position: relative;
   font-size: 26px;
   font-weight: 900;
-  color: #FFFFFF;
+  color: #F7F5FF;
   margin-bottom: 10px;
   letter-spacing: -0.03em;
 }
@@ -1198,7 +1502,9 @@ img, svg {
   gap: 12px;
 }
 
-/* Footer (Exact MVJCE Spec) */
+/* =============================================================================
+   10. FOOTER (Exact MVJCE Spec)
+   ============================================================================= */
 .footer-wrapper {
   border-top: 1px solid var(--line);
   background-color: var(--surface);
@@ -1208,7 +1514,6 @@ img, svg {
 
 .footer-inner {
   display: flex;
-  flex-col: column;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
@@ -1235,7 +1540,7 @@ img, svg {
 }
 
 .footer-nav a:hover {
-  color: var(--accent-secondary);
+  color: var(--starlight-lavender);
 }
 
 .footer-social-btn {
@@ -1244,7 +1549,7 @@ img, svg {
   gap: 8px;
   font-weight: 700;
   font-size: 12px;
-  color: #FFFFFF;
+  color: #F7F5FF;
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   background-color: var(--surface-card);
@@ -1253,7 +1558,7 @@ img, svg {
 }
 
 .footer-social-btn:hover {
-  border-color: var(--accent-secondary);
+  border-color: var(--starlight-lavender);
 }
 
 /* Toast Notifications */
@@ -1275,7 +1580,7 @@ img, svg {
   font-size: 13px;
   font-weight: 600;
   background-color: var(--surface-card);
-  color: #FFFFFF;
+  color: #F7F5FF;
   border: 1px solid var(--line);
   box-shadow: var(--shadow-popover);
   display: flex;
@@ -1286,11 +1591,11 @@ img, svg {
 }
 
 .toast-success {
-  border-color: rgba(85, 160, 255, 0.4);
+  border-color: rgba(185, 167, 232, 0.45);
 }
 
 .toast-error {
-  border-color: rgba(239, 68, 68, 0.4);
+  border-color: rgba(209, 107, 181, 0.45);
 }
 
 @keyframes toastSlideIn {
@@ -1317,16 +1622,4 @@ img, svg {
 .state-icon {
   font-size: 32px;
   margin-bottom: 8px;
-}
-
-/* Skeleton Pulse Loaders */
-.skeleton-box {
-  animation: pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  background-color: rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-md);
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
 }

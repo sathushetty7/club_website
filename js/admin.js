@@ -613,7 +613,8 @@ async function loadMembers() {
           </div>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   } catch (err) {
     container.innerHTML = `<tr><td colspan="6" class="text-center" style="color: red;">Failed to load members.</td></tr>`;
   }

@@ -1,6 +1,7 @@
 /**
  * ANALYTIX CLUB - DASHBOARD STYLESHEET (Member & Admin)
- * Theme: Midnight Navy (#080D1A) + Electric Blue (#1769FF) + White (#FFFFFF)
+ * Theme: Cosmic Galaxy - Deep Space (#08080D), Galaxy Purple (#49317C),
+ *        Deep Violet (#24133F), Starlight Lavender (#B9A7E8)
  */
 
 .dashboard-layout {
@@ -35,7 +36,7 @@
 .sidebar-header .brand-text {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #F7F5FF;
   letter-spacing: -0.02em;
 }
 
@@ -65,14 +66,14 @@
 
 .sidebar-link:hover {
   background-color: var(--surface-raised);
-  color: #FFFFFF;
+  color: #F7F5FF;
 }
 
 .sidebar-link.active {
   background-color: var(--accent-soft);
-  color: var(--accent-secondary);
+  color: var(--starlight-lavender);
   font-weight: 700;
-  border: 1px solid rgba(85, 160, 255, 0.2);
+  border: 1px solid rgba(185, 167, 232, 0.25);
 }
 
 /* Dashboard Main View */
@@ -100,7 +101,7 @@
 .topbar-title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #F7F5FF;
   letter-spacing: -0.02em;
 }
 
@@ -152,7 +153,7 @@
 .card-panel-title {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #F7F5FF;
 }
 
 /* Data Tables */
@@ -187,8 +188,8 @@
 }
 
 .data-table tr:hover td {
-  background-color: rgba(36, 54, 83, 0.35);
-  color: #FFFFFF;
+  background-color: rgba(33, 27, 48, 0.45);
+  color: #F7F5FF;
 }
 
 .data-table tr:last-child td {
@@ -210,26 +211,26 @@
 .status-approved, .status-published {
   background-color: var(--status-approved-bg);
   color: var(--status-approved-text);
-  border: 1px solid rgba(85, 160, 255, 0.25);
+  border: 1px solid rgba(185, 167, 232, 0.28);
 }
 
 .status-pending, .status-draft {
   background-color: var(--status-pending-bg);
   color: var(--status-pending-text);
-  border: 1px solid rgba(85, 160, 255, 0.2);
+  border: 1px solid rgba(193, 139, 73, 0.3);
 }
 
 .status-rejected, .status-cancelled {
   background-color: var(--status-error-bg);
   color: var(--status-error-text);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(209, 107, 181, 0.35);
 }
 
 /* Modals */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(8, 13, 26, 0.8);
+  background-color: rgba(8, 8, 13, 0.85);
   backdrop-filter: blur(8px);
   z-index: 1000;
   display: none;
@@ -267,7 +268,7 @@
 .modal-title {
   font-size: 1.3rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #F7F5FF;
 }
 
 .modal-close-btn {
@@ -278,5 +279,5 @@
 }
 
 .modal-close-btn:hover {
-  color: #FFFFFF;
+  color: #F7F5FF;
 }

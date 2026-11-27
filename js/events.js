@@ -74,18 +74,40 @@ function initNavigationDropdown() {
 }
 
 /**
- * Initializes Dark Theme Toggle
+ * Initializes Dark / Light Theme Toggle
  */
 function initThemeToggle() {
+  const savedTheme = (() => {
+    try { return localStorage.getItem('analytix-theme'); } catch (e) { return null; }
+  })();
+  if (savedTheme === 'light' || savedTheme === 'dark') {
+    document.documentElement.dataset.theme = savedTheme;
+  }
+
+  const updateToggleIcon = (btn, theme) => {
+    if (!btn) return;
+    if (theme === 'light') {
+      // Moon icon (click to switch to dark)
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>`;
+      btn.title = 'Switch to Dark Mode';
+    } else {
+      // Sun icon (click to switch to light)
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>`;
+      btn.title = 'Switch to Light Mode';
+    }
+  };
+
   const themeToggle = document.getElementById('theme-toggle-btn');
   if (themeToggle) {
+    updateToggleIcon(themeToggle, document.documentElement.dataset.theme || 'dark');
     themeToggle.addEventListener('click', () => {
       const current = document.documentElement.dataset.theme || 'dark';
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = next;
+      updateToggleIcon(themeToggle, next);
       try {
         localStorage.setItem('analytix-theme', next);
-      } catch (e) {}
+      } catch (e) { }
     });
   }
 }
@@ -291,12 +313,12 @@ async function loadPublicEvents(currentUser) {
             <div class="event-item-footer">
               <span class="event-item-deadline">Deadline: ${API.formatDate(ev.registration_deadline)}</span>
               ${currentUser
-                ? (ev.is_registered
-                    ? `<span class="status-pill status-${ev.my_registration_status || 'approved'}">Registered (${API.escapeHtml(ev.my_registration_status || 'confirmed')})</span>`
-                    : `<button onclick="handleEventRegister('${ev.id}')" class="btn-sm-primary">Register Now</button>`
-                  )
-                : `<a href="login.html" class="btn-sm-primary">Sign In to Register</a>`
-              }
+          ? (ev.is_registered
+            ? `<span class="status-pill status-${ev.my_registration_status || 'approved'}">Registered (${API.escapeHtml(ev.my_registration_status || 'confirmed')})</span>`
+            : `<button onclick="handleEventRegister('${ev.id}')" class="btn-sm-primary">Register Now</button>`
+          )
+          : `<a href="login.html" class="btn-sm-primary">Sign In to Register</a>`
+        }
             </div>
           </div>
         </div>
@@ -388,12 +410,12 @@ async function loadPublicHackathons(currentUser) {
               <div style="display: flex; gap: 8px;">
                 ${h.registration_link ? `<a href="${encodeURI(h.registration_link)}" target="_blank" rel="noopener noreferrer" class="btn-sm-outline">Details ↗</a>` : ''}
                 ${currentUser
-                  ? (h.is_registered
-                      ? `<span class="status-pill status-approved">Applied</span>`
-                      : `<button onclick="handleHackathonApply('${h.id}')" class="btn-sm-primary">Apply Team</button>`
-                    )
-                  : `<a href="login.html" class="btn-sm-primary">Sign In</a>`
-                }
+          ? (h.is_registered
+            ? `<span class="status-pill status-approved">Applied</span>`
+            : `<button onclick="handleHackathonApply('${h.id}')" class="btn-sm-primary">Apply Team</button>`
+          )
+          : `<a href="login.html" class="btn-sm-primary">Sign In</a>`
+        }
               </div>
             </div>
           </div>

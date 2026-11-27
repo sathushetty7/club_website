@@ -1,11 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
   <defs>
-    <linearGradient id="anx-badge-grad-sq" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1769FF" />
-      <stop offset="100%" stop-color="#55A0FF" />
+    <linearGradient id="cosmic-sq-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#49317C" />
+      <stop offset="50%" stop-color="#24133F" />
+      <stop offset="100%" stop-color="#243B70" />
     </linearGradient>
+    <radialGradient id="nebula-sq-highlight" cx="70%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#D16BB5" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#D16BB5" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#anx-badge-grad-sq)" />
-  <path d="M32 14 L18 49 H26.5 L29.5 41 H34.5 L37.5 49 H46 L32 14 Z M32 26 L33.8 35 H30.2 L32 26 Z" fill="#FFFFFF" />
-  <circle cx="32" cy="14" r="2.8" fill="#DCE9FF" />
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#cosmic-sq-grad)" stroke="rgba(185,167,232,0.22)" stroke-width="1" />
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#nebula-sq-highlight)" />
+  <path d="M32 13.5 L17.5 49.5 H25.5 L28.8 41.5 H35.2 L38.5 49.5 H46.5 L32 13.5 Z M32 25 L34.2 34.5 H29.8 L32 25 Z" fill="#F7F5FF" />
+  <circle cx="32" cy="13.5" r="3" fill="#C18B49" />
 </svg>

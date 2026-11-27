@@ -9,8 +9,6 @@
 
 This repository hosts the official web platform for **Analytix Club**, transformed to follow the visual layout and structural composition of the **MVJCE Inter-Department Championship**, branded with Analytix's identity, content, and technology theme.
 
-- **Design & Layout Reference:** [MVJCE Championship](https://inter-dept-mvjce.vercel.app/)
-- **Content & Backend Reference:** [Analytix Web](https://analytix-web-238f.onrender.com/)
 - **Visual Identity:** Midnight Navy & Electric Blue (`#080D1A` + `#1769FF` + `#FFFFFF`)
 - **Strict Brand Rule:** 100% blue technology theme — absolutely zero green or teal accents.
 

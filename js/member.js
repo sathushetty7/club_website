@@ -74,7 +74,7 @@ function switchMemberTab(tabName) {
 async function loadMemberDashboard() {
   try {
     const data = await API.get('/api/members/overview');
-    
+
     // Greeting
     const welcomeName = document.getElementById('member-welcome-name');
     if (welcomeName) welcomeName.textContent = data.member.full_name;
@@ -115,10 +115,10 @@ async function loadMemberDashboard() {
                 </div>
                 <h4 style="font-size: 1.05rem; margin-bottom: 12px;">${cleanTitle}</h4>
                 <div class="event-footer" style="padding-top: 10px;">
-                  ${ev.is_registered 
-                    ? `<span class="status-pill status-approved">Registered (${API.escapeHtml(ev.my_registration_status || 'pending')})</span>`
-                    : `<button onclick="registerForEvent('${ev.id}')" class="btn btn-primary btn-sm">Register</button>`
-                  }
+                  ${ev.is_registered
+              ? `<span class="status-pill status-approved">Registered (${API.escapeHtml(ev.my_registration_status || 'pending')})</span>`
+              : `<button onclick="registerForEvent('${ev.id}')" class="btn btn-primary btn-sm">Register</button>`
+            }
                 </div>
               </div>
             </div>
@@ -195,9 +195,9 @@ async function loadMemberEvents() {
             <div class="event-footer">
               <span style="font-size: 0.82rem; color: #64748b;">Deadline: ${API.formatDate(ev.registration_deadline)}</span>
               ${ev.is_registered
-                ? `<span class="status-pill status-${ev.my_registration_status || 'approved'}">Registered (${API.escapeHtml(ev.my_registration_status || 'pending')})</span>`
-                : `<button onclick="registerForEvent('${ev.id}')" class="btn btn-primary btn-sm">Register Now</button>`
-              }
+          ? `<span class="status-pill status-${ev.my_registration_status || 'approved'}">Registered (${API.escapeHtml(ev.my_registration_status || 'pending')})</span>`
+          : `<button onclick="registerForEvent('${ev.id}')" class="btn btn-primary btn-sm">Register Now</button>`
+        }
             </div>
           </div>
         </div>
@@ -270,10 +270,10 @@ async function loadMemberHackathons() {
               <span style="font-size: 0.82rem; color: #64748b;">Deadline: ${API.formatDate(h.deadline)}</span>
               <div style="display: flex; gap: 8px;">
                 ${h.registration_link ? `<a href="${encodeURI(h.registration_link)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">External Link ↗</a>` : ''}
-                ${h.is_registered 
-                  ? `<span class="status-pill status-approved">Applied</span>`
-                  : `<button onclick="applyForHackathon('${h.id}')" class="btn btn-primary btn-sm">Apply Club Team</button>`
-                }
+                ${h.is_registered
+          ? `<span class="status-pill status-approved">Applied</span>`
+          : `<button onclick="applyForHackathon('${h.id}')" class="btn btn-primary btn-sm">Apply Club Team</button>`
+        }
               </div>
             </div>
           </div>
@@ -346,7 +346,7 @@ async function loadMyRegistrations() {
 
   try {
     const data = await API.get('/api/registrations/my');
-    
+
     // Events
     if (eventTable) {
       if (!data.events.length) {

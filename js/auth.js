@@ -225,7 +225,7 @@ const Auth = {
               <div class="apple-dropdown-email">${user.email}</div>
               <div class="apple-dropdown-badges">
                 <span class="apple-badge">${user.role.toUpperCase()}</span>
-                <span class="apple-badge" style="background: rgba(23, 105, 255, 0.15); color: #55A0FF;">TEAM: ${(user.team || 'None').toUpperCase()}</span>
+                <span class="apple-badge" style="background: rgba(73, 49, 124, 0.25); color: var(--starlight-lavender); border: 1px solid rgba(185, 167, 232, 0.2);">TEAM: ${(user.team || 'None').toUpperCase()}</span>
               </div>
             </div>
             <div class="apple-dropdown-divider"></div>
@@ -233,7 +233,7 @@ const Auth = {
               <span class="apple-item-icon">📊</span>
               <span>Dashboard</span>
             </a>
-            <a href="profile.html" class="apple-dropdown-item">
+            <a href="${targetDashboard}#profile" class="apple-dropdown-item">
               <span class="apple-item-icon">👤</span>
               <span>My Profile</span>
             </a>

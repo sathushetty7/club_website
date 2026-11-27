@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANALYTIX | Data & Analytics Club · 2026–27</title>
-  <meta name="description" content="Official website of Analytix Club - Where Data Turns Into Impact & Innovation. Workshops, hackathons, merit leaderboard and active student projects.">
-  <link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg">
+  <title>ANALYTIX | Data &amp; Analytics Club · 2026–27</title>
+  <meta name="description" content="Official website of Analytix Club - Where Data Turns Into Impact & Innovation. Cosmic galaxy-inspired student technology community.">
+  <link rel="icon" type="image/png" href="assets/analytix-icon.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,15 +21,24 @@
       <div class="header-pill">
         <!-- Logo on left -->
         <a href="index.html" class="brand-link" aria-label="Analytix Club Home">
-          <img src="assets/logo.svg" alt="Analytix Club" class="brand-logo-img">
+          <img src="assets/analytix-logo.png" alt="Analytix Club" class="brand-logo-img">
         </a>
 
         <!-- Right actions -->
+        <!-- Center Segmented Pill Nav -->
+        <nav class="nav-center-pill" aria-label="Primary navigation">
+          <a href="index.html" class="nav-pill-link active">HOME</a>
+          <a href="events.html" class="nav-pill-link">EVENTS</a>
+          <a href="hackathons.html" class="nav-pill-link">HACKATHONS</a>
+          <a href="leaderboard.html" class="nav-pill-link">LEADERBOARD</a>
+          <a href="announcements.html" class="nav-pill-link">BULLETINS</a>
+        </nav>
+
         <div class="header-right">
           <!-- Auth action buttons (Desktop) -->
           <div class="header-auth-pills" id="nav-auth-actions">
             <a href="login.html" class="btn-sm-outline">Sign In</a>
-            <a href="register.html" class="btn-sm-primary">Join Club</a>
+            <a href="register.html" class="nav-cta-glow">JOIN CLUB ↗</a>
           </div>
 
           <!-- Circular Navigation Toggle Button -->
@@ -62,7 +71,7 @@
           <span>👥</span> The Three Pillars
         </a>
         <a href="events.html" class="nav-dropdown-item">
-          <span>📅</span> Events & Workshops
+          <span>📅</span> Events &amp; Workshops
         </a>
         <a href="hackathons.html" class="nav-dropdown-item">
           <span>🚀</span> Hackathons
@@ -77,7 +86,7 @@
         <a href="login.html" class="nav-dropdown-item">
           <span>🔑</span> Sign In
         </a>
-        <a href="register.html" class="nav-dropdown-item" style="color: var(--accent-secondary); font-weight: 700;">
+        <a href="register.html" class="nav-dropdown-item" style="color: var(--starlight-lavender); font-weight: 700;">
           <span>⚡</span> Join Club (2026–27)
         </a>
         <a href="admin-dashboard.html" class="nav-dropdown-item">
@@ -93,34 +102,36 @@
   <main class="container" style="padding-top: 12px; padding-bottom: 48px;">
 
     <!-- =======================================================================
-         2. HERO BANNER SECTION (Exact MVJCE Composition & Ratios)
+         2. HERO BANNER SECTION (Exact MVJCE Composition & Cosmic Galaxy Theme)
          ======================================================================= -->
     <div class="hero-wrapper">
       <section aria-labelledby="hero-main-title" class="hero-card">
-        <!-- Subtle 32px grid lines -->
+        <!-- Star-like 32px grid lines -->
         <div aria-hidden="true" class="hero-grid-pattern"></div>
         <div aria-hidden="true" class="hero-radial-shade"></div>
 
-        <!-- Corner Watermark SVGs (Analytix Data Nodes) -->
+        <!-- Corner Watermark SVGs (Cosmic Constellation & Nodes) -->
         <div aria-hidden="true" class="hero-watermark-top">
           <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="80" stroke="#1769FF" stroke-opacity="0.35" stroke-width="1.5" />
-            <circle cx="100" cy="100" r="50" stroke="#55A0FF" stroke-opacity="0.25" stroke-width="1" />
-            <circle cx="60" cy="60" r="8" fill="#1769FF" fill-opacity="0.4" />
-            <circle cx="140" cy="80" r="10" fill="#55A0FF" fill-opacity="0.3" />
-            <circle cx="100" cy="150" r="12" fill="#1769FF" fill-opacity="0.25" />
-            <line x1="60" y1="60" x2="140" y2="80" stroke="#55A0FF" stroke-opacity="0.3" stroke-width="1.5" />
-            <line x1="140" y1="80" x2="100" y2="150" stroke="#55A0FF" stroke-opacity="0.3" stroke-width="1.5" />
-            <line x1="100" y1="150" x2="60" y2="60" stroke="#55A0FF" stroke-opacity="0.3" stroke-width="1.5" />
+            <circle cx="100" cy="100" r="80" stroke="#49317C" stroke-opacity="0.45" stroke-width="1.5" />
+            <circle cx="100" cy="100" r="50" stroke="#B9A7E8" stroke-opacity="0.25" stroke-width="1" />
+            <circle cx="60" cy="60" r="8" fill="#49317C" fill-opacity="0.5" />
+            <circle cx="140" cy="80" r="10" fill="#243B70" fill-opacity="0.4" />
+            <circle cx="100" cy="150" r="12" fill="#D16BB5" fill-opacity="0.35" />
+            <line x1="60" y1="60" x2="140" y2="80" stroke="#B9A7E8" stroke-opacity="0.3" stroke-width="1.5" />
+            <line x1="140" y1="80" x2="100" y2="150" stroke="#B9A7E8" stroke-opacity="0.3" stroke-width="1.5" />
+            <line x1="100" y1="150" x2="60" y2="60" stroke="#B9A7E8" stroke-opacity="0.3" stroke-width="1.5" />
+            <circle cx="60" cy="60" r="2" fill="#C18B49" />
+            <circle cx="140" cy="80" r="2.5" fill="#C18B49" />
           </svg>
         </div>
 
         <div aria-hidden="true" class="hero-watermark-bottom">
           <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 220 C60 160, 100 190, 140 120 C180 50, 210 80, 230 20" stroke="#55A0FF" stroke-opacity="0.25" stroke-width="2.5" stroke-linecap="round" />
-            <path d="M20 220 H230 V230 H20 Z" fill="#1769FF" fill-opacity="0.1" />
-            <circle cx="140" cy="120" r="6" fill="#1769FF" fill-opacity="0.7" />
-            <circle cx="230" cy="20" r="6" fill="#55A0FF" fill-opacity="0.9" />
+            <path d="M20 220 C60 160, 100 190, 140 120 C180 50, 210 80, 230 20" stroke="#B9A7E8" stroke-opacity="0.3" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M20 220 H230 V230 H20 Z" fill="#24133F" fill-opacity="0.25" />
+            <circle cx="140" cy="120" r="6" fill="#D16BB5" fill-opacity="0.8" />
+            <circle cx="230" cy="20" r="6" fill="#C18B49" fill-opacity="0.9" />
           </svg>
         </div>
 
@@ -144,7 +155,7 @@
             </a>
           </div>
 
-          <!-- Hero Up Next Ticker (MVJCE Spec) -->
+          <!-- Hero Up Next Ticker (MVJCE Spec with Cosmic Gold Tag) -->
           <div class="hero-ticker">
             <span class="ticker-tag">Up next</span>
             <a href="events.html" class="ticker-link">
@@ -168,7 +179,7 @@
       <div class="pulse-card">
         <div class="pulse-header">
           <div class="pulse-title">
-            <span>⚡</span> Club Pulse &amp; Term Status
+            <span style="color: var(--cosmic-gold);">⚡</span> Club Pulse &amp; Term Status
           </div>
           <span class="pulse-badge">Active Term 2026–27</span>
         </div>
@@ -203,7 +214,7 @@
       <div class="leaderboard-table-card">
         <div class="leaderboard-card-header">
           <h2 class="leaderboard-card-title">Overall Merit Leaderboard</h2>
-          <span style="font-size: 11px; font-weight: 700; color: var(--accent-secondary); text-transform: uppercase; letter-spacing: 0.1em;">Sprint 2026–27</span>
+          <span style="font-size: 11px; font-weight: 700; color: var(--cosmic-gold); text-transform: uppercase; letter-spacing: 0.1em;">Sprint 2026–27</span>
         </div>
 
         <div class="leaderboard-columns-header">
@@ -261,7 +272,7 @@
         </div>
       </div>
       <div style="text-align: center; margin-top: 14px;">
-        <a href="leaderboard.html" class="btn-sm-outline">View Full Leaderboard &amp; Points Criteria →</a>
+        <a href="leaderboard.html" class="btn-sm-outline">View Full Leaderboard &amp; Recognition Criteria →</a>
       </div>
     </section>
 
@@ -373,7 +384,7 @@
         <div class="event-item-card">
           <div class="event-item-thumb">
             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80" class="event-item-img" alt="Data Crunch 2026">
-            <span class="event-item-badge">Published</span>
+            <span class="event-item-badge">Active</span>
           </div>
           <div class="event-item-body">
             <div class="event-item-meta">
@@ -392,7 +403,7 @@
         <div class="event-item-card">
           <div class="event-item-thumb">
             <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=800&auto=format&fit=crop&q=80" class="event-item-img" alt="Design Sprint">
-            <span class="event-item-badge">Published</span>
+            <span class="event-item-badge">Active</span>
           </div>
           <div class="event-item-body">
             <div class="event-item-meta">
@@ -427,7 +438,7 @@
       <div class="event-item-card">
         <div class="event-item-thumb" style="height: 200px;">
           <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80" class="event-item-img" alt="HackAnalytix">
-          <span class="event-item-badge">HYBRID ARENA</span>
+          <span class="event-item-badge" style="color: var(--cosmic-gold);">HYBRID ARENA</span>
         </div>
         <div class="event-item-body">
           <div class="event-item-meta">
@@ -435,7 +446,7 @@
             <span>📍 Main Campus Innovation Hub</span>
           </div>
           <h3 class="event-item-title">HackAnalytix 36-Hour National Hackathon</h3>
-          <div style="font-size: 12px; font-weight: 600; color: var(--accent-secondary); margin-bottom: 8px;">Organized by Analytix Club x Tech Titans</div>
+          <div style="font-size: 12px; font-weight: 600; color: var(--starlight-lavender); margin-bottom: 8px;">Organized by Analytix Club x Tech Titans</div>
           <p class="event-item-desc">Build real-world solutions across AI/ML, FinTech, and Smart Campus automation. Cash prizes worth ₹1,50,000 + internship offers for top teams.</p>
           <div class="event-item-footer">
             <span class="event-item-deadline">Deadline: Nov 30, 2026</span>
@@ -511,7 +522,7 @@
        ========================================================================= -->
   <footer class="footer-wrapper">
     <div class="container footer-inner">
-      <span>&copy; 2026 Analytix Club · Data &amp; Analytics Club · 2026–27</span>
+      <div style="display: flex; align-items: center; gap: 10px;"><img src="assets/analytix-logo.png" alt="Analytix Club" style="height: 34px; width: auto; object-fit: contain;"><span>&copy; 2026 Analytix Club · Data &amp; Analytics Club · 2026–27</span></div>
 
       <nav class="footer-nav" aria-label="Footer navigation">
         <a href="index.html">Home</a>
@@ -525,14 +536,16 @@
 
       <div style="display: flex; align-items: center; gap: 12px;">
         <!-- Social link pill -->
-        <a href="https://github.com/sathushetty7/club_website" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Analytix GitHub">
+        <a href="https://www.instagram.com/analytixmvjce/" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Analytix Instagram">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
           </svg>
-          <span>ANALYTIX</span>
+          <span>@analytixmvjce</span>
         </a>
 
-        <!-- Dark / Light Mode Toggle Button (MVJCE Spec) -->
+        <!-- Dark Theme Toggle Button (MVJCE Spec) -->
         <button type="button" 
                 id="theme-toggle-btn"
                 aria-label="Toggle visual theme" 

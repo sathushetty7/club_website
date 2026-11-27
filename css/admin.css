@@ -1,12 +1,13 @@
 /**
  * ANALYTIX CLUB - ADMIN DASHBOARD SPECIFIC STYLESHEET
- * Theme: Midnight Navy (#080D1A) + Electric Blue (#1769FF) + White (#FFFFFF)
+ * Theme: Cosmic Galaxy - Deep Space (#08080D), Galaxy Purple (#49317C),
+ *        Cosmic Gold (#C18B49), Nebula Pink (#D16BB5), Starlight Lavender (#B9A7E8)
  */
 
 .admin-badge {
-  background: rgba(23, 105, 255, 0.18);
-  color: var(--accent-secondary);
-  border: 1px solid rgba(85, 160, 255, 0.3);
+  background: rgba(73, 49, 124, 0.35);
+  color: var(--starlight-lavender);
+  border: 1px solid rgba(185, 167, 232, 0.30);
   padding: 4px 10px;
   border-radius: var(--radius-full);
   font-size: 0.72rem;
@@ -37,30 +38,30 @@
 
 .btn-table:hover {
   background: var(--surface-raised);
-  border-color: var(--accent-secondary);
-  color: #FFFFFF;
+  border-color: var(--starlight-lavender);
+  color: #F7F5FF;
 }
 
 .btn-table-danger {
-  color: #f87171;
-  border-color: rgba(239, 68, 68, 0.3);
+  color: #f896d8;
+  border-color: rgba(209, 107, 181, 0.35);
 }
 
 .btn-table-danger:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: #f87171;
-  color: #FFFFFF;
+  background: rgba(209, 107, 181, 0.25);
+  border-color: #f896d8;
+  color: #F7F5FF;
 }
 
 .btn-table-primary {
-  color: var(--accent-secondary);
-  border-color: rgba(85, 160, 255, 0.3);
+  color: var(--starlight-lavender);
+  border-color: rgba(185, 167, 232, 0.35);
 }
 
 .btn-table-primary:hover {
-  background: rgba(23, 105, 255, 0.25);
-  border-color: var(--accent-secondary);
-  color: #FFFFFF;
+  background: rgba(73, 49, 124, 0.35);
+  border-color: var(--starlight-lavender);
+  color: #F7F5FF;
 }
 
 .file-preview-box {

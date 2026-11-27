@@ -40,7 +40,7 @@ const API = {
       } else {
         localStorage.removeItem(this.TOKEN_KEY);
       }
-    } catch (e) {}
+    } catch (e) { }
   },
 
   getUser() {
@@ -59,14 +59,14 @@ const API = {
       } else {
         localStorage.removeItem(this.USER_KEY);
       }
-    } catch (e) {}
+    } catch (e) { }
   },
 
   clearAuth() {
     try {
       localStorage.removeItem(this.TOKEN_KEY);
       localStorage.removeItem(this.USER_KEY);
-    } catch (e) {}
+    } catch (e) { }
   },
 
   async request(endpoint, options = {}) {
