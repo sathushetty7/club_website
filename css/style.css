@@ -113,8 +113,36 @@ html[data-theme="light"] {
 }
 
 html[data-theme="light"] .header-pill {
-  background-color: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 8px 28px rgba(36, 19, 63, 0.08);
+  background-color: rgba(255, 255, 255, 0.90);
+  border-color: rgba(73, 49, 124, 0.18);
+  box-shadow: 0 10px 30px rgba(36, 19, 63, 0.10);
+}
+
+html[data-theme="light"] .nav-center-pill {
+  background: rgba(239, 235, 249, 0.85);
+  border-color: rgba(73, 49, 124, 0.16);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(73, 49, 124, 0.08);
+}
+
+html[data-theme="light"] .nav-pill-link {
+  color: #5C3E9C;
+}
+
+html[data-theme="light"] .nav-pill-link:hover {
+  color: #24133F;
+  background: rgba(73, 49, 124, 0.10);
+}
+
+html[data-theme="light"] .nav-pill-link.active {
+  color: #FFFFFF;
+  background: #24133F;
+  border-color: #382362;
+  box-shadow: 0 2px 8px rgba(73, 49, 124, 0.25);
+}
+
+html[data-theme="light"] .nav-cta-glow {
+  background: linear-gradient(135deg, #5C3E9C 0%, #382362 100%);
+  box-shadow: 0 4px 16px rgba(92, 62, 156, 0.40);
 }
 
 html[data-theme="light"] .nav-toggle-btn {
@@ -234,14 +262,21 @@ img, svg {
 }
 
 /* =============================================================================
-   1. STICKY HEADER BAR (Full-Width Navbar)
+   1. FLOATING CURVY PILL HEADER BAR
    ============================================================================= */
 .header-wrapper {
   position: sticky;
   top: 0;
   z-index: 50;
   width: 100%;
-  padding: 0;
+  padding: 12px 14px 0 14px;
+  pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .header-wrapper {
+    padding: 16px 20px 0 20px;
+  }
 }
 
 .header-container {
@@ -249,43 +284,44 @@ img, svg {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  max-width: 100%;
+  max-width: 1120px;
+  pointer-events: auto;
 }
 
 .header-pill {
   display: flex;
-  height: 68px;
+  height: 64px;
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  border-radius: 0;
-  border: none;
-  border-bottom: 1px solid var(--line);
-  background-color: rgba(16, 16, 25, 0.92);
-  padding-left: 20px;
-  padding-right: 20px;
-  box-shadow: 0 10px 32px rgba(8, 8, 13, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(185, 167, 232, 0.20);
+  background-color: rgba(16, 16, 25, 0.88);
+  padding-left: 18px;
+  padding-right: 14px;
+  box-shadow: 0 12px 36px rgba(4, 4, 10, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .header-pill:hover {
-  border-bottom-color: rgba(185, 167, 232, 0.30);
+  border-color: rgba(185, 167, 232, 0.38);
+  box-shadow: 0 14px 40px rgba(4, 4, 10, 0.65), 0 0 24px rgba(73, 49, 124, 0.20);
 }
 
 @media (min-width: 640px) {
   .header-pill {
-    height: 76px;
-    padding-left: 40px;
-    padding-right: 40px;
+    height: 70px;
+    padding-left: 22px;
+    padding-right: 18px;
   }
 }
 
 @media (min-width: 1024px) {
   .header-pill {
-    padding-left: 56px;
-    padding-right: 56px;
+    padding-left: 26px;
+    padding-right: 20px;
   }
 }
 
@@ -294,31 +330,88 @@ img, svg {
   height: 100%;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
   min-width: 0;
+  text-decoration: none;
 }
 
 .brand-logo-img {
-  height: 48px;
+  height: 38px;
   width: auto;
   object-fit: contain;
+  transition: transform var(--transition-fast);
+}
+
+.brand-link:hover .brand-logo-img {
+  transform: scale(1.03);
 }
 
 @media (min-width: 640px) {
   .brand-logo-img {
-    height: 56px;
+    height: 44px;
   }
+}
+
+/* Center Segmented Navigation (Curvy Pill with Clean Spacing & Gaps) */
+.nav-center-pill {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(23, 21, 34, 0.65);
+  border: 1px solid rgba(185, 167, 232, 0.20);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+@media (min-width: 1024px) {
+  .nav-center-pill {
+    display: flex;
+  }
+}
+
+.nav-pill-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 18px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.nav-pill-link:hover {
+  color: #FFFFFF;
+  background: rgba(185, 167, 232, 0.12);
+}
+
+.nav-pill-link.active {
+  color: #FFFFFF;
+  background: #08080D;
+  font-weight: 700;
+  border: 1px solid rgba(185, 167, 232, 0.32);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .header-right {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .header-auth-pills {
   display: none;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .header-auth-pills:has(.apple-account-menu) {
@@ -329,6 +422,34 @@ img, svg {
   .header-auth-pills {
     display: flex;
   }
+}
+
+/* Glowing Electric Purple Action Button (Like GET IN TOUCH in reference) */
+.nav-cta-glow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #7928CA 0%, #4C1D95 100%);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 4px 18px rgba(121, 40, 202, 0.55), 0 0 12px rgba(121, 40, 202, 0.35);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-cta-glow:hover {
+  background: linear-gradient(135deg, #8B5CF6 0%, #5E17EB 100%);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 26px rgba(139, 92, 246, 0.75), 0 0 18px rgba(94, 23, 235, 0.55);
+  transform: translateY(-1px);
+  color: #FFFFFF;
 }
 
 /* Logged-in Navbar Account Pill & Dropdown */
@@ -525,12 +646,12 @@ img, svg {
 /* Floating Navigation Dropdown (Exact MVJCE Spec) */
 .nav-dropdown {
   position: absolute;
-  right: 20px;
-  top: calc(100% + 8px);
+  right: 0;
+  top: calc(100% + 10px);
   z-index: 60;
   width: min(260px, calc(100vw - 24px));
   overflow: hidden;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   border: 1px solid var(--line);
   background-color: var(--surface);
   padding: 8px;
@@ -544,13 +665,13 @@ img, svg {
 
 @media (min-width: 640px) {
   .nav-dropdown {
-    right: 40px;
+    right: 0;
   }
 }
 
 @media (min-width: 1024px) {
   .nav-dropdown {
-    right: 56px;
+    right: 0;
   }
 }
 
@@ -1366,6 +1487,7 @@ img, svg {
   font-size: 12px;
   font-weight: 600;
   border: 1px solid var(--line);
+  white-space: nowrap;
   transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
@@ -1526,6 +1648,41 @@ img, svg {
   .footer-inner {
     flex-direction: row;
   }
+}
+
+.footer-credits {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.footer-credits .credit-dot {
+  color: rgba(185, 167, 232, 0.45);
+}
+
+.footer-credits .credit-author {
+  color: var(--starlight-lavender);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color var(--transition-fast), text-shadow var(--transition-fast);
+}
+
+.footer-credits .credit-author:hover {
+  color: #FFFFFF;
+  text-shadow: 0 0 12px rgba(185, 167, 232, 0.6);
+}
+
+html[data-theme="light"] .footer-credits .credit-author {
+  color: #49317C;
+}
+
+html[data-theme="light"] .footer-credits .credit-author:hover {
+  color: #24133F;
 }
 
 .footer-nav {

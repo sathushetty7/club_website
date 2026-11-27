@@ -1,18 +1,19 @@
 """
 ANALYTIX CLUB - FASTAPI BACKEND SERVER
-Complete production backend implementation mirroring the OpenAPI 3.1.0 specification.
-Supports SQLite storage, JWT auth, RBAC, events, hackathons, announcements,
-registrations, and merit leaderboard management.
+Complete production backend implementation with role-based access control (RBAC),
+Kinobi-style Club Admin Portal endpoints, Member Dashboard endpoints,
+CRUD operations, activity feeds, and file uploads.
 """
 
 import os
 import uuid
 import sqlite3
 import hashlib
+import shutil
 from datetime import datetime, timedelta, timezone
 from typing import Optional, List, Dict, Any
 
-from fastapi import FastAPI, HTTPException, Depends, Header, UploadFile, File, Form, status
+from fastapi import FastAPI, HTTPException, Depends, Header, UploadFile, File, Form, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -27,11 +28,13 @@ SECRET_KEY = os.environ.get("JWT_SECRET", "analytix-secret-key-2026-2027-super-s
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 DB_FILE = os.path.join(os.path.dirname(__file__), "analytix.db")
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "assets", "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app = FastAPI(
     title="Analytix Club API",
     description="Backend API for Analytix Club - Where Data Turns Into Impact & Innovation.",
-    version="1.0.0"
+    version="2.0.0"
 )
 
 app.add_middleware(
@@ -62,6 +65,16 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+def log_activity(conn, act_type: str, message: str, user_id: Optional[str] = None):
+    now = datetime.now(timezone.utc).isoformat()
+    try:
+        conn.cursor().execute(
+            "INSERT INTO activities (id, type, message, user_id, created_at) VALUES (?, ?, ?, ?, ?)",
+            (str(uuid.uuid4()), act_type, message, user_id, now)
+        )
+    except Exception:
+        pass
 
 def init_db():
     with get_db() as conn:
@@ -96,10 +109,22 @@ def init_db():
                 instructions TEXT DEFAULT '',
                 status TEXT DEFAULT 'published',
                 poster_url TEXT DEFAULT '',
+                category TEXT DEFAULT 'Analytix Core',
+                capacity INTEGER DEFAULT 0,
                 created_by TEXT,
                 created_at TEXT NOT NULL
             )
         """)
+
+        # Migration: ensure category & capacity exist if table was created previously
+        try:
+            cursor.execute("ALTER TABLE events ADD COLUMN category TEXT DEFAULT 'Analytix Core'")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE events ADD COLUMN capacity INTEGER DEFAULT 0")
+        except Exception:
+            pass
 
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS hackathons (
@@ -116,10 +141,16 @@ def init_db():
                 required_skills TEXT DEFAULT '',
                 status TEXT DEFAULT 'published',
                 poster_url TEXT DEFAULT '',
+                prize_pool TEXT DEFAULT '₹1,50,000',
                 created_by TEXT,
                 created_at TEXT NOT NULL
             )
         """)
+
+        try:
+            cursor.execute("ALTER TABLE hackathons ADD COLUMN prize_pool TEXT DEFAULT '₹1,50,000'")
+        except Exception:
+            pass
 
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS announcements (
@@ -155,6 +186,16 @@ def init_db():
             )
         """)
 
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS activities (
+                id TEXT PRIMARY KEY,
+                type TEXT NOT NULL,
+                message TEXT NOT NULL,
+                user_id TEXT,
+                created_at TEXT NOT NULL
+            )
+        """)
+
         conn.commit()
 
         # Seed initial data if empty
@@ -162,37 +203,67 @@ def init_db():
         if cursor.fetchone()[0] == 0:
             now = datetime.now(timezone.utc).isoformat()
             default_pwd = hash_password("analytix2026")
+            admin_pwd = hash_password("Analytix@2026")
 
             # Seed Admin and Members
             users_seed = [
-                ("00000000-0000-0000-0000-000000000001", "arjun@analytixclub.edu", default_pwd, "Arjun Sharma (Club Lead)", "admin", "Tech", "Computer Science & Engineering", "4th Year", "+91 98765 43210", "Python, FastAPI, Machine Learning, Leadership", "Lead coordinator of Analytix Club. Passionate about AI & Big Data.", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80", 340, now),
+                ("00000000-0000-0000-0000-000000000001", "analytix63@gmail.com", admin_pwd, "Arjun Sharma (Club Lead)", "admin", "Tech", "Computer Science & Engineering", "4th Year", "+91 98765 43210", "Python, FastAPI, Machine Learning, Leadership", "Lead coordinator of Analytix Club. Passionate about AI & Big Data.", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80", 340, now),
                 ("00000000-0000-0000-0000-000000000002", "priya@analytixclub.edu", default_pwd, "Priya Nair", "member", "Design", "Information Technology", "3rd Year", "+91 98765 43211", "Figma, UI/UX, CSS, Graphic Design", "Creative thinker and UI enthusiast. Love designing engaging posters and intuitive digital interfaces.", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80", 290, now),
                 ("00000000-0000-0000-0000-000000000003", "rohit@analytixclub.edu", default_pwd, "Rohit Verma", "member", "Tech", "Data Science & AI", "2nd Year", "+91 98765 43212", "Python, Pandas, SQL, Scikit-learn", "Data geek exploring deep learning architectures and predictive modeling.", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80", 210, now),
                 ("00000000-0000-0000-0000-000000000004", "sneha@analytixclub.edu", default_pwd, "Sneha Kulkarni", "member", "MOC", "Electronics & Communication", "3rd Year", "+91 98765 43213", "Public Speaking, Content Writing, Event Logistics", "MOC team coordinator handling event coverage, stage moderation, and press releases.", "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80", 245, now)
             ]
             cursor.executemany("INSERT INTO users VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", users_seed)
 
-            # Seed Events
+            # Seed Events matching reference data
             events_seed = [
-                ("10000000-0000-0000-0000-000000000001", "Data Crunch 2026: Hands-on Machine Learning Bootcamp", "An intensive weekend bootcamp covering exploratory data analysis, feature engineering, and deploying ML models with FastAPI. Open to all students.", "Auditorium Hall B & Virtual Stream", "2026-11-15T10:00:00Z", "2026-11-14T18:00:00Z", "Bring your laptop with Python 3.10+ installed and VS Code ready. Extension cords and high-speed Wi-Fi provided.", "published", "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80", "00000000-0000-0000-0000-000000000001", now),
-                ("10000000-0000-0000-0000-000000000002", "Design Sprint: Crafting Engaging Data Visualizations", "Learn how to turn boring spreadsheets into compelling, narrative-driven UI dashboards using Figma and interactive charts.", "Design Studio Lab 3", "2026-11-22T14:00:00Z", "2026-11-21T23:59:00Z", "No prior design experience required. Bring your laptop and your curiosity!", "published", "https://images.unsplash.com/photo-1542744094-3a31f272c490?w=800&auto=format&fit=crop&q=80", "00000000-0000-0000-0000-000000000001", now)
+                ("10000000-0000-0000-0000-000000000001", "Data Crunch 2026: Hands-on Machine Learning Bootcamp", "An intensive weekend bootcamp covering exploratory data analysis, feature engineering, and deploying ML models with FastAPI.", "Auditorium Hall B & Virtual Stream", "2026-12-15T10:00:00Z", "2026-12-14T18:00:00Z", "Bring your laptop with Python 3.10+ installed and VS Code ready.", "published", "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80", "AI & ML Track", 100, "00000000-0000-0000-0000-000000000001", now),
+                ("10000000-0000-0000-0000-000000000002", "Design Sprint: Crafting Engaging Data Visualizations", "Learn how to turn complex numbers into compelling, narrative-driven UI dashboards using Figma and interactive charts.", "Design Studio Lab 3", "2026-12-22T14:00:00Z", "2026-12-21T23:59:00Z", "No prior design experience required. Bring your laptop and your curiosity!", "published", "https://images.unsplash.com/photo-1542744094-3a31f272c490?w=800&auto=format&fit=crop&q=80", "UI/UX & Design", 50, "00000000-0000-0000-0000-000000000001", now),
+                ("10000000-0000-0000-0000-000000000003", "Neural Networks & Deep Learning Masterclass", "Dive deep into Transformer architectures, attention mechanisms, and fine-tuning open-source LLMs.", "Tech Seminar Hall 1", "2026-11-20T09:30:00Z", "2026-11-19T18:00:00Z", "Basic Python knowledge assumed.", "completed", "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80", "AI & ML Track", 80, "00000000-0000-0000-0000-000000000001", now),
+                ("10000000-0000-0000-0000-000000000004", "Data Engineering at Scale: Spark & BigQuery", "Workshop on building resilient streaming pipelines and data models using Dataproc, Apache Spark, and Google Cloud BigQuery.", "Cloud Computing Lab", "2026-11-10T11:00:00Z", "2026-11-09T23:59:00Z", "Free GCP student credits provided during registration.", "completed", "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80", "Cloud & Big Data", 60, "00000000-0000-0000-0000-000000000001", now),
+                ("10000000-0000-0000-0000-000000000005", "University Tech Symposium & Keynote", "Annual campus-wide gathering of student technologists, keynote by industry leaders, and project showcases.", "Main University Auditorium", "2026-11-05T10:00:00Z", "2026-11-04T18:00:00Z", "All campus students invited.", "completed", "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&auto=format&fit=crop&q=80", "Analytix Core", 0, "00000000-0000-0000-0000-000000000001", now),
+                ("10000000-0000-0000-0000-000000000006", "Open Source Club Hack Night", "Collaborative sprint contributing to open source tools, fixing bugs, and submitting pull requests.", "Innovation Hub Room 402", "2026-10-28T18:00:00Z", "2026-10-27T23:59:00Z", "Pizza and beverages provided.", "completed", "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80", "Tech Track", 40, "00000000-0000-0000-0000-000000000001", now)
             ]
-            cursor.executemany("INSERT INTO events VALUES (?,?,?,?,?,?,?,?,?,?,?)", events_seed)
+            cursor.executemany("INSERT INTO events VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", events_seed)
 
             # Seed Hackathons
             hackathons_seed = [
-                ("20000000-0000-0000-0000-000000000001", "HackAnalytix 36-Hour National Hackathon", "Analytix Club x Tech Titans", "Build real-world solutions across AI/ML, FinTech, and Smart Campus automation. Cash prizes worth ₹1,50,000 + internship offers for top teams.", "2026-12-05T09:00:00Z", "2026-11-30T23:59:00Z", "Main Campus Innovation Hub", "hybrid", "https://analytixclub.edu/hackanalytix-2026", "Open to all undergraduate and postgraduate students in teams of 2-4 members.", "Python, React / Web Dev, AI/ML APIs, Database Design", "published", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80", "00000000-0000-0000-0000-000000000001", now)
+                ("20000000-0000-0000-0000-000000000001", "HackAnalytix 36-Hour National Hackathon", "Analytix Club x Tech Titans", "Build real-world solutions across AI/ML, FinTech, and Smart Campus automation. Cash prizes worth ₹1,50,000 + internship offers for top teams.", "2026-12-05T09:00:00Z", "2026-11-30T23:59:00Z", "Main Campus Innovation Hub", "hybrid", "https://analytixclub.edu/hackanalytix-2026", "Open to all undergraduate and postgraduate students in teams of 2-4 members.", "Python, React / Web Dev, AI/ML APIs, Database Design", "published", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80", "₹1,50,000", "00000000-0000-0000-0000-000000000001", now),
+                ("20000000-0000-0000-0000-000000000002", "FinTech Algorithmic Trading Sprint", "Analytix Quantitative Finance Circle", "Design and backtest algorithmic trading strategies using quantitative data and historical market feeds.", "2026-12-18T10:00:00Z", "2026-12-15T23:59:00Z", "Virtual Discord / Zoom", "online", "https://analytixclub.edu/fintech-sprint", "Individual or duo participation.", "Python, Pandas, Backtrader, Statistical Analysis", "published", "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&auto=format&fit=crop&q=80", "₹50,000", "00000000-0000-0000-0000-000000000001", now)
             ]
-            cursor.executemany("INSERT INTO hackathons VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", hackathons_seed)
+            cursor.executemany("INSERT INTO hackathons VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", hackathons_seed)
 
             # Seed Announcements
             announcements_seed = [
                 ("30000000-0000-0000-0000-000000000001", "Welcome to Analytix Club Academic Year 2026-27!", "Orientation meet for all new recruits will be held this Wednesday at 4:30 PM. Check your email for room details.", "Notice", "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80", "published", "00000000-0000-0000-0000-000000000001", now),
-                ("30000000-0000-0000-0000-000000000002", "Call for Project Mentors: Tech, Design & MOC", "Senior members interested in leading teams for upcoming inter-college competitions can apply via the dashboard.", "Opportunity", "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&auto=format&fit=crop&q=80", "published", "00000000-0000-0000-0000-000000000001", now)
+                ("30000000-0000-0000-0000-000000000002", "Call for Project Mentors: Tech, Design & MOC", "Senior members interested in leading teams for upcoming inter-college competitions can apply via the dashboard.", "Opportunity", "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&auto=format&fit=crop&q=80", "published", "00000000-0000-0000-0000-000000000001", now),
+                ("30000000-0000-0000-0000-000000000003", "Registrations Open for HackAnalytix 2026", "Team registrations are now officially live! Form your team of 2-4 and secure your spot early.", "Event", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80", "published", "00000000-0000-0000-0000-000000000001", now)
             ]
             cursor.executemany("INSERT INTO announcements VALUES (?,?,?,?,?,?,?,?)", announcements_seed)
 
+            # Seed Registrations
+            registrations_seed = [
+                (str(uuid.uuid4()), "10000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "approved", now),
+                (str(uuid.uuid4()), "10000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000003", "approved", now),
+                (str(uuid.uuid4()), "10000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000004", "attended", now),
+                (str(uuid.uuid4()), "10000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000002", "approved", now),
+                (str(uuid.uuid4()), "10000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000003", "attended", now)
+            ]
+            cursor.executemany("INSERT INTO event_registrations VALUES (?,?,?,?,?)", registrations_seed)
+
+            # Seed Activities
+            activities_seed = [
+                (str(uuid.uuid4()), "event", "Event 'Data Crunch 2026' published to campus schedule", "00000000-0000-0000-0000-000000000001", now),
+                (str(uuid.uuid4()), "award", "Priya Nair awarded 30 activity points for Design Lead contributions", "00000000-0000-0000-0000-000000000001", now),
+                (str(uuid.uuid4()), "reg", "Rohit Verma registered for Data Crunch 2026 Bootcamp", "00000000-0000-0000-0000-000000000003", now)
+            ]
+            cursor.executemany("INSERT INTO activities VALUES (?,?,?,?,?)", activities_seed)
+
             conn.commit()
+
+        # Always verify admin email and password match user requirement
+        admin_pwd = hash_password("Analytix@2026")
+        cursor.execute("UPDATE users SET email = ?, password_hash = ? WHERE role = 'admin'", ("analytix63@gmail.com", admin_pwd))
+        conn.commit()
 
 init_db()
 
@@ -232,7 +303,22 @@ class EventCreate(BaseModel):
     event_date: str
     registration_deadline: str
     instructions: Optional[str] = ""
+    status: Optional[str] = "published"
     poster_url: Optional[str] = ""
+    category: Optional[str] = "Analytix Core"
+    capacity: Optional[int] = 0
+
+class EventUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    venue: Optional[str] = None
+    event_date: Optional[str] = None
+    registration_deadline: Optional[str] = None
+    instructions: Optional[str] = None
+    status: Optional[str] = None
+    poster_url: Optional[str] = None
+    category: Optional[str] = None
+    capacity: Optional[int] = None
 
 class HackathonCreate(BaseModel):
     title: str
@@ -245,13 +331,74 @@ class HackathonCreate(BaseModel):
     registration_link: Optional[str] = ""
     eligibility: Optional[str] = ""
     required_skills: Optional[str] = ""
+    status: Optional[str] = "published"
     poster_url: Optional[str] = ""
+    prize_pool: Optional[str] = "₹1,50,000"
+
+class HackathonUpdate(BaseModel):
+    title: Optional[str] = None
+    organizer: Optional[str] = None
+    description: Optional[str] = None
+    start_date: Optional[str] = None
+    deadline: Optional[str] = None
+    location: Optional[str] = None
+    mode: Optional[str] = None
+    registration_link: Optional[str] = None
+    eligibility: Optional[str] = None
+    required_skills: Optional[str] = None
+    status: Optional[str] = None
+    poster_url: Optional[str] = None
+    prize_pool: Optional[str] = None
 
 class AnnouncementCreate(BaseModel):
     title: str
     description: str
     category: Optional[str] = "Notice"
     image_url: Optional[str] = ""
+    status: Optional[str] = "published"
+
+class AnnouncementUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    image_url: Optional[str] = None
+    status: Optional[str] = None
+
+class MemberCreate(BaseModel):
+    full_name: str
+    email: EmailStr
+    password: Optional[str] = "analytix2026"
+    role: Optional[str] = "member"
+    team: Optional[str] = "Tech"
+    department: Optional[str] = ""
+    year: Optional[str] = "2nd Year"
+    phone: Optional[str] = ""
+    skills: Optional[str] = ""
+    bio: Optional[str] = ""
+    points: Optional[int] = 10
+
+class MemberUpdate(BaseModel):
+    full_name: Optional[str] = None
+    role: Optional[str] = None
+    team: Optional[str] = None
+    department: Optional[str] = None
+    year: Optional[str] = None
+    phone: Optional[str] = None
+    skills: Optional[str] = None
+    bio: Optional[str] = None
+    points: Optional[int] = None
+
+class MemberSelfUpdate(BaseModel):
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    department: Optional[str] = None
+    year: Optional[str] = None
+    skills: Optional[str] = None
+    bio: Optional[str] = None
+    profile_photo: Optional[str] = None
+
+class RegistrationStatusUpdate(BaseModel):
+    status: str
 
 def get_current_user(authorization: Optional[str] = Header(None)) -> dict:
     if not authorization or not authorization.startswith("Bearer "):
@@ -287,7 +434,7 @@ def get_current_admin(user: dict = Depends(get_current_user)) -> dict:
 def api_health():
     return {
         "status": "healthy",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "environment": "production",
         "database_connected": True,
         "mode": "operational"
@@ -328,6 +475,7 @@ def api_register(req: UserRegister):
             INSERT INTO users (id, email, password_hash, full_name, role, team, department, year, phone, skills, bio, points, created_at)
             VALUES (?, ?, ?, ?, 'member', 'Tech', ?, ?, ?, ?, ?, 10, ?)
         """, (user_id, req.email, pwd_hash, req.full_name, req.department, req.year, req.phone, req.skills, req.bio, now))
+        log_activity(conn, "member", f"New club member joined: {req.full_name} ({req.email})", user_id)
         conn.commit()
 
         user_data = {
@@ -381,15 +529,48 @@ def api_forgot_password(body: dict):
 def api_reset_password(body: dict):
     return {"message": "Password updated successfully."}
 
-# --- Events ---
+# --- File Uploads ---
+
+@app.post("/api/events/upload-poster")
+@app.post("/api/hackathons/upload-poster")
+@app.post("/api/announcements/upload-image")
+async def api_upload_media(file: UploadFile = File(...)):
+    ext = os.path.splitext(file.filename)[1] or ".jpg"
+    safe_name = f"{uuid.uuid4().hex}{ext}"
+    dest_path = os.path.join(UPLOAD_DIR, safe_name)
+    with open(dest_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    url = f"assets/uploads/{safe_name}"
+    return {"url": url, "filename": safe_name}
+
+# --- Events (Full CRUD) ---
 
 @app.get("/api/events")
 def api_get_events():
     with get_db() as conn:
         c = conn.cursor()
-        c.execute("SELECT * FROM events ORDER BY event_date ASC")
-        rows = [dict(r) for r in c.fetchall()]
-        return rows
+        c.execute("""
+            SELECT e.*, 
+                   (SELECT COUNT(*) FROM event_registrations r WHERE r.event_id = e.id) as registrations_count
+            FROM events e
+            ORDER BY e.event_date ASC
+        """)
+        return [dict(r) for r in c.fetchall()]
+
+@app.get("/api/events/{event_id}")
+def api_get_event(event_id: str):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("""
+            SELECT e.*, 
+                   (SELECT COUNT(*) FROM event_registrations r WHERE r.event_id = e.id) as registrations_count
+            FROM events e
+            WHERE e.id = ?
+        """, (event_id,))
+        row = c.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Event not found")
+        return dict(row)
 
 @app.post("/api/events")
 def api_create_event(event: EventCreate, admin: dict = Depends(get_current_admin)):
@@ -398,27 +579,102 @@ def api_create_event(event: EventCreate, admin: dict = Depends(get_current_admin
         eid = str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
         c.execute("""
-            INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, 'published', ?, ?, ?)
-        """, (eid, event.title, event.description, event.venue, event.event_date, event.registration_deadline, event.instructions, event.poster_url, admin["id"], now))
+            INSERT INTO events (id, title, description, venue, event_date, registration_deadline, instructions, status, poster_url, category, capacity, created_by, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (eid, event.title, event.description, event.venue, event.event_date, event.registration_deadline, event.instructions, event.status or 'published', event.poster_url, event.category or 'Analytix Core', event.capacity or 0, admin["id"], now))
+        log_activity(conn, "event", f"Created event '{event.title}' scheduled for {event.event_date[:10]}", admin["id"])
         conn.commit()
-        return {"id": eid, "message": "Event created successfully"}
+        return {"id": eid, "message": "Event created and published successfully"}
+
+@app.put("/api/events/{event_id}")
+def api_update_event(event_id: str, event: EventUpdate, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM events WHERE id = ?", (event_id,))
+        row = c.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Event not found")
+
+        updates = []
+        params = []
+        for field, value in event.dict(exclude_unset=True).items():
+            updates.append(f"{field} = ?")
+            params.append(value)
+
+        if updates:
+            params.append(event_id)
+            c.execute(f"UPDATE events SET {', '.join(updates)} WHERE id = ?", params)
+            log_activity(conn, "event", f"Updated event '{row['title']}'", admin["id"])
+            conn.commit()
+
+        return {"message": "Event updated successfully"}
 
 @app.delete("/api/events/{event_id}")
 def api_delete_event(event_id: str, admin: dict = Depends(get_current_admin)):
     with get_db() as conn:
         c = conn.cursor()
+        c.execute("SELECT title FROM events WHERE id = ?", (event_id,))
+        row = c.fetchone()
+        title = row["title"] if row else "Event"
+        c.execute("DELETE FROM event_registrations WHERE event_id = ?", (event_id,))
         c.execute("DELETE FROM events WHERE id = ?", (event_id,))
+        log_activity(conn, "event", f"Deleted event '{title}'", admin["id"])
         conn.commit()
-        return {"message": "Event deleted"}
+        return {"message": "Event deleted successfully"}
 
-# --- Hackathons ---
+@app.get("/api/events/{event_id}/registrations")
+def api_get_event_registrations(event_id: str, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("""
+            SELECT r.id, r.status, r.created_at as registered_at,
+                   u.id as user_id, u.full_name, u.email, u.department, u.year, u.team, u.phone
+            FROM event_registrations r
+            JOIN users u ON r.user_id = u.id
+            WHERE r.event_id = ?
+            ORDER BY r.created_at DESC
+        """, (event_id,))
+        rows = []
+        for r in c.fetchall():
+            rows.append({
+                "id": r["id"],
+                "status": r["status"],
+                "registered_at": r["registered_at"],
+                "member": {
+                    "id": r["user_id"],
+                    "full_name": r["full_name"],
+                    "email": r["email"],
+                    "department": r["department"],
+                    "year": r["year"],
+                    "team": r["team"],
+                    "phone": r["phone"]
+                }
+            })
+        return rows
+
+# --- Hackathons (Full CRUD) ---
 
 @app.get("/api/hackathons")
 def api_get_hackathons():
     with get_db() as conn:
         c = conn.cursor()
-        c.execute("SELECT * FROM hackathons ORDER BY start_date ASC")
+        c.execute("""
+            SELECT h.*,
+                   (SELECT COUNT(*) FROM hackathon_registrations r WHERE r.hackathon_id = h.id) as registrations_count
+            FROM hackathons h
+            ORDER BY h.start_date ASC
+        """)
         return [dict(r) for r in c.fetchall()]
+
+@app.get("/api/hackathons/{hackathon_id}")
+def api_get_hackathon(hackathon_id: str):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM hackathons WHERE id = ?", (hackathon_id,))
+        row = c.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Hackathon not found")
+        return dict(row)
 
 @app.post("/api/hackathons")
 def api_create_hackathon(h: HackathonCreate, admin: dict = Depends(get_current_admin)):
@@ -427,20 +683,64 @@ def api_create_hackathon(h: HackathonCreate, admin: dict = Depends(get_current_a
         hid = str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
         c.execute("""
-            INSERT INTO hackathons VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?, ?, ?)
-        """, (hid, h.title, h.organizer, h.description, h.start_date, h.deadline, h.location, h.mode, h.registration_link, h.eligibility, h.required_skills, h.poster_url, admin["id"], now))
+            INSERT INTO hackathons (id, title, organizer, description, start_date, deadline, location, mode, registration_link, eligibility, required_skills, status, poster_url, prize_pool, created_by, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (hid, h.title, h.organizer, h.description, h.start_date, h.deadline, h.location, h.mode or 'hybrid', h.registration_link, h.eligibility, h.required_skills, h.status or 'published', h.poster_url, h.prize_pool or '₹1,50,000', admin["id"], now))
+        log_activity(conn, "hackathon", f"Listed hackathon '{h.title}' by {h.organizer}", admin["id"])
         conn.commit()
         return {"id": hid, "message": "Hackathon created successfully"}
+
+@app.put("/api/hackathons/{hackathon_id}")
+def api_update_hackathon(hackathon_id: str, h: HackathonUpdate, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM hackathons WHERE id = ?", (hackathon_id,))
+        row = c.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Hackathon not found")
+
+        updates = []
+        params = []
+        for field, value in h.dict(exclude_unset=True).items():
+            updates.append(f"{field} = ?")
+            params.append(value)
+
+        if updates:
+            params.append(hackathon_id)
+            c.execute(f"UPDATE hackathons SET {', '.join(updates)} WHERE id = ?", params)
+            log_activity(conn, "hackathon", f"Updated hackathon '{row['title']}'", admin["id"])
+            conn.commit()
+
+        return {"message": "Hackathon updated successfully"}
 
 @app.delete("/api/hackathons/{hackathon_id}")
 def api_delete_hackathon(hackathon_id: str, admin: dict = Depends(get_current_admin)):
     with get_db() as conn:
         c = conn.cursor()
+        c.execute("SELECT title FROM hackathons WHERE id = ?", (hackathon_id,))
+        row = c.fetchone()
+        title = row["title"] if row else "Hackathon"
+        c.execute("DELETE FROM hackathon_registrations WHERE hackathon_id = ?", (hackathon_id,))
         c.execute("DELETE FROM hackathons WHERE id = ?", (hackathon_id,))
+        log_activity(conn, "hackathon", f"Deleted hackathon '{title}'", admin["id"])
         conn.commit()
         return {"message": "Hackathon deleted"}
 
-# --- Announcements ---
+@app.get("/api/hackathons/{hackathon_id}/registrations")
+def api_get_hackathon_registrations(hackathon_id: str, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("""
+            SELECT r.id, r.team_name, r.created_at,
+                   u.id as user_id, u.full_name, u.email, u.department, u.year, u.team, u.phone
+            FROM hackathon_registrations r
+            JOIN users u ON r.user_id = u.id
+            WHERE r.hackathon_id = ?
+            ORDER BY r.created_at DESC
+        """, (hackathon_id,))
+        return [dict(r) for r in c.fetchall()]
+
+# --- Announcements (Full CRUD) ---
 
 @app.get("/api/announcements")
 def api_get_announcements():
@@ -449,6 +749,16 @@ def api_get_announcements():
         c.execute("SELECT * FROM announcements ORDER BY created_at DESC")
         return [dict(r) for r in c.fetchall()]
 
+@app.get("/api/announcements/{announcement_id}")
+def api_get_announcement(announcement_id: str):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM announcements WHERE id = ?", (announcement_id,))
+        row = c.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Announcement not found")
+        return dict(row)
+
 @app.post("/api/announcements")
 def api_create_announcement(a: AnnouncementCreate, admin: dict = Depends(get_current_admin)):
     with get_db() as conn:
@@ -456,10 +766,29 @@ def api_create_announcement(a: AnnouncementCreate, admin: dict = Depends(get_cur
         aid = str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
         c.execute("""
-            INSERT INTO announcements VALUES (?, ?, ?, ?, ?, 'published', ?, ?)
-        """, (aid, a.title, a.description, a.category, a.image_url, admin["id"], now))
+            INSERT INTO announcements (id, title, description, category, image_url, status, created_by, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (aid, a.title, a.description, a.category or 'Notice', a.image_url, a.status or 'published', admin["id"], now))
+        log_activity(conn, "announcement", f"Posted announcement '{a.title}'", admin["id"])
         conn.commit()
-        return {"id": aid, "message": "Announcement created successfully"}
+        return {"id": aid, "message": "Announcement posted successfully"}
+
+@app.put("/api/announcements/{announcement_id}")
+def api_update_announcement(announcement_id: str, a: AnnouncementUpdate, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        updates = []
+        params = []
+        for field, value in a.dict(exclude_unset=True).items():
+            updates.append(f"{field} = ?")
+            params.append(value)
+
+        if updates:
+            params.append(announcement_id)
+            c.execute(f"UPDATE announcements SET {', '.join(updates)} WHERE id = ?", params)
+            conn.commit()
+
+        return {"message": "Announcement updated"}
 
 @app.delete("/api/announcements/{announcement_id}")
 def api_delete_announcement(announcement_id: str, admin: dict = Depends(get_current_admin)):
@@ -469,7 +798,225 @@ def api_delete_announcement(announcement_id: str, admin: dict = Depends(get_curr
         conn.commit()
         return {"message": "Announcement deleted"}
 
-# --- Members, Teams & Leaderboard ---
+# --- Admin Members Directory & Permissions ---
+
+@app.get("/api/admin/members")
+def api_admin_members(
+    search: Optional[str] = Query(None),
+    team: Optional[str] = Query(None),
+    admin: dict = Depends(get_current_admin)
+):
+    with get_db() as conn:
+        c = conn.cursor()
+        query = """
+            SELECT u.id, u.full_name, u.email, u.role, u.team, u.department, u.year, u.phone, u.skills, u.bio, u.points, u.created_at,
+                   (SELECT COUNT(*) FROM event_registrations r WHERE r.user_id = u.id) as registrations_count
+            FROM users u
+            WHERE 1=1
+        """
+        params = []
+        if search:
+            query += " AND (u.full_name LIKE ? OR u.email LIKE ? OR u.department LIKE ?)"
+            term = f"%{search.strip()}%"
+            params.extend([term, term, term])
+        if team and team != "All":
+            query += " AND LOWER(u.team) = LOWER(?)"
+            params.append(team)
+
+        query += " ORDER BY u.points DESC, u.created_at DESC"
+        c.execute(query, params)
+        return [dict(r) for r in c.fetchall()]
+
+@app.post("/api/admin/members")
+def api_admin_create_member(m: MemberCreate, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE email = ?", (m.email,))
+        if c.fetchone():
+            raise HTTPException(status_code=400, detail="A member with this email already exists.")
+
+        mid = str(uuid.uuid4())
+        now = datetime.now(timezone.utc).isoformat()
+        pwd_hash = hash_password(m.password or "analytix2026")
+
+        c.execute("""
+            INSERT INTO users (id, email, password_hash, full_name, role, team, department, year, phone, skills, bio, points, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (mid, m.email, pwd_hash, m.full_name, m.role or 'member', m.team or 'Tech', m.department or '', m.year or '2nd Year', m.phone or '', m.skills or '', m.bio or '', m.points or 10, now))
+        log_activity(conn, "member", f"Admin created member account for {m.full_name} ({m.email})", admin["id"])
+        conn.commit()
+        return {"id": mid, "message": "Member added successfully"}
+
+@app.put("/api/admin/members/{member_id}")
+def api_admin_update_member(member_id: str, m: MemberUpdate, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE id = ?", (member_id,))
+        user = c.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="Member not found")
+
+        updates = []
+        params = []
+        for field, value in m.dict(exclude_unset=True).items():
+            updates.append(f"{field} = ?")
+            params.append(value)
+
+        if updates:
+            params.append(member_id)
+            c.execute(f"UPDATE users SET {', '.join(updates)} WHERE id = ?", params)
+            log_activity(conn, "member", f"Updated details for member {user['full_name']}", admin["id"])
+            conn.commit()
+
+        return {"message": "Member updated successfully"}
+
+@app.delete("/api/admin/members/{member_id}")
+def api_admin_delete_member(member_id: str, admin: dict = Depends(get_current_admin)):
+    if member_id == admin["id"]:
+        raise HTTPException(status_code=400, detail="You cannot delete your own admin account.")
+
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT full_name FROM users WHERE id = ?", (member_id,))
+        row = c.fetchone()
+        name = row["full_name"] if row else "Member"
+        c.execute("DELETE FROM event_registrations WHERE user_id = ?", (member_id,))
+        c.execute("DELETE FROM hackathon_registrations WHERE user_id = ?", (member_id,))
+        c.execute("DELETE FROM users WHERE id = ?", (member_id,))
+        log_activity(conn, "member", f"Removed member {name} from club roster", admin["id"])
+        conn.commit()
+        return {"message": "Member removed successfully"}
+
+@app.patch("/api/admin/members/{member_id}/role")
+def api_admin_update_role(member_id: str, req: UserRoleUpdate, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT full_name FROM users WHERE id = ?", (member_id,))
+        row = c.fetchone()
+        name = row["full_name"] if row else "Member"
+        c.execute("UPDATE users SET role = ? WHERE id = ?", (req.role, member_id))
+        log_activity(conn, "member", f"Changed role of {name} to {req.role.upper()}", admin["id"])
+        conn.commit()
+        return {"message": f"Role updated to {req.role}"}
+
+@app.patch("/api/admin/members/{member_id}/team")
+def api_admin_update_team(member_id: str, req: UserTeamUpdate, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("UPDATE users SET team = ? WHERE id = ?", (req.team, member_id))
+        conn.commit()
+        return {"message": f"Team updated to {req.team}"}
+
+@app.put("/api/admin/members/{member_id}/points")
+def api_admin_set_points(member_id: str, body: dict, admin: dict = Depends(get_current_admin)):
+    points = body.get("points", 0)
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("UPDATE users SET points = ? WHERE id = ?", (points, member_id))
+        conn.commit()
+        return {"message": f"Points updated to {points}"}
+
+@app.post("/api/admin/leaderboard/award")
+def api_award_leaderboard_points(req: LeaderboardAward, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT full_name FROM users WHERE id = ?", (req.member_id,))
+        user = c.fetchone()
+        name = user["full_name"] if user else "Member"
+        c.execute("UPDATE users SET points = points + ? WHERE id = ?", (req.points, req.member_id))
+        log_activity(conn, "award", f"Awarded {req.points} points to {name}: {req.reason}", admin["id"])
+        conn.commit()
+        return {"message": f"Awarded {req.points} points to {name}"}
+
+# --- Registrations & Applications Management ---
+
+@app.get("/api/registrations/admin/all")
+def api_admin_registrations(admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        # Event registrations
+        c.execute("""
+            SELECT r.id, r.status, r.created_at, 'event' as type,
+                   u.id as user_id, u.full_name as member_name, u.email as member_email, u.department, u.team, u.year,
+                   e.id as item_id, e.title as event_title, e.event_date as event_date, e.venue as venue
+            FROM event_registrations r
+            JOIN users u ON r.user_id = u.id
+            JOIN events e ON r.event_id = e.id
+            ORDER BY r.created_at DESC
+        """)
+        return [dict(r) for r in c.fetchall()]
+
+@app.patch("/api/registrations/events/{reg_id}/status")
+@app.put("/api/registrations/{reg_id}/status")
+def api_update_registration_status(reg_id: str, req: RegistrationStatusUpdate, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("UPDATE event_registrations SET status = ? WHERE id = ?", (req.status, reg_id))
+        conn.commit()
+        return {"message": f"Status updated to {req.status}"}
+
+@app.delete("/api/registrations/{reg_id}")
+def api_delete_registration(reg_id: str, admin: dict = Depends(get_current_admin)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("DELETE FROM event_registrations WHERE id = ?", (reg_id,))
+        c.execute("DELETE FROM hackathon_registrations WHERE id = ?", (reg_id,))
+        conn.commit()
+        return {"message": "Registration record removed"}
+
+# --- Member Self Services & Dashboard ---
+
+@app.get("/api/members/overview")
+def api_member_overview(user: dict = Depends(get_current_user)):
+    with get_db() as conn:
+        c = conn.cursor()
+        # User details
+        c.execute("SELECT * FROM users WHERE id = ?", (user["id"],))
+        profile = dict(c.fetchone())
+        profile.pop("password_hash", None)
+
+        # User rank
+        c.execute("SELECT COUNT(*) + 1 FROM users WHERE points > ?", (profile.get("points", 0),))
+        rank = c.fetchone()[0]
+
+        # Registered events count
+        c.execute("SELECT COUNT(*) FROM event_registrations WHERE user_id = ?", (user["id"],))
+        reg_count = c.fetchone()[0]
+
+        # Upcoming club events
+        now_str = datetime.now(timezone.utc).isoformat()
+        c.execute("SELECT * FROM events WHERE status = 'published' AND event_date >= ? ORDER BY event_date ASC LIMIT 3", (now_str,))
+        upcoming = [dict(r) for r in c.fetchall()]
+
+        return {
+            "member": profile,
+            "total_points": profile.get("points", 0),
+            "rank": rank,
+            "team": profile.get("team", "Tech"),
+            "registered_events_count": reg_count,
+            "upcoming_events": upcoming
+        }
+
+@app.put("/api/members/me")
+def api_update_own_profile(body: MemberSelfUpdate, user: dict = Depends(get_current_user)):
+    with get_db() as conn:
+        c = conn.cursor()
+        updates = []
+        params = []
+        for field, value in body.dict(exclude_unset=True).items():
+            if value is not None:
+                updates.append(f"{field} = ?")
+                params.append(value)
+
+        if updates:
+            params.append(user["id"])
+            c.execute(f"UPDATE users SET {', '.join(updates)} WHERE id = ?", params)
+            conn.commit()
+
+        c.execute("SELECT * FROM users WHERE id = ?", (user["id"],))
+        updated = dict(c.fetchone())
+        updated.pop("password_hash", None)
+        return updated
 
 @app.get("/api/members/teams")
 def api_get_teams():
@@ -496,15 +1043,64 @@ def api_get_leaderboard():
             r["rank"] = idx
         return rows
 
-@app.post("/api/admin/leaderboard/award")
-def api_award_leaderboard_points(req: LeaderboardAward, admin: dict = Depends(get_current_admin)):
+@app.post("/api/registrations/events/{event_id}")
+def api_register_event(event_id: str, user: dict = Depends(get_current_user)):
     with get_db() as conn:
         c = conn.cursor()
-        c.execute("UPDATE users SET points = points + ? WHERE id = ?", (req.points, req.member_id))
-        conn.commit()
-        return {"message": f"Awarded {req.points} points"}
+        c.execute("SELECT title, capacity FROM events WHERE id = ?", (event_id,))
+        ev = c.fetchone()
+        if not ev:
+            raise HTTPException(status_code=404, detail="Event not found")
 
-# --- Admin Member & Registration Management ---
+        # Check capacity
+        if ev["capacity"] and ev["capacity"] > 0:
+            c.execute("SELECT COUNT(*) FROM event_registrations WHERE event_id = ?", (event_id,))
+            current_regs = c.fetchone()[0]
+            if current_regs >= ev["capacity"]:
+                raise HTTPException(status_code=400, detail="Event registration is full.")
+
+        rid = str(uuid.uuid4())
+        now = datetime.now(timezone.utc).isoformat()
+        try:
+            c.execute("INSERT INTO event_registrations VALUES (?, ?, ?, 'approved', ?)", (rid, event_id, user["id"], now))
+            c.execute("UPDATE users SET points = points + 15 WHERE id = ?", (user["id"],))
+            log_activity(conn, "reg", f"{user['full_name']} registered for event '{ev['title']}'", user["id"])
+            conn.commit()
+            return {"id": rid, "message": f"Successfully registered for {ev['title']}! +15 activity points awarded."}
+        except sqlite3.IntegrityError:
+            raise HTTPException(status_code=400, detail="You are already registered for this event.")
+
+@app.post("/api/registrations/hackathons/{hackathon_id}")
+def api_register_hackathon(hackathon_id: str, body: dict, user: dict = Depends(get_current_user)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("SELECT title FROM hackathons WHERE id = ?", (hackathon_id,))
+        h = c.fetchone()
+        if not h:
+            raise HTTPException(status_code=404, detail="Hackathon not found")
+
+        rid = str(uuid.uuid4())
+        now = datetime.now(timezone.utc).isoformat()
+        team_name = body.get("team_name", f"{user['full_name']}'s Team")
+        c.execute("INSERT INTO hackathon_registrations VALUES (?, ?, ?, ?, ?)", (rid, hackathon_id, user["id"], team_name, now))
+        log_activity(conn, "reg", f"{user['full_name']} registered team '{team_name}' for hackathon '{h['title']}'", user["id"])
+        conn.commit()
+        return {"id": rid, "message": f"Team '{team_name}' registered for {h['title']}!"}
+
+@app.get("/api/registrations/my")
+def api_my_registrations(user: dict = Depends(get_current_user)):
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("""
+            SELECT r.id, r.status, r.created_at, e.id as event_id, e.title, e.event_date, e.venue
+            FROM event_registrations r
+            JOIN events e ON r.event_id = e.id
+            WHERE r.user_id = ?
+            ORDER BY r.created_at DESC
+        """, (user["id"],))
+        return [dict(r) for r in c.fetchall()]
+
+# --- Admin Overview ---
 
 @app.get("/api/admin/overview")
 def api_admin_overview(admin: dict = Depends(get_current_admin)):
@@ -512,92 +1108,42 @@ def api_admin_overview(admin: dict = Depends(get_current_admin)):
         c = conn.cursor()
         c.execute("SELECT COUNT(*) FROM users")
         members = c.fetchone()[0]
+
         c.execute("SELECT COUNT(*) FROM events")
         events = c.fetchone()[0]
+
+        now_str = datetime.now(timezone.utc).isoformat()
+        c.execute("SELECT COUNT(*) FROM events WHERE status = 'published' AND event_date >= ?", (now_str,))
+        upcoming_events = c.fetchone()[0]
+
         c.execute("SELECT COUNT(*) FROM hackathons")
         hackathons = c.fetchone()[0]
+
+        c.execute("SELECT COUNT(*) FROM hackathons WHERE deadline >= ?", (now_str,))
+        upcoming_hackathons = c.fetchone()[0]
+
         c.execute("SELECT COUNT(*) FROM event_registrations")
         registrations = c.fetchone()[0]
+
+        # Recent activities
+        c.execute("SELECT id, type, message, created_at as timestamp FROM activities ORDER BY created_at DESC LIMIT 10")
+        recent_activities = [dict(r) for r in c.fetchall()]
+
         return {
+            # Legacy/compatible keys
             "members": members,
             "events": events,
             "hackathons": hackathons,
-            "registrations": registrations
+            "registrations": registrations,
+            # Enhanced keys for UI
+            "total_members": members,
+            "total_events": events,
+            "upcoming_events": upcoming_events,
+            "total_hackathons": hackathons,
+            "upcoming_hackathons": upcoming_hackathons,
+            "total_event_registrations": registrations,
+            "recent_activities": recent_activities
         }
-
-@app.get("/api/admin/members")
-def api_admin_members(admin: dict = Depends(get_current_admin)):
-    with get_db() as conn:
-        c = conn.cursor()
-        c.execute("SELECT id, full_name, email, role, team, department, year, points, created_at FROM users")
-        return [dict(r) for r in c.fetchall()]
-
-@app.patch("/api/admin/members/{member_id}/role")
-def api_admin_update_role(member_id: str, req: UserRoleUpdate, admin: dict = Depends(get_current_admin)):
-    with get_db() as conn:
-        c = conn.cursor()
-        c.execute("UPDATE users SET role = ? WHERE id = ?", (req.role, member_id))
-        conn.commit()
-        return {"message": "Role updated"}
-
-@app.patch("/api/admin/members/{member_id}/team")
-def api_admin_update_team(member_id: str, req: UserTeamUpdate, admin: dict = Depends(get_current_admin)):
-    with get_db() as conn:
-        c = conn.cursor()
-        c.execute("UPDATE users SET team = ? WHERE id = ?", (req.team, member_id))
-        conn.commit()
-        return {"message": "Team updated"}
-
-@app.get("/api/registrations/admin/all")
-def api_admin_registrations(admin: dict = Depends(get_current_admin)):
-    with get_db() as conn:
-        c = conn.cursor()
-        c.execute("""
-            SELECT r.id, r.status, r.created_at, u.full_name as member_name, u.email as member_email, e.title as event_title
-            FROM event_registrations r
-            JOIN users u ON r.user_id = u.id
-            JOIN events e ON r.event_id = e.id
-        """)
-        return [dict(r) for r in c.fetchall()]
-
-# --- User Registrations ---
-
-@app.post("/api/registrations/events/{event_id}")
-def api_register_event(event_id: str, user: dict = Depends(get_current_user)):
-    with get_db() as conn:
-        c = conn.cursor()
-        rid = str(uuid.uuid4())
-        now = datetime.now(timezone.utc).isoformat()
-        try:
-            c.execute("INSERT INTO event_registrations VALUES (?, ?, ?, 'approved', ?)", (rid, event_id, user["id"], now))
-            c.execute("UPDATE users SET points = points + 15 WHERE id = ?", (user["id"],))
-            conn.commit()
-            return {"id": rid, "message": "Registered for event"}
-        except sqlite3.IntegrityError:
-            raise HTTPException(status_code=400, detail="Already registered for this event.")
-
-@app.post("/api/registrations/hackathons/{hackathon_id}")
-def api_register_hackathon(hackathon_id: str, body: dict, user: dict = Depends(get_current_user)):
-    with get_db() as conn:
-        c = conn.cursor()
-        rid = str(uuid.uuid4())
-        now = datetime.now(timezone.utc).isoformat()
-        team_name = body.get("team_name", "Analytix Team")
-        c.execute("INSERT INTO hackathon_registrations VALUES (?, ?, ?, ?, ?)", (rid, hackathon_id, user["id"], team_name, now))
-        conn.commit()
-        return {"id": rid, "message": "Hackathon registration received"}
-
-@app.get("/api/registrations/my")
-def api_my_registrations(user: dict = Depends(get_current_user)):
-    with get_db() as conn:
-        c = conn.cursor()
-        c.execute("""
-            SELECT r.id, r.status, r.created_at, e.title, e.event_date, e.venue
-            FROM event_registrations r
-            JOIN events e ON r.event_id = e.id
-            WHERE r.user_id = ?
-        """, (user["id"],))
-        return [dict(r) for r in c.fetchall()]
 
 # ==============================================================================
 # STATIC FILES & HOMEPAGE SERVING

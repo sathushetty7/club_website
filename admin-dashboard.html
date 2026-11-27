@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Analytix Club</title>
+  <title>Analytix Campus | Club Admin Portal</title>
   <link rel="icon" type="image/png" href="assets/analytix-icon.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dashboard.css">
@@ -13,399 +13,855 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>body { visibility: hidden; }</style>
 </head>
-<body>
+<body class="kinobi-admin-body">
 
-  <div class="dashboard-layout">
-    <!-- Admin Sidebar -->
-    <aside class="dashboard-sidebar">
-      <div class="sidebar-header">
-        <img src="assets/analytix-logo.png" alt="Analytix Admin" style="height: 38px; width: auto; object-fit: contain;">
-        <span class="brand-text">Analytix Admin</span>
+  <div class="kinobi-layout">
+    <!-- ========================================================================= -->
+    <!-- KINOBI WORKFLOW SIDEBAR                                                   -->
+    <!-- ========================================================================= -->
+    <aside class="kinobi-sidebar">
+      <!-- Brand & Campus Header -->
+      <div class="kinobi-sidebar-header">
+        <a href="index.html" class="kinobi-brand-link">
+          <img src="assets/analytix-logo.png" alt="Analytix" class="kinobi-brand-logo">
+          <div class="kinobi-brand-meta">
+            <span class="kinobi-brand-name">Analytix Campus</span>
+            <span class="kinobi-brand-sub">Club Admin Portal</span>
+          </div>
+        </a>
       </div>
 
-      <ul class="sidebar-nav">
-        <li>
-          <a class="sidebar-link active" data-tab="overview">
-            <span>📊</span> Overview
-          </a>
-        </li>
-        <li>
-          <a class="sidebar-link" data-tab="events">
-            <span>📅</span> Manage Events
-          </a>
-        </li>
-        <li>
-          <a class="sidebar-link" data-tab="hackathons">
-            <span>🚀</span> Manage Hackathons
-          </a>
-        </li>
-        <li>
-          <a class="sidebar-link" data-tab="announcements">
-            <span>📢</span> Announcements
-          </a>
-        </li>
-        <li>
-          <a class="sidebar-link" data-tab="members">
-            <span>👥</span> Manage Members
-          </a>
-        </li>
-        <li>
-          <a class="sidebar-link" data-tab="registrations">
-            <span>📋</span> Registrations
-          </a>
-        </li>
-        <li>
-          <a class="sidebar-link" data-tab="leaderboard">
-            <span>🏆</span> Leaderboard
-          </a>
-        </li>
-        <li>
-          <a class="sidebar-link" data-tab="profile">
-            <span>⚙️</span> Profile
-          </a>
-        </li>
-        <li style="margin-top: auto;">
-          <a onclick="Auth.logout()" class="sidebar-link" style="color: #ef4444;">
-            <span>🚪</span> Logout
-          </a>
-        </li>
-      </ul>
-
-      <div class="sidebar-footer">
-        <div class="sidebar-user">
-          <div class="user-avatar user-avatar-img">A</div>
-          <div class="user-info">
-            <div class="user-name user-display-name">Admin Lead</div>
-            <div class="user-role-badge">ADMINISTRATOR</div>
+      <!-- Navigation Accordion -->
+      <div class="kinobi-nav-scroller">
+        <!-- Group 1: Clubs / Club Management -->
+        <div class="kinobi-nav-group open">
+          <div class="kinobi-nav-group-header" onclick="toggleNavGroup(this)">
+            <div class="kinobi-group-title">
+              <span class="kinobi-group-icon">👥</span>
+              <span>Clubs</span>
+            </div>
+            <span class="kinobi-group-caret">⌃</span>
           </div>
+
+          <div class="kinobi-nav-group-items">
+            <a class="kinobi-nav-item" data-tab="overview">
+              <span class="kinobi-item-icon">📊</span>
+              <span class="kinobi-item-text">Club Overview</span>
+            </a>
+            <a class="kinobi-nav-item" data-tab="members">
+              <span class="kinobi-item-icon">👤</span>
+              <span class="kinobi-item-text">Club Members List</span>
+            </a>
+            <a class="kinobi-nav-item" data-tab="openings">
+              <span class="kinobi-item-icon">📝</span>
+              <span class="kinobi-item-text">Club Openings</span>
+            </a>
+            <a class="kinobi-nav-item" data-tab="applications">
+              <span class="kinobi-item-icon">📋</span>
+              <span class="kinobi-item-text">Club Applications</span>
+            </a>
+            <a class="kinobi-nav-item active" data-tab="events">
+              <span class="kinobi-item-icon">📅</span>
+              <span class="kinobi-item-text">Club Events</span>
+            </a>
+            <a class="kinobi-nav-item" data-tab="hackathons">
+              <span class="kinobi-item-icon">🚀</span>
+              <span class="kinobi-item-text">Club Hackathons</span>
+            </a>
+            <a class="kinobi-nav-item" data-tab="announcements">
+              <span class="kinobi-item-icon">📢</span>
+              <span class="kinobi-item-text">Club Bulletins</span>
+            </a>
+            <a class="kinobi-nav-item" data-tab="settings">
+              <span class="kinobi-item-icon">⚙️</span>
+              <span class="kinobi-item-text">Club Settings</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Group 2: Campus Programs & Leaderboard -->
+        <div class="kinobi-nav-group open">
+          <div class="kinobi-nav-group-header" onclick="toggleNavGroup(this)">
+            <div class="kinobi-group-title">
+              <span class="kinobi-group-icon">📁</span>
+              <span>Programs & Merit</span>
+            </div>
+            <span class="kinobi-group-caret">⌃</span>
+          </div>
+          <div class="kinobi-nav-group-items">
+            <a class="kinobi-nav-item" data-tab="leaderboard">
+              <span class="kinobi-item-icon">🏆</span>
+              <span class="kinobi-item-text">Merit Leaderboard</span>
+            </a>
+            <a href="events.html" target="_blank" class="kinobi-nav-item">
+              <span class="kinobi-item-icon">🌐</span>
+              <span class="kinobi-item-text">Public Events ↗</span>
+            </a>
+            <a href="hackathons.html" target="_blank" class="kinobi-nav-item">
+              <span class="kinobi-item-icon">💡</span>
+              <span class="kinobi-item-text">Public Hackathons ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile / Footer Strip -->
+      <div class="kinobi-sidebar-footer">
+        <div class="kinobi-user-card">
+          <div class="kinobi-user-avatar user-avatar-img">A</div>
+          <div class="kinobi-user-info">
+            <div class="kinobi-user-name user-display-name">Admin Lead</div>
+            <div class="kinobi-user-role">CLUB ADMIN</div>
+          </div>
+          <button type="button" class="kinobi-logout-btn" onclick="Auth.logout()" title="Logout">
+            🚪
+          </button>
         </div>
       </div>
     </aside>
 
-    <!-- Main Dashboard Area -->
-    <main class="dashboard-main">
-      <!-- Topbar -->
-      <header class="dashboard-topbar">
-        <div class="topbar-left">
-          <button class="topbar-toggle" id="sidebar-toggle" aria-label="Toggle Menu">☰</button>
-          <h1 class="topbar-title" id="dashboard-title">Admin Overview</h1>
+    <!-- ========================================================================= -->
+    <!-- KINOBI MAIN VIEWPORT                                                      -->
+    <!-- ========================================================================= -->
+    <main class="kinobi-main">
+      <!-- Universal Topbar -->
+      <header class="kinobi-topbar">
+        <div class="kinobi-topbar-left">
+          <button type="button" class="kinobi-menu-toggle" id="kinobi-menu-toggle" aria-label="Toggle Navigation">
+            ☰
+          </button>
+          <div class="kinobi-breadcrumbs">
+            <span class="crumb-root">Analytix Campus</span>
+            <span class="crumb-separator">/</span>
+            <span class="crumb-active" id="kinobi-page-title">Featured Club Events</span>
+          </div>
         </div>
-        <div class="topbar-actions">
-          <span class="admin-badge">Admin Mode</span>
-          <a href="index.html" class="btn btn-secondary btn-sm" target="_blank">View Site ↗</a>
+
+        <div class="kinobi-topbar-right">
+          <div class="kinobi-system-status">
+            <span class="status-dot-green"></span>
+            <span>Live Workspace</span>
+          </div>
+          <a href="index.html" class="kinobi-btn-outline-sm" target="_blank">
+            Club Site ↗
+          </a>
         </div>
       </header>
 
-      <!-- Content Container -->
-      <div class="dashboard-content">
+      <!-- Kinobi Dynamic Tab Content -->
+      <div class="kinobi-content-area">
 
-        <!-- 1. OVERVIEW SECTION -->
-        <section class="content-section active" id="section-overview">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon stat-icon-purple">👥</div>
-              <div class="stat-details">
-                <h4>Registered Members</h4>
-                <div class="stat-number" id="stat-members">0</div>
-              </div>
+        <!-- ===================================================================== -->
+        <!-- 1. TAB: CLUB EVENTS (EXACT REFERENCE REPLICA)                          -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section active" id="section-events">
+          <!-- View Header -->
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">FEATURED CLUB EVENTS</h1>
+              <span class="kinobi-info-icon" title="Manage all club workshops, masterclasses, and bootcamps">ⓘ</span>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon stat-icon-blue">📅</div>
-              <div class="stat-details">
-                <h4>Total Events</h4>
-                <div class="stat-number" id="stat-events">0</div>
-              </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-action-outline" onclick="exportEventsCSV()">
+                <span class="action-icon">📥</span> DOWNLOAD (ALL)
+              </button>
+              <button type="button" class="kinobi-btn-action-primary" onclick="openAddEventModal()">
+                + ADD NEW CLUB EVENT
+              </button>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon stat-icon-amber">🚀</div>
-              <div class="stat-details">
-                <h4>Upcoming Hackathons</h4>
-                <div class="stat-number" id="stat-hackathons">0</div>
-              </div>
+          </div>
+
+          <!-- Overview 28 Days Metric Strip -->
+          <div class="kinobi-metric-strip">
+            <div class="kinobi-metric-dropdown-box">
+              <button type="button" class="kinobi-metric-dropdown-btn">
+                <span>Overview 28 days</span>
+                <span class="dropdown-caret">▾</span>
+              </button>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon stat-icon-blue">📋</div>
-              <div class="stat-details">
-                <h4>Event Registrations</h4>
-                <div class="stat-number" id="stat-registrations">0</div>
+
+            <div class="kinobi-metric-cards-grid">
+              <!-- Metric 1: Total Club Events -->
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-events-total">6</span>
+                    <span class="metric-label">Club Events</span>
+                  </div>
+                  <span class="kinobi-info-icon" title="Total active and archived club events">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">
+                  <span class="delta-trend">+0</span> in the last 28 days
+                </div>
+              </div>
+
+              <!-- Metric 2: Upcoming Club Events -->
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-events-upcoming">1</span>
+                    <span class="metric-label">Upcoming Club Events</span>
+                  </div>
+                  <span class="kinobi-info-icon" title="Events scheduled for future dates">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">
+                  <span class="delta-trend">+0</span> in the last 28 days
+                </div>
+              </div>
+
+              <!-- Metric 3: Registered Attendees -->
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-events-registered">13</span>
+                    <span class="metric-label">Registered</span>
+                  </div>
+                  <span class="kinobi-info-icon" title="Total members enrolled across all events">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">
+                  <span class="delta-trend">+0</span> in the last 28 days
+                </div>
               </div>
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
-            <!-- Recent Activities -->
-            <div class="card-panel">
-              <div class="panel-header">
-                <h3 class="panel-title">Recent Club Activities</h3>
-                <span class="skill-pill">Live Feed</span>
+          <!-- Toolbar: Search + Filter + Sort -->
+          <div class="kinobi-toolbar">
+            <div class="kinobi-search-wrapper">
+              <span class="search-glass">🔍</span>
+              <input type="text" id="events-search-input" class="kinobi-search-input" placeholder="Search by club event name" oninput="filterEventsTable()">
+            </div>
+            <div class="kinobi-toolbar-controls">
+              <div class="kinobi-dropdown-container">
+                <button type="button" class="kinobi-btn-tool" onclick="toggleEventsFilterMenu()">
+                  <span class="tool-icon">⚚</span> FILTER
+                </button>
+                <div class="kinobi-popover-menu" id="events-filter-popover">
+                  <div class="popover-title">Filter by Status</div>
+                  <label class="popover-option"><input type="radio" name="event-status-filter" value="all" checked onchange="filterEventsTable()"> All Events</label>
+                  <label class="popover-option"><input type="radio" name="event-status-filter" value="published" onchange="filterEventsTable()"> Upcoming Only</label>
+                  <label class="popover-option"><input type="radio" name="event-status-filter" value="completed" onchange="filterEventsTable()"> Finished / Completed</label>
+                  <label class="popover-option"><input type="radio" name="event-status-filter" value="draft" onchange="filterEventsTable()"> Drafts</label>
+                </div>
               </div>
-              <div class="panel-body">
-                <ul class="activity-list" id="recent-activity-list">
-                  <li class="activity-item">Loading activities...</li>
+
+              <button type="button" class="kinobi-btn-tool" onclick="toggleEventsSort()">
+                <span class="tool-icon">AZ</span> SORT
+              </button>
+            </div>
+          </div>
+
+          <!-- Kinobi Event Data Table -->
+          <div class="kinobi-table-container">
+            <table class="kinobi-table">
+              <thead>
+                <tr>
+                  <th style="width: 44%;">
+                    <div class="th-content">
+                      <span>Club Event Name</span>
+                      <span class="kinobi-info-icon">ⓘ</span>
+                    </div>
+                  </th>
+                  <th style="width: 20%;">
+                    <div class="th-content">
+                      <span>Participant Capacity</span>
+                      <span class="kinobi-info-icon">ⓘ</span>
+                    </div>
+                  </th>
+                  <th style="width: 16%;">
+                    <div class="th-content">
+                      <span>Status</span>
+                      <span class="kinobi-info-icon">ⓘ</span>
+                    </div>
+                  </th>
+                  <th style="width: 20%;">
+                    <div class="th-content">
+                      <span>Club / Track</span>
+                      <span class="kinobi-info-icon">ⓘ</span>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="kinobi-events-tbody">
+                <tr>
+                  <td colspan="4" class="kinobi-loading-cell">Loading featured club events...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 2. TAB: CLUB MEMBERS LIST                                              -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-members">
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">CLUB MEMBERS DIRECTORY</h1>
+              <span class="kinobi-info-icon" title="Manage club members, roles, teams, and merit points">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-action-outline" onclick="exportMembersCSV()">
+                <span class="action-icon">📥</span> DOWNLOAD (ALL)
+              </button>
+              <button type="button" class="kinobi-btn-action-primary" onclick="openAddMemberModal()">
+                + ADD NEW MEMBER
+              </button>
+            </div>
+          </div>
+
+          <!-- Members Metrics -->
+          <div class="kinobi-metric-strip">
+            <div class="kinobi-metric-cards-grid" style="grid-template-columns: repeat(3, 1fr); width: 100%;">
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-members-total">4</span>
+                    <span class="metric-label">Registered Members</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub"><span class="delta-trend">Active</span> on campus</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-members-tech">2</span>
+                    <span class="metric-label">Tech Team Members</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub"><span class="delta-trend">50%</span> of active club</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-members-points">1,085</span>
+                    <span class="metric-label">Total Merit Points</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">Distributed across leaderboard</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Members Toolbar -->
+          <div class="kinobi-toolbar">
+            <div class="kinobi-search-wrapper">
+              <span class="search-glass">🔍</span>
+              <input type="text" id="members-search-input" class="kinobi-search-input" placeholder="Search by member name, email or department..." oninput="loadMembers()">
+            </div>
+            <div class="kinobi-toolbar-controls">
+              <select id="members-team-select" class="kinobi-select-tool" onchange="loadMembers()">
+                <option value="All">All Teams</option>
+                <option value="Tech">Tech</option>
+                <option value="Design">Design</option>
+                <option value="MOC">MOC</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Members Table -->
+          <div class="kinobi-table-container">
+            <table class="kinobi-table">
+              <thead>
+                <tr>
+                  <th style="width: 32%;">Member Profile ⓘ</th>
+                  <th style="width: 16%;">Role ⓘ</th>
+                  <th style="width: 16%;">Team ⓘ</th>
+                  <th style="width: 14%;">Merit Points ⓘ</th>
+                  <th style="width: 22%;">Department & Year ⓘ</th>
+                </tr>
+              </thead>
+              <tbody id="kinobi-members-tbody">
+                <tr><td colspan="5" class="kinobi-loading-cell">Loading club members...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 3. TAB: CLUB HACKATHONS                                                -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-hackathons">
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">FEATURED CLUB HACKATHONS</h1>
+              <span class="kinobi-info-icon" title="Manage competitive campus hackathons and design sprints">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-action-outline" onclick="exportHackathonsCSV()">
+                <span class="action-icon">📥</span> DOWNLOAD (ALL)
+              </button>
+              <button type="button" class="kinobi-btn-action-primary" onclick="openAddHackathonModal()">
+                + ADD NEW HACKATHON
+              </button>
+            </div>
+          </div>
+
+          <!-- Hackathon Metrics -->
+          <div class="kinobi-metric-strip">
+            <div class="kinobi-metric-cards-grid" style="grid-template-columns: repeat(3, 1fr); width: 100%;">
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-hackathons-total">2</span>
+                    <span class="metric-label">Total Hackathons</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub"><span class="delta-trend">+0</span> in the last 28 days</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-hackathons-upcoming">2</span>
+                    <span class="metric-label">Active Competitions</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">Open for registrations</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val">₹2,00,000</span>
+                    <span class="metric-label">Total Cash Prizes</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">Funded by partners</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hackathons Toolbar -->
+          <div class="kinobi-toolbar">
+            <div class="kinobi-search-wrapper">
+              <span class="search-glass">🔍</span>
+              <input type="text" id="hackathons-search-input" class="kinobi-search-input" placeholder="Search by hackathon title or organizer..." oninput="filterHackathonsTable()">
+            </div>
+            <div class="kinobi-toolbar-controls">
+              <select id="hackathons-mode-select" class="kinobi-select-tool" onchange="filterHackathonsTable()">
+                <option value="all">All Modes</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Hackathons Table -->
+          <div class="kinobi-table-container">
+            <table class="kinobi-table">
+              <thead>
+                <tr>
+                  <th style="width: 40%;">Hackathon & Organizer ⓘ</th>
+                  <th style="width: 18%;">Mode & Location ⓘ</th>
+                  <th style="width: 16%;">Prize Pool ⓘ</th>
+                  <th style="width: 14%;">Deadline ⓘ</th>
+                  <th style="width: 12%;">Status ⓘ</th>
+                </tr>
+              </thead>
+              <tbody id="kinobi-hackathons-tbody">
+                <tr><td colspan="5" class="kinobi-loading-cell">Loading club hackathons...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 4. TAB: CLUB APPLICATIONS & REGISTRATIONS                              -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-applications">
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">CLUB APPLICATIONS & REGISTRATIONS</h1>
+              <span class="kinobi-info-icon" title="Review, approve, and track member registrations">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-action-outline" onclick="exportRegistrationsCSV()">
+                <span class="action-icon">📥</span> DOWNLOAD (ALL)
+              </button>
+              <button type="button" class="kinobi-btn-action-primary" onclick="loadRegistrations()">
+                🔄 REFRESH LIST
+              </button>
+            </div>
+          </div>
+
+          <!-- Applications Metrics -->
+          <div class="kinobi-metric-strip">
+            <div class="kinobi-metric-cards-grid" style="grid-template-columns: repeat(3, 1fr); width: 100%;">
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-app-total">7</span>
+                    <span class="metric-label">Total Applications</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">Across all scheduled events</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-app-approved">4</span>
+                    <span class="metric-label">Approved Attendees</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">Seats confirmed</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="metric-app-attended">3</span>
+                    <span class="metric-label">Attended</span>
+                  </div>
+                  <span class="kinobi-info-icon">ⓘ</span>
+                </div>
+                <div class="metric-delta-sub">Verified attendance</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Applications Toolbar -->
+          <div class="kinobi-toolbar">
+            <div class="kinobi-search-wrapper">
+              <span class="search-glass">🔍</span>
+              <input type="text" id="applications-search-input" class="kinobi-search-input" placeholder="Search by member name, email or event title..." oninput="filterApplicationsTable()">
+            </div>
+            <div class="kinobi-toolbar-controls">
+              <select id="applications-status-select" class="kinobi-select-tool" onchange="filterApplicationsTable()">
+                <option value="all">All Statuses</option>
+                <option value="approved">Approved</option>
+                <option value="attended">Attended</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Applications Table -->
+          <div class="kinobi-table-container">
+            <table class="kinobi-table">
+              <thead>
+                <tr>
+                  <th style="width: 28%;">Applicant Member ⓘ</th>
+                  <th style="width: 32%;">Target Event / Workshop ⓘ</th>
+                  <th style="width: 18%;">Registration Date ⓘ</th>
+                  <th style="width: 14%;">Status ⓘ</th>
+                  <th style="width: 8%;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="kinobi-applications-tbody">
+                <tr><td colspan="5" class="kinobi-loading-cell">Loading member applications...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 5. TAB: CLUB OPENINGS                                                  -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-openings">
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">CLUB OPENINGS & ROLES</h1>
+              <span class="kinobi-info-icon" title="Recruitment positions and team leadership openings">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-action-primary" onclick="openAddOpeningModal()">
+                + POST NEW OPENING
+              </button>
+            </div>
+          </div>
+
+          <div class="kinobi-card-panel">
+            <div class="kinobi-panel-header">
+              <h3 class="kinobi-panel-title">Active Club Recruitment Drives</h3>
+              <span class="kinobi-status-pill upcoming">Recruitment Open</span>
+            </div>
+            <div class="kinobi-openings-grid" id="openings-list-grid">
+              <div class="kinobi-opening-card">
+                <div class="opening-head">
+                  <h4 class="opening-title">Machine Learning Track Lead</h4>
+                  <span class="kinobi-team-pill">TECH TEAM</span>
+                </div>
+                <p class="opening-desc">Lead weekend workshops on NLP, LLM fine-tuning, and PyTorch model deployments. Mentor junior club members on real-world projects.</p>
+                <div class="opening-meta">
+                  <span>📅 Deadline: 10 Dec 2026</span>
+                  <span>👥 Openings: 2</span>
+                </div>
+              </div>
+              <div class="kinobi-opening-card">
+                <div class="opening-head">
+                  <h4 class="opening-title">UI/UX & Branding Designer</h4>
+                  <span class="kinobi-team-pill" style="background:#fce7f3; color:#be185d;">DESIGN TEAM</span>
+                </div>
+                <p class="opening-desc">Craft stunning visual posters, hackathon banners, and responsive web layouts using Figma and modern design systems.</p>
+                <div class="opening-meta">
+                  <span>📅 Deadline: 15 Dec 2026</span>
+                  <span>👥 Openings: 3</span>
+                </div>
+              </div>
+              <div class="kinobi-opening-card">
+                <div class="opening-head">
+                  <h4 class="opening-title">Event Operations & Master of Ceremonies</h4>
+                  <span class="kinobi-team-pill" style="background:#fef3c7; color:#b45309;">MOC TEAM</span>
+                </div>
+                <p class="opening-desc">Coordinate event moderation, auditorium acoustics, stage hosting, and press communication for Analytix club meets.</p>
+                <div class="opening-meta">
+                  <span>📅 Deadline: 20 Dec 2026</span>
+                  <span>👥 Openings: 2</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 6. TAB: CLUB BULLETINS / ANNOUNCEMENTS                                  -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-announcements">
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">OFFICIAL CLUB BULLETINS</h1>
+              <span class="kinobi-info-icon" title="Broadcast notices, opportunities, and announcements">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-action-primary" onclick="openAddAnnouncementModal()">
+                + POST NEW BULLETIN
+              </button>
+            </div>
+          </div>
+
+          <div class="kinobi-table-container">
+            <table class="kinobi-table">
+              <thead>
+                <tr>
+                  <th style="width: 48%;">Bulletin Title & Content ⓘ</th>
+                  <th style="width: 18%;">Category ⓘ</th>
+                  <th style="width: 18%;">Date Posted ⓘ</th>
+                  <th style="width: 16%;">Status ⓘ</th>
+                </tr>
+              </thead>
+              <tbody id="kinobi-announcements-tbody">
+                <tr><td colspan="4" class="kinobi-loading-cell">Loading announcements...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 7. TAB: MERIT LEADERBOARD & POINTS                                     -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-leaderboard">
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">CLUB MERIT LEADERBOARD</h1>
+              <span class="kinobi-info-icon" title="Award and calibrate activity points for club achievements">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-action-primary" onclick="openAwardPointsModal()">
+                ⭐ AWARD POINTS TO MEMBER
+              </button>
+            </div>
+          </div>
+
+          <div class="kinobi-table-container">
+            <table class="kinobi-table">
+              <thead>
+                <tr>
+                  <th style="width: 10%;">Rank</th>
+                  <th style="width: 35%;">Member Name</th>
+                  <th style="width: 18%;">Team</th>
+                  <th style="width: 17%;">Merit Score</th>
+                  <th style="width: 20%;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="kinobi-leaderboard-tbody">
+                <tr><td colspan="5" class="kinobi-loading-cell">Loading leaderboard standings...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 8. TAB: CLUB OVERVIEW                                                  -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-overview">
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">CLUB EXECUTIVE OVERVIEW</h1>
+              <span class="kinobi-info-icon" title="High-level pulse of Analytix campus operations">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-action-primary" onclick="switchKinobiTab('events')">
+                MANAGE EVENTS →
+              </button>
+            </div>
+          </div>
+
+          <div class="kinobi-metric-strip">
+            <div class="kinobi-metric-cards-grid" style="grid-template-columns: repeat(4, 1fr); width: 100%;">
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="ov-members-val">4</span>
+                    <span class="metric-label">Total Members</span>
+                  </div>
+                </div>
+                <div class="metric-delta-sub">Active contributors</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="ov-events-val">6</span>
+                    <span class="metric-label">Club Events</span>
+                  </div>
+                </div>
+                <div class="metric-delta-sub">1 upcoming this month</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="ov-hackathons-val">2</span>
+                    <span class="metric-label">Hackathons</span>
+                  </div>
+                </div>
+                <div class="metric-delta-sub">Open for registrations</div>
+              </div>
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="ov-regs-val">7</span>
+                    <span class="metric-label">Registrations</span>
+                  </div>
+                </div>
+                <div class="metric-delta-sub">Across all club sessions</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feed & Shortcuts -->
+          <div class="kinobi-overview-grid">
+            <div class="kinobi-card-panel">
+              <div class="kinobi-panel-header">
+                <h3 class="kinobi-panel-title">Recent Club Activity Feed</h3>
+                <span class="kinobi-status-pill upcoming">Live Log</span>
+              </div>
+              <div class="kinobi-panel-body">
+                <ul class="kinobi-activity-list" id="kinobi-activity-feed">
+                  <li class="kinobi-activity-item">Loading live activities...</li>
                 </ul>
               </div>
             </div>
 
-            <!-- Quick Action Cards -->
-            <div class="card-panel">
-              <div class="panel-header">
-                <h3 class="panel-title">Quick Actions</h3>
+            <div class="kinobi-card-panel">
+              <div class="kinobi-panel-header">
+                <h3 class="kinobi-panel-title">Quick Administrative Actions</h3>
               </div>
-              <div class="panel-body" style="display: flex; flex-direction: column; gap: 12px;">
-                <button onclick="openAddEventModal()" class="btn btn-primary" style="width: 100%;">
-                  + Add New Event
+              <div class="kinobi-quick-actions">
+                <button type="button" class="kinobi-btn-quick" onclick="openAddEventModal()">
+                  <span class="quick-icon">📅</span>
+                  <div class="quick-text">
+                    <strong>Schedule Club Event</strong>
+                    <span>Publish workshops & sessions</span>
+                  </div>
                 </button>
-                <button onclick="openAddHackathonModal()" class="btn btn-secondary" style="width: 100%;">
-                  + Add Hackathon
+                <button type="button" class="kinobi-btn-quick" onclick="openAddHackathonModal()">
+                  <span class="quick-icon">🚀</span>
+                  <div class="quick-text">
+                    <strong>Launch Hackathon</strong>
+                    <span>Open team registrations</span>
+                  </div>
                 </button>
-                <button onclick="openAddAnnouncementModal()" class="btn btn-outline" style="width: 100%;">
-                  + Post Announcement
+                <button type="button" class="kinobi-btn-quick" onclick="openAddAnnouncementModal()">
+                  <span class="quick-icon">📢</span>
+                  <div class="quick-text">
+                    <strong>Broadcast Notice</strong>
+                    <span>Post updates to member dashboard</span>
+                  </div>
+                </button>
+                <button type="button" class="kinobi-btn-quick" onclick="openAwardPointsModal()">
+                  <span class="quick-icon">⭐</span>
+                  <div class="quick-text">
+                    <strong>Reward Member Points</strong>
+                    <span>Update club merit leaderboard</span>
+                  </div>
                 </button>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- 2. MANAGE EVENTS SECTION -->
-        <section class="content-section" id="section-events">
-          <div class="card-panel">
-            <div class="panel-header">
-              <h3 class="panel-title">Club Events Management</h3>
-              <button onclick="openAddEventModal()" class="btn btn-primary btn-sm">+ Add New Event</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Event Details</th>
-                    <th>Date & Time</th>
-                    <th>Deadline</th>
-                    <th>Status</th>
-                    <th>Registrations</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="events-table-body">
-                  <tr><td colspan="6" class="text-center">Loading events...</td></tr>
-                </tbody>
-              </table>
+        <!-- ===================================================================== -->
+        <!-- 9. TAB: CLUB SETTINGS & ADMIN PROFILE                                  -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-settings">
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">CLUB ADMIN SETTINGS & PROFILE</h1>
+              <span class="kinobi-info-icon" title="Manage your administrator account credentials and profile">ⓘ</span>
             </div>
           </div>
-        </section>
 
-        <!-- 3. MANAGE HACKATHONS SECTION -->
-        <section class="content-section" id="section-hackathons">
-          <div class="card-panel">
-            <div class="panel-header">
-              <h3 class="panel-title">Hackathon Directory Management</h3>
-              <button onclick="openAddHackathonModal()" class="btn btn-primary btn-sm">+ Add Hackathon</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Hackathon</th>
-                    <th>Mode</th>
-                    <th>Starts</th>
-                    <th>Deadline</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="hackathons-table-body">
-                  <tr><td colspan="6" class="text-center">Loading hackathons...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- 4. MANAGE ANNOUNCEMENTS SECTION -->
-        <section class="content-section" id="section-announcements">
-          <div class="card-panel">
-            <div class="panel-header">
-              <h3 class="panel-title">Official Announcements</h3>
-              <button onclick="openAddAnnouncementModal()" class="btn btn-primary btn-sm">+ Post Announcement</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Announcement</th>
-                    <th>Category</th>
-                    <th>Date Posted</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="announcements-table-body">
-                  <tr><td colspan="5" class="text-center">Loading announcements...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- 5. MANAGE MEMBERS SECTION -->
-        <section class="content-section" id="section-members">
-          <div class="card-panel">
-            <div class="panel-header">
-              <h3 class="panel-title">Club Members Directory</h3>
-              <div class="filter-bar">
-                <input type="text" id="member-search" class="search-input" placeholder="Search by name or email..." oninput="loadMembers()">
-                <select id="member-team-filter" class="select-filter" onchange="loadMembers()">
-                  <option value="All">All Teams</option>
-                  <option value="Tech">Tech</option>
-                  <option value="Design">Design</option>
-                  <option value="MOC">MOC</option>
-                  <option value="None">None</option>
-                </select>
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Member</th>
-                    <th>Team</th>
-                    <th>Points</th>
-                    <th>System Role</th>
-                    <th>Dept & Year</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="members-table-body">
-                  <tr><td colspan="6" class="text-center">Loading members...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- 6. REGISTRATIONS SECTION -->
-        <section class="content-section" id="section-registrations">
-          <div class="card-panel">
-            <div class="panel-header">
-              <h3 class="panel-title">All Event Registrations</h3>
-              <button onclick="loadRegistrations()" class="btn btn-secondary btn-sm">🔄 Refresh</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Event</th>
-                    <th>Applicant Member</th>
-                    <th>Registration Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="all-registrations-table-body">
-                  <tr><td colspan="5" class="text-center">Loading registrations...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- 7. LEADERBOARD SECTION -->
-        <section class="content-section" id="section-leaderboard">
-          <div class="card-panel">
-            <div class="panel-header">
-              <h3 class="panel-title">Club Leaderboard & Points Management</h3>
-              <span class="skill-pill">Admins Award Points</span>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Member</th>
-                    <th>Team</th>
-                    <th>Total Points</th>
-                    <th>Activities</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="leaderboard-table-body">
-                  <tr><td colspan="6" class="text-center">Loading leaderboard...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- 8. ADMIN PROFILE SECTION -->
-        <section class="content-section" id="section-profile">
-          <div class="card-panel" style="max-width: 800px; margin: 0 auto;">
-            <div class="panel-header">
-              <h3 class="panel-title">Admin Account Profile</h3>
-              <div class="profile-badges-row">
-                <span class="admin-badge">ADMINISTRATOR</span>
-                <span class="skill-pill" id="admin-badge-team">TEAM: TECH</span>
-              </div>
+          <div class="kinobi-card-panel" style="max-width: 820px; margin: 0 auto;">
+            <div class="kinobi-panel-header">
+              <h3 class="kinobi-panel-title">Administrator Account Details</h3>
+              <span class="kinobi-status-pill upcoming">Role: CLUB ADMIN</span>
             </div>
 
-            <!-- Profile Header Strip with Avatar -->
-            <div class="profile-header-strip">
-              <div class="profile-avatar-circle" id="admin-avatar-circle">A</div>
-              <div class="profile-details-strip">
-                <h3 class="profile-name-text" id="admin-header-name">Admin Lead</h3>
-                <div class="profile-email-text" id="admin-header-email">admin@analytixclub.edu</div>
-                <div style="font-size: 0.8rem; color: #64748b;">
-                  Full Administrator privileges active.
-                </div>
-              </div>
-            </div>
-
-            <div class="panel-body">
+            <div class="kinobi-panel-body">
               <form id="admin-profile-form" onsubmit="handleAdminProfileSubmit(event)">
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label" for="admin-profile-name">Full Name *</label>
-                    <input type="text" id="admin-profile-name" class="form-control" placeholder="Admin full name" required>
+                <div class="kinobi-form-row">
+                  <div class="kinobi-form-group">
+                    <label class="kinobi-label" for="admin-profile-name">Full Name *</label>
+                    <input type="text" id="admin-profile-name" class="kinobi-input" required>
                   </div>
-                  <div class="form-group">
-                    <label class="form-label" for="admin-profile-email">Email (Account ID - Read Only)</label>
-                    <input type="email" id="admin-profile-email" class="form-control" disabled>
-                  </div>
-                </div>
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label" for="admin-profile-phone">Phone Number</label>
-                    <input type="tel" id="admin-profile-phone" class="form-control" placeholder="+91 98765 43210">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="admin-profile-dept">Department / Branch</label>
-                    <input type="text" id="admin-profile-dept" class="form-control" placeholder="e.g. Computer Science & Eng.">
+                  <div class="kinobi-form-group">
+                    <label class="kinobi-label" for="admin-profile-email">Email (Account ID - Read Only)</label>
+                    <input type="email" id="admin-profile-email" class="kinobi-input" disabled>
                   </div>
                 </div>
 
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label" for="admin-profile-year">Year of Study</label>
-                    <input type="text" id="admin-profile-year" class="form-control" placeholder="e.g. 4th Year">
+                <div class="kinobi-form-row">
+                  <div class="kinobi-form-group">
+                    <label class="kinobi-label" for="admin-profile-phone">Contact Phone</label>
+                    <input type="tel" id="admin-profile-phone" class="kinobi-input" placeholder="+91 98765 43210">
                   </div>
-                  <div class="form-group">
-                    <label class="form-label" for="admin-profile-photo">Avatar / Profile Photo URL</label>
-                    <input type="url" id="admin-profile-photo" class="form-control" placeholder="https://images.unsplash.com/...">
+                  <div class="kinobi-form-group">
+                    <label class="kinobi-label" for="admin-profile-dept">Department / Branch</label>
+                    <input type="text" id="admin-profile-dept" class="kinobi-input" placeholder="Computer Science & Engineering">
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label class="form-label" for="admin-profile-skills">Technical & Leadership Skills</label>
-                  <input type="text" id="admin-profile-skills" class="form-control" placeholder="e.g. Python, FastAPI, Cloud, Leadership">
+                <div class="kinobi-form-row">
+                  <div class="kinobi-form-group">
+                    <label class="kinobi-label" for="admin-profile-year">Year of Study</label>
+                    <input type="text" id="admin-profile-year" class="kinobi-input" placeholder="4th Year">
+                  </div>
+                  <div class="kinobi-form-group">
+                    <label class="kinobi-label" for="admin-profile-photo">Profile Avatar URL</label>
+                    <input type="url" id="admin-profile-photo" class="kinobi-input" placeholder="https://images.unsplash.com/...">
+                  </div>
                 </div>
 
-                <div class="form-group">
-                  <label class="form-label" for="admin-profile-bio">Bio</label>
-                  <textarea id="admin-profile-bio" class="form-control" rows="3" placeholder="Club lead coordinator bio..."></textarea>
+                <div class="kinobi-form-group">
+                  <label class="kinobi-label" for="admin-profile-skills">Technical & Leadership Skills</label>
+                  <input type="text" id="admin-profile-skills" class="kinobi-input" placeholder="Python, FastAPI, Leadership, Cloud">
                 </div>
 
-                <div style="margin-top: 10px;">
-                  <button type="submit" class="btn btn-primary" style="padding: 12px 28px;">
-                    Save Profile Changes
+                <div class="kinobi-form-group">
+                  <label class="kinobi-label" for="admin-profile-bio">Bio / Statement</label>
+                  <textarea id="admin-profile-bio" class="kinobi-textarea" rows="3"></textarea>
+                </div>
+
+                <div style="margin-top: 20px;">
+                  <button type="submit" class="kinobi-btn-action-primary">
+                    SAVE PROFILE SETTINGS
                   </button>
                 </div>
               </form>
@@ -417,288 +873,334 @@
     </main>
   </div>
 
-  <!-- MODAL: ADD / EDIT EVENT -->
-  <div class="modal-overlay" id="event-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title" id="event-modal-title">Add New Club Event</h3>
-        <button class="modal-close" onclick="closeModal('event-modal')">&times;</button>
+  <!-- ========================================================================= -->
+  <!-- MODALS FOR COMPLETE CRUD                                                  -->
+  <!-- ========================================================================= -->
+
+  <!-- 1. EVENT MODAL -->
+  <div class="kinobi-modal-backdrop" id="event-modal">
+    <div class="kinobi-modal-dialog">
+      <div class="kinobi-modal-header">
+        <h3 class="modal-heading" id="event-modal-title">Add New Club Event</h3>
+        <button type="button" class="modal-close-cross" onclick="closeKinobiModal('event-modal')">&times;</button>
       </div>
       <form id="event-form" onsubmit="handleEventFormSubmit(event)">
-        <div class="modal-body">
+        <div class="kinobi-modal-body">
           <input type="hidden" id="event-id">
           <input type="hidden" id="event-poster-url">
 
-          <div class="form-group">
-            <label class="form-label">Event Name *</label>
-            <input type="text" id="event-title" class="form-control" placeholder="e.g. PyData Workshop 2026" required>
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Event Name *</label>
+            <input type="text" id="event-title" class="kinobi-input" placeholder="e.g. Data Crunch 2026: Hands-on Machine Learning Bootcamp" required>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Description *</label>
-            <textarea id="event-description" class="form-control" rows="3" placeholder="Detailed outline of the event..." required></textarea>
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Description *</label>
+            <textarea id="event-description" class="kinobi-textarea" rows="3" placeholder="Outline agenda, topics covered, and prerequisites..." required></textarea>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Date & Time *</label>
-              <input type="datetime-local" id="event-date" class="form-control" required>
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Event Date & Time *</label>
+              <input type="datetime-local" id="event-date" class="kinobi-input" required>
             </div>
-            <div class="form-group">
-              <label class="form-label">Registration Deadline *</label>
-              <input type="datetime-local" id="event-deadline" class="form-control" required>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Registration Deadline *</label>
+              <input type="datetime-local" id="event-deadline" class="kinobi-input" required>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Venue *</label>
-              <input type="text" id="event-venue" class="form-control" placeholder="e.g. Auditorium Hall B" required>
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Venue / Hall *</label>
+              <input type="text" id="event-venue" class="kinobi-input" placeholder="e.g. Auditorium Hall B & Virtual Stream" required>
             </div>
-            <div class="form-group">
-              <label class="form-label">Publish Status</label>
-              <select id="event-status" class="form-control">
-                <option value="published">Published</option>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Club Track / Vertical</label>
+              <input type="text" id="event-category" class="kinobi-input" placeholder="e.g. AI & ML Track">
+            </div>
+          </div>
+
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Participant Capacity (0 = Unlimited)</label>
+              <input type="number" id="event-capacity" class="kinobi-input" value="0" min="0">
+            </div>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Status</label>
+              <select id="event-status" class="kinobi-input">
+                <option value="published">Upcoming / Published</option>
+                <option value="completed">Finished / Completed</option>
                 <option value="draft">Save as Draft</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
               </select>
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Event Instructions</label>
-            <textarea id="event-instructions" class="form-control" rows="2" placeholder="e.g. Bring your laptop, install Python..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Upload Event Poster (Stored in Supabase Storage)</label>
-            <input type="file" id="event-poster-file" class="form-control" accept="image/*">
-            <img id="event-poster-preview" style="max-height: 120px; border-radius: 6px; margin-top: 8px; display: none;" alt="Preview">
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Event Poster</label>
+            <input type="file" id="event-poster-file" class="kinobi-input" accept="image/*">
+            <img id="event-poster-preview" class="kinobi-preview-img" style="display: none;" alt="Poster Preview">
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('event-modal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Event</button>
+        <div class="kinobi-modal-footer">
+          <button type="button" class="kinobi-btn-action-outline" onclick="closeKinobiModal('event-modal')">Cancel</button>
+          <button type="submit" class="kinobi-btn-action-primary">Save Event</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: ADD / EDIT HACKATHON -->
-  <div class="modal-overlay" id="hackathon-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title" id="hackathon-modal-title">Add Hackathon</h3>
-        <button class="modal-close" onclick="closeModal('hackathon-modal')">&times;</button>
+  <!-- 2. HACKATHON MODAL -->
+  <div class="kinobi-modal-backdrop" id="hackathon-modal">
+    <div class="kinobi-modal-dialog">
+      <div class="kinobi-modal-header">
+        <h3 class="modal-heading" id="hackathon-modal-title">Add Club Hackathon</h3>
+        <button type="button" class="modal-close-cross" onclick="closeKinobiModal('hackathon-modal')">&times;</button>
       </div>
       <form id="hackathon-form" onsubmit="handleHackathonFormSubmit(event)">
-        <div class="modal-body">
+        <div class="kinobi-modal-body">
           <input type="hidden" id="hackathon-id">
           <input type="hidden" id="hackathon-poster-url">
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Hackathon Name *</label>
-              <input type="text" id="hackathon-title" class="form-control" placeholder="e.g. Smart City Hack 2026" required>
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Hackathon Name *</label>
+              <input type="text" id="hackathon-title" class="kinobi-input" placeholder="e.g. HackAnalytix 36-Hour Hackathon" required>
             </div>
-            <div class="form-group">
-              <label class="form-label">Organizer / Company *</label>
-              <input type="text" id="hackathon-organizer" class="form-control" placeholder="e.g. Google / Analytix" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Description *</label>
-            <textarea id="hackathon-description" class="form-control" rows="2" required></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Start Date *</label>
-              <input type="date" id="hackathon-start-date" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Registration Deadline *</label>
-              <input type="date" id="hackathon-deadline" class="form-control" required>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Organizer / Sponsor *</label>
+              <input type="text" id="hackathon-organizer" class="kinobi-input" placeholder="e.g. Analytix Club x Tech Titans" required>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Mode</label>
-              <select id="hackathon-mode" class="form-control">
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Description *</label>
+            <textarea id="hackathon-description" class="kinobi-textarea" rows="2" required></textarea>
+          </div>
+
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Start Date *</label>
+              <input type="date" id="hackathon-start-date" class="kinobi-input" required>
+            </div>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Registration Deadline *</label>
+              <input type="date" id="hackathon-deadline" class="kinobi-input" required>
+            </div>
+          </div>
+
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Mode</label>
+              <select id="hackathon-mode" class="kinobi-input">
+                <option value="hybrid">Hybrid</option>
                 <option value="online">Online</option>
                 <option value="offline">Offline</option>
-                <option value="hybrid">Hybrid</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label">Location / City *</label>
-              <input type="text" id="hackathon-location" class="form-control" placeholder="e.g. Main Auditorium / Virtual" required>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Prize Pool</label>
+              <input type="text" id="hackathon-prize-pool" class="kinobi-input" placeholder="e.g. ₹1,50,000">
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Official Registration Link</label>
-              <input type="url" id="hackathon-link" class="form-control" placeholder="https://hackathon.org/register">
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Venue / Location *</label>
+              <input type="text" id="hackathon-location" class="kinobi-input" placeholder="e.g. Main Campus Innovation Hub" required>
             </div>
-            <div class="form-group">
-              <label class="form-label">Status</label>
-              <select id="hackathon-status" class="form-control">
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-                <option value="completed">Completed</option>
-              </select>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Registration Link</label>
+              <input type="url" id="hackathon-link" class="kinobi-input" placeholder="https://analytixclub.edu/hackathon">
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Eligibility</label>
-              <input type="text" id="hackathon-eligibility" class="form-control" value="All college students">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Required Skills</label>
-              <input type="text" id="hackathon-skills" class="form-control" placeholder="e.g. Python, AI, React">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Poster Image (Upload)</label>
-            <input type="file" id="hackathon-poster-file" class="form-control" accept="image/*">
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Required Skills</label>
+            <input type="text" id="hackathon-skills" class="kinobi-input" placeholder="Python, React, AI APIs, SQL">
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('hackathon-modal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Hackathon</button>
+        <div class="kinobi-modal-footer">
+          <button type="button" class="kinobi-btn-action-outline" onclick="closeKinobiModal('hackathon-modal')">Cancel</button>
+          <button type="submit" class="kinobi-btn-action-primary">Save Hackathon</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: ADD / EDIT ANNOUNCEMENT -->
-  <div class="modal-overlay" id="announcement-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title" id="announcement-modal-title">Create Announcement</h3>
-        <button class="modal-close" onclick="closeModal('announcement-modal')">&times;</button>
+  <!-- 3. MEMBER MODAL (ADD / EDIT) -->
+  <div class="kinobi-modal-backdrop" id="member-modal">
+    <div class="kinobi-modal-dialog">
+      <div class="kinobi-modal-header">
+        <h3 class="modal-heading" id="member-modal-title">Add New Club Member</h3>
+        <button type="button" class="modal-close-cross" onclick="closeKinobiModal('member-modal')">&times;</button>
+      </div>
+      <form id="member-form" onsubmit="handleMemberFormSubmit(event)">
+        <div class="kinobi-modal-body">
+          <input type="hidden" id="member-form-id">
+
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Full Name *</label>
+              <input type="text" id="member-form-name" class="kinobi-input" placeholder="e.g. Priya Nair" required>
+            </div>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Email *</label>
+              <input type="email" id="member-form-email" class="kinobi-input" placeholder="priya@analytixclub.edu" required>
+            </div>
+          </div>
+
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">System Role *</label>
+              <select id="member-form-role" class="kinobi-input">
+                <option value="member">Member</option>
+                <option value="admin">Club Admin</option>
+              </select>
+            </div>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Team Track *</label>
+              <select id="member-form-team" class="kinobi-input">
+                <option value="Tech">Tech</option>
+                <option value="Design">Design</option>
+                <option value="MOC">MOC</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Department</label>
+              <input type="text" id="member-form-dept" class="kinobi-input" placeholder="Information Technology">
+            </div>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Year of Study</label>
+              <input type="text" id="member-form-year" class="kinobi-input" placeholder="3rd Year">
+            </div>
+          </div>
+
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Merit Points</label>
+            <input type="number" id="member-form-points" class="kinobi-input" value="10" min="0">
+          </div>
+        </div>
+        <div class="kinobi-modal-footer">
+          <button type="button" class="kinobi-btn-action-outline" onclick="closeKinobiModal('member-modal')">Cancel</button>
+          <button type="submit" class="kinobi-btn-action-primary">Save Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. AWARD POINTS MODAL -->
+  <div class="kinobi-modal-backdrop" id="award-points-modal">
+    <div class="kinobi-modal-dialog">
+      <div class="kinobi-modal-header">
+        <h3 class="modal-heading">Award Merit Points to Member</h3>
+        <button type="button" class="modal-close-cross" onclick="closeKinobiModal('award-points-modal')">&times;</button>
+      </div>
+      <form id="award-points-form" onsubmit="handleAwardPointsSubmit(event)">
+        <div class="kinobi-modal-body">
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Select Club Member *</label>
+            <select id="award-member-select" class="kinobi-input" required>
+              <option value="">Select member...</option>
+            </select>
+          </div>
+
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Points to Award (+pts) *</label>
+            <input type="number" id="award-points-val" class="kinobi-input" value="25" min="1" max="500" required>
+          </div>
+
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Reason / Contribution *</label>
+            <input type="text" id="award-points-reason" class="kinobi-input" placeholder="e.g. Mentoring junior recruits, organizing ML workshop" required>
+          </div>
+        </div>
+        <div class="kinobi-modal-footer">
+          <button type="button" class="kinobi-btn-action-outline" onclick="closeKinobiModal('award-points-modal')">Cancel</button>
+          <button type="submit" class="kinobi-btn-action-primary">Award Points</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. ANNOUNCEMENT MODAL -->
+  <div class="kinobi-modal-backdrop" id="announcement-modal">
+    <div class="kinobi-modal-dialog">
+      <div class="kinobi-modal-header">
+        <h3 class="modal-heading" id="announcement-modal-title">Post New Bulletin</h3>
+        <button type="button" class="modal-close-cross" onclick="closeKinobiModal('announcement-modal')">&times;</button>
       </div>
       <form id="announcement-form" onsubmit="handleAnnouncementFormSubmit(event)">
-        <div class="modal-body">
+        <div class="kinobi-modal-body">
           <input type="hidden" id="announcement-id">
 
-          <div class="form-group">
-            <label class="form-label">Title *</label>
-            <input type="text" id="announcement-title" class="form-control" placeholder="e.g. Orientation Session Date" required>
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Bulletin Title *</label>
+            <input type="text" id="announcement-title" class="kinobi-input" placeholder="e.g. Call for Project Mentors: Tech, Design & MOC" required>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Description / Notice Details *</label>
-            <textarea id="announcement-description" class="form-control" rows="3" required></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Category</label>
-              <select id="announcement-category" class="form-control">
-                <option value="General">General</option>
+          <div class="kinobi-form-row">
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Category</label>
+              <select id="announcement-category" class="kinobi-input">
                 <option value="Notice">Notice</option>
-                <option value="Urgent">Urgent</option>
                 <option value="Opportunity">Opportunity</option>
                 <option value="Event">Event</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label">Status</label>
-              <select id="announcement-status" class="form-control">
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-                <option value="archived">Archived</option>
-              </select>
+            <div class="kinobi-form-group">
+              <label class="kinobi-label">Banner Image URL</label>
+              <input type="url" id="announcement-image" class="kinobi-input" placeholder="https://images.unsplash.com/...">
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Announcement Image / Poster (Optional)</label>
-            <input type="file" id="announcement-image-file" class="form-control" accept="image/*">
+          <div class="kinobi-form-group">
+            <label class="kinobi-label">Message / Details *</label>
+            <textarea id="announcement-desc" class="kinobi-textarea" rows="4" required></textarea>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('announcement-modal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Publish Announcement</button>
+        <div class="kinobi-modal-footer">
+          <button type="button" class="kinobi-btn-action-outline" onclick="closeKinobiModal('announcement-modal')">Cancel</button>
+          <button type="submit" class="kinobi-btn-action-primary">Broadcast Bulletin</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: AWARD POINTS -->
-  <div class="modal-overlay" id="award-modal">
-    <div class="modal-card" style="max-width: 480px;">
-      <div class="modal-header">
-        <h3 class="modal-title">⭐ Award Club Points</h3>
-        <button class="modal-close" onclick="closeModal('award-modal')">&times;</button>
+  <!-- 6. VIEW EVENT REGISTRATIONS MODAL -->
+  <div class="kinobi-modal-backdrop" id="event-registrations-modal">
+    <div class="kinobi-modal-dialog" style="max-width: 720px;">
+      <div class="kinobi-modal-header">
+        <h3 class="modal-heading" id="event-registrations-title">Event Registrations</h3>
+        <button type="button" class="modal-close-cross" onclick="closeKinobiModal('event-registrations-modal')">&times;</button>
       </div>
-      <form id="award-form" onsubmit="handleAwardPointsSubmit(event)">
-        <div class="modal-body">
-          <input type="hidden" id="award-member-id">
-          <p style="margin-bottom: 16px; font-size: 0.95rem;">
-            Awarding points to: <strong id="award-member-name" style="color: var(--primary);"></strong>
-          </p>
-
-          <div class="form-group">
-            <label class="form-label">Points to Award</label>
-            <input type="number" id="award-points-input" class="form-control" min="5" max="500" value="25" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Activity Description</label>
-            <textarea id="award-desc-input" class="form-control" rows="2" placeholder="e.g. Conducted Python workshop / Built club poster" required></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('award-modal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Award Points</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: VIEW EVENT REGISTRATIONS -->
-  <div class="modal-overlay" id="event-registrations-modal">
-    <div class="modal-card" style="max-width: 750px;">
-      <div class="modal-header">
-        <h3 class="modal-title" id="event-registrations-title">Event Registrations</h3>
-        <button class="modal-close" onclick="closeModal('event-registrations-modal')">&times;</button>
+      <div class="kinobi-modal-body" style="padding: 0;">
+        <table class="kinobi-table">
+          <thead>
+            <tr>
+              <th style="width: 35%;">Member</th>
+              <th style="width: 25%;">Email</th>
+              <th style="width: 20%;">Date</th>
+              <th style="width: 20%;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="event-registrations-list">
+            <tr><td colspan="4" class="kinobi-loading-cell">Loading registrations...</td></tr>
+          </tbody>
+        </table>
       </div>
-      <div class="modal-body">
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Member</th>
-                <th>Email</th>
-                <th>Registered At</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="event-registrations-list">
-              <tr><td colspan="5" class="text-center">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeModal('event-registrations-modal')">Close</button>
+      <div class="kinobi-modal-footer">
+        <button type="button" class="kinobi-btn-action-primary" onclick="closeKinobiModal('event-registrations-modal')">Done</button>
       </div>
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>
-
