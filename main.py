@@ -649,14 +649,26 @@ async def api_upload_media(file: UploadFile = File(...)):
 @app.post("/api/users/upload-photo")
 @app.post("/api/auth/upload-avatar")
 async def api_upload_profile_photo(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
+    import base64
     ext = os.path.splitext(file.filename)[1].lower()
     if ext not in [".jpg", ".jpeg", ".png", ".webp", ".gif"]:
         ext = ".jpg"
     safe_name = f"avatar_{user['id'][:8]}_{uuid.uuid4().hex[:8]}{ext}"
-    dest_path = os.path.join(UPLOAD_DIR, safe_name)
-    with open(dest_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    url = f"assets/uploads/{safe_name}"
+    
+    content = await file.read()
+    
+    # Try local filesystem first (Render / local dev)
+    try:
+        os.makedirs(UPLOAD_DIR, exist_ok=True)
+        dest_path = os.path.join(UPLOAD_DIR, safe_name)
+        with open(dest_path, "wb") as buffer:
+            buffer.write(content)
+        url = f"assets/uploads/{safe_name}"
+    except Exception:
+        # Fallback to persistent base64 data URI for serverless environments (Vercel)
+        mime = "image/jpeg" if ext in [".jpg", ".jpeg"] else f"image/{ext[1:]}"
+        b64 = base64.b64encode(content).decode("utf-8")
+        url = f"data:{mime};base64,{b64}"
 
     with get_db() as conn:
         c = conn.cursor()
@@ -666,7 +678,15 @@ async def api_upload_profile_photo(file: UploadFile = File(...), user: dict = De
         updated_user = dict(c.fetchone())
         updated_user.pop("password_hash", None)
 
+    # Also update Supabase cloud database if connected
+    if supabase_client:
+        try:
+            supabase_client.table("users").update({"profile_photo": url}).eq("id", user["id"]).execute()
+        except Exception as e:
+            print(f"[Supabase] Photo sync warning: {e}")
+
     return {"url": url, "user": updated_user, "message": "Profile photo updated successfully"}
+
 
 # --- Events (Full CRUD) ---
 
