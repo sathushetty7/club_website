@@ -462,10 +462,58 @@ function loadMemberProfileForm() {
   if (avatarCircle) {
     const safeMemberPhoto = API.sanitizeUrl(currentMember.profile_photo);
     if (safeMemberPhoto) {
-      avatarCircle.innerHTML = `<img src="${safeMemberPhoto}" alt="Avatar" onerror="this.onerror=null;this.textContent='M';">`;
+      avatarCircle.innerHTML = `<img src="${safeMemberPhoto}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" onerror="this.onerror=null;this.textContent='M';">`;
     } else {
       avatarCircle.textContent = (currentMember.full_name || 'M').charAt(0).toUpperCase();
     }
+  }
+}
+
+async function handleMemberPhotoUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    API.toast('Please select an image file (PNG, JPG, WEBP)', 'error');
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    API.toast('Image size must be under 5MB', 'error');
+    return;
+  }
+
+  const statusEl = document.getElementById('member-photo-status');
+  if (statusEl) statusEl.textContent = 'Uploading photo...';
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await API.upload('/api/members/upload-photo', formData);
+    if (res && res.url) {
+      const photoInput = document.getElementById('member-profile-photo');
+      if (photoInput) photoInput.value = res.url;
+
+      if (res.user) {
+        currentMember = res.user;
+        API.setUser(res.user);
+        Auth.updateNavbarUser(res.user);
+      } else {
+        currentMember.profile_photo = res.url;
+        API.setUser(currentMember);
+        Auth.updateNavbarUser(currentMember);
+      }
+
+      loadMemberProfileForm();
+      API.toast('Profile photo uploaded and saved!', 'success');
+      if (statusEl) statusEl.textContent = 'Photo uploaded successfully ✓';
+    }
+  } catch (err) {
+    API.toast('Upload failed: ' + (err.message || 'Error'), 'error');
+    if (statusEl) statusEl.textContent = 'Upload failed. Try again.';
+  } finally {
+    e.target.value = '';
   }
 }
 

@@ -266,12 +266,16 @@
 
             <!-- Profile Header Strip with Avatar -->
             <div class="profile-header-strip">
-              <div class="profile-avatar-circle" id="member-avatar-circle">M</div>
+              <div class="profile-avatar-circle" id="member-avatar-circle" style="position: relative; cursor: pointer; overflow: hidden;" onclick="document.getElementById('member-file-upload').click()" title="Click to upload profile photo">M</div>
               <div class="profile-details-strip">
                 <h3 class="profile-name-text" id="member-header-name">Member Name</h3>
                 <div class="profile-email-text" id="member-header-email">member@analytixclub.edu</div>
-                <div style="font-size: 0.8rem; color: #64748b;">
-                  Roles and points are managed exclusively by club admins.
+                <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('member-file-upload').click()" style="padding: 4px 12px; font-size: 0.8rem; border-radius: 6px;">
+                    📷 Upload Real Photo
+                  </button>
+                  <input type="file" id="member-file-upload" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;" onchange="handleMemberPhotoUpload(event)">
+                  <span id="member-photo-status" style="font-size: 0.76rem; color: #64748b;">JPG, PNG or WEBP (Max 5MB)</span>
                 </div>
               </div>
             </div>
@@ -312,15 +316,11 @@
                     </select>
                   </div>
                   <div class="form-group">
-                    <label class="form-label" for="member-profile-photo">Profile Photo URL</label>
-                    <input type="url" id="member-profile-photo" class="form-control" placeholder="https://images.unsplash.com/...">
+                    <label class="form-label" for="member-profile-skills">Technical & Creative Skills</label>
+                    <input type="text" id="member-profile-skills" class="form-control" placeholder="e.g. Python, Figma, React, SQL">
                   </div>
                 </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="member-profile-skills">Technical & Creative Skills</label>
-                  <input type="text" id="member-profile-skills" class="form-control" placeholder="e.g. Python, Figma, React, SQL">
-                </div>
+                <input type="hidden" id="member-profile-photo">
 
                 <div class="form-group">
                   <label class="form-label" for="member-profile-bio">Short Bio</label>
@@ -342,7 +342,7 @@
   </div>
 
   <script src="js/api.js"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/auth.js?v=2.2"></script>
   <script src="js/member.js"></script>
 </body>
 </html>

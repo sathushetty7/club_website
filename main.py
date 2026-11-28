@@ -19,17 +19,36 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, EmailStr, Field
 import jwt
+from dotenv import load_dotenv
+
+# Load environment configuration (.env)
+load_dotenv()
 
 # ==============================================================================
 # CONFIGURATION & SECURITY
 # ==============================================================================
 
-SECRET_KEY = os.environ.get("JWT_SECRET", "analytix-secret-key-2026-2027-super-secure")
+SECRET_KEY = os.environ.get("SECRET_KEY", os.environ.get("JWT_SECRET", "analytix-secret-key-2026-2027-super-secure"))
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 DB_FILE = os.path.join(os.path.dirname(__file__), "analytix.db")
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "assets", "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# Supabase Production Cloud Database Configuration
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+SUPABASE_ANON_KEY = os.environ.get("SUPABASE_ANON_KEY", "")
+
+supabase_client = None
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        from supabase import create_client
+        supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print(f"[Supabase] Initialized client for project: {SUPABASE_URL}")
+    except Exception as e:
+        print(f"[Supabase] Notice: could not initialize Supabase client: {e}")
+
 
 app = FastAPI(
     title="Analytix Club API",
@@ -44,6 +63,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def add_no_cache_headers(request, call_next):
+    response = await call_next(request)
+    if any(request.url.path.endswith(ext) for ext in [".js", ".css", ".html"]):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 # ==============================================================================
 # DATABASE SETUP & SEEDING
@@ -214,7 +242,7 @@ def init_db():
 
             # Seed Admin and Members
             users_seed = [
-                ("00000000-0000-0000-0000-000000000001", "analytix63@gmail.com", admin_pwd, "Arjun Sharma (Club Lead)", "admin", "Tech", "Computer Science & Engineering", "4th Year", "+91 98765 43210", "Python, FastAPI, Machine Learning, Leadership", "Lead coordinator of Analytix Club. Passionate about AI & Big Data.", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80", 340, now),
+                ("00000000-0000-0000-0000-000000000001", "analytix63@gmail.com", admin_pwd, "sathwik shetty", "admin", "Tech", "Computer Science & Engineering", "4th Year", "+91 98765 43210", "Python, FastAPI, Machine Learning, Leadership", "Lead coordinator of Analytix Club. Passionate about AI & Big Data.", "assets/uploads/sathwik_avatar.jpg", 340, now),
                 ("00000000-0000-0000-0000-000000000002", "priya@analytixclub.edu", default_pwd, "Priya Nair", "member", "Design", "Information Technology", "3rd Year", "+91 98765 43211", "Figma, UI/UX, CSS, Graphic Design", "Creative thinker and UI enthusiast. Love designing engaging posters and intuitive digital interfaces.", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80", 290, now),
                 ("00000000-0000-0000-0000-000000000003", "rohit@analytixclub.edu", default_pwd, "Rohit Verma", "member", "Tech", "Data Science & AI", "2nd Year", "+91 98765 43212", "Python, Pandas, SQL, Scikit-learn", "Data geek exploring deep learning architectures and predictive modeling.", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80", 210, now),
                 ("00000000-0000-0000-0000-000000000004", "sneha@analytixclub.edu", default_pwd, "Sneha Kulkarni", "member", "MOC", "Electronics & Communication", "3rd Year", "+91 98765 43213", "Public Speaking, Content Writing, Event Logistics", "MOC team coordinator handling event coverage, stage moderation, and press releases.", "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80", 245, now)
@@ -267,9 +295,16 @@ def init_db():
 
             conn.commit()
 
-        # Always verify admin email and password match user requirement
+        # Always verify admin email, password and profile photo match user requirement
         admin_pwd = hash_password("Analytix@2026")
-        cursor.execute("UPDATE users SET email = ?, password_hash = ? WHERE role = 'admin'", ("analytix63@gmail.com", admin_pwd))
+        cursor.execute("""
+            UPDATE users 
+            SET email = ?, 
+                password_hash = ?, 
+                full_name = 'sathwik shetty', 
+                profile_photo = 'assets/uploads/sathwik_avatar.jpg' 
+            WHERE role = 'admin'
+        """, ("analytix63@gmail.com", admin_pwd))
         conn.commit()
 
 init_db()
@@ -394,12 +429,14 @@ class MemberUpdate(BaseModel):
     skills: Optional[str] = None
     bio: Optional[str] = None
     points: Optional[int] = None
+    profile_photo: Optional[str] = None
 
 class MemberSelfUpdate(BaseModel):
     full_name: Optional[str] = None
     phone: Optional[str] = None
     department: Optional[str] = None
     year: Optional[str] = None
+    team: Optional[str] = None
     skills: Optional[str] = None
     bio: Optional[str] = None
     profile_photo: Optional[str] = None
@@ -437,15 +474,73 @@ def get_current_admin(user: dict = Depends(get_current_user)) -> dict:
 # API ENDPOINTS
 # ==============================================================================
 
+_last_supabase_check = {"time": 0, "status": "unconfigured"}
+
+def check_cached_supabase_status():
+    global _last_supabase_check
+    now = datetime.now().timestamp()
+    if now - _last_supabase_check["time"] < 60:
+        return _last_supabase_check["status"]
+    
+    status = "unconfigured"
+    if supabase_client:
+        try:
+            supabase_client.table("users").select("id").limit(1).execute()
+            status = "connected"
+        except Exception:
+            status = "tables_pending"
+    _last_supabase_check = {"time": now, "status": status}
+    return status
+
 @app.get("/api/health")
 def api_health():
+    supabase_status = check_cached_supabase_status()
+
     return {
         "status": "healthy",
         "version": "2.0.0",
         "environment": "production",
         "database_connected": True,
+        "database": {
+            "primary": "supabase" if supabase_status == "connected" else "sqlite_fallback",
+            "supabase_status": supabase_status,
+            "supabase_project": "xqvlzdndukbibndylzfw" if SUPABASE_URL else None
+        },
         "mode": "operational"
     }
+
+@app.get("/api/supabase/status")
+def api_supabase_status():
+    if not supabase_client:
+        return {"configured": False, "status": "no_credentials"}
+    try:
+        res = supabase_client.table("users").select("id").limit(1).execute()
+        return {"configured": True, "status": "connected", "tables_exist": True}
+    except Exception as e:
+        err_msg = str(e)
+        if "PGRST205" in err_msg or "Could not find the table" in err_msg:
+            return {
+                "configured": True,
+                "status": "tables_pending",
+                "tables_exist": False,
+                "action_required": "Run supabase_schema.sql in Supabase SQL Editor: https://supabase.com/dashboard/project/xqvlzdndukbibndylzfw/sql/new"
+            }
+        return {"configured": True, "status": "error", "error": err_msg}
+
+@app.post("/api/admin/supabase/sync")
+def api_admin_supabase_sync(admin_user: dict = Depends(get_current_admin)):
+    try:
+        from sync_to_supabase import sync_data
+        success = sync_data()
+        if success:
+            return {"status": "success", "message": "All data synchronized with Supabase cloud database!"}
+        else:
+            return {"status": "pending", "message": "Supabase tables not detected yet. Please run supabase_schema.sql in the Supabase SQL editor."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Sync error: {str(e)}")
+
+
+
 
 @app.get("/api/stats")
 def api_stats():
@@ -549,6 +644,29 @@ async def api_upload_media(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
     url = f"assets/uploads/{safe_name}"
     return {"url": url, "filename": safe_name}
+
+@app.post("/api/members/upload-photo")
+@app.post("/api/users/upload-photo")
+@app.post("/api/auth/upload-avatar")
+async def api_upload_profile_photo(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in [".jpg", ".jpeg", ".png", ".webp", ".gif"]:
+        ext = ".jpg"
+    safe_name = f"avatar_{user['id'][:8]}_{uuid.uuid4().hex[:8]}{ext}"
+    dest_path = os.path.join(UPLOAD_DIR, safe_name)
+    with open(dest_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    url = f"assets/uploads/{safe_name}"
+
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute("UPDATE users SET profile_photo = ? WHERE id = ?", (url, user["id"]))
+        conn.commit()
+        c.execute("SELECT * FROM users WHERE id = ?", (user["id"],))
+        updated_user = dict(c.fetchone())
+        updated_user.pop("password_hash", None)
+
+    return {"url": url, "user": updated_user, "message": "Profile photo updated successfully"}
 
 # --- Events (Full CRUD) ---
 
@@ -816,7 +934,7 @@ def api_admin_members(
     with get_db() as conn:
         c = conn.cursor()
         query = """
-            SELECT u.id, u.full_name, u.email, u.role, u.team, u.department, u.year, u.phone, u.skills, u.bio, u.points, u.created_at,
+            SELECT u.id, u.full_name, u.email, u.role, u.team, u.department, u.year, u.phone, u.skills, u.bio, u.points, u.profile_photo, u.created_at,
                    (SELECT COUNT(*) FROM event_registrations r WHERE r.user_id = u.id) as registrations_count
             FROM users u
             WHERE 1=1
@@ -1067,7 +1185,7 @@ def api_get_leaderboard():
         return rows
 
 @app.post("/api/registrations/events/{event_id}")
-def api_register_event(event_id: str, user: dict = Depends(get_current_user)):
+def api_register_event(event_id: str, body: Optional[dict] = None, user: dict = Depends(get_current_user)):
     with get_db() as conn:
         c = conn.cursor()
         c.execute("SELECT title, capacity FROM events WHERE id = ?", (event_id,))
@@ -1393,4 +1511,5 @@ def serve_html(filename: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

@@ -211,6 +211,16 @@
   font-weight: 700;
   font-size: 0.9rem;
   flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.kinobi-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
 }
 
 .kinobi-user-info {
@@ -360,7 +370,7 @@
    ============================================================================= */
 
 .kinobi-content-area {
-  padding: 24px 28px;
+  padding: 24px 28px 80px 28px;
   flex-grow: 1;
   overflow-y: auto;
 }
@@ -677,14 +687,32 @@
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .kinobi-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   text-align: left;
+}
+
+.kinobi-table thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.kinobi-table thead th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.kinobi-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+.kinobi-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
 }
 
 .kinobi-table th {
@@ -708,6 +736,7 @@
   vertical-align: middle;
   font-size: 0.86rem;
   color: #334155;
+  position: relative;
 }
 
 .kinobi-table tbody tr:hover {
@@ -716,6 +745,11 @@
 
 .kinobi-table tbody tr:last-child td {
   border-bottom: none;
+}
+
+tr.has-open-dropdown {
+  position: relative;
+  z-index: 1000 !important;
 }
 
 .kinobi-loading-cell {
@@ -760,6 +794,11 @@
 /* 3-dots Action Menu */
 .cell-action-menu-wrap {
   position: relative;
+  display: inline-block;
+}
+
+.cell-action-menu-wrap.active {
+  z-index: 1001;
 }
 
 .btn-dot-menu {
@@ -771,9 +810,11 @@
   border-radius: 4px;
   cursor: pointer;
   line-height: 1;
+  transition: all 0.15s ease;
 }
 
-.btn-dot-menu:hover {
+.btn-dot-menu:hover,
+.cell-action-menu-wrap.active .btn-dot-menu {
   background-color: #e2e8f0;
   color: #0f172a;
 }
@@ -782,18 +823,51 @@
   display: none;
   position: absolute;
   right: 0;
-  top: 100%;
+  top: calc(100% + 4px);
   background-color: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-  min-width: 170px;
-  z-index: 60;
-  padding: 4px 0;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+  min-width: 180px;
+  z-index: 1002;
+  padding: 6px 0;
 }
 
 .dot-dropdown.open {
   display: block;
+  animation: dropdownFadeIn 0.15s ease-out;
+}
+
+.dot-dropdown.drop-up {
+  top: auto;
+  bottom: calc(100% + 4px);
+  box-shadow: 0 -10px 25px -5px rgba(15, 23, 42, 0.18), 0 -8px 10px -6px rgba(15, 23, 42, 0.1);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dot-dropdown.drop-up.open {
+  animation: dropupFadeIn 0.15s ease-out;
+}
+
+@keyframes dropupFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dot-item {

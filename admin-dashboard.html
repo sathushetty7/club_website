@@ -76,9 +76,9 @@
               <span class="kinobi-item-icon">🗄️</span>
               <span class="kinobi-item-text">Database Explorer</span>
             </a>
-            <a class="kinobi-nav-item" data-tab="settings">
-              <span class="kinobi-item-icon">⚙️</span>
-              <span class="kinobi-item-text">Club Settings</span>
+            <a class="kinobi-nav-item" data-tab="settings" id="nav-item-admin-profile">
+              <span class="kinobi-item-icon">👤</span>
+              <span class="kinobi-item-text">Admin Profile</span>
             </a>
           </div>
         </div>
@@ -111,13 +111,16 @@
 
       <!-- User Profile / Footer Strip -->
       <div class="kinobi-sidebar-footer">
-        <div class="kinobi-user-card">
-          <div class="kinobi-user-avatar user-avatar-img">A</div>
+        <div class="kinobi-user-card" id="admin-user-card" onclick="switchKinobiTab('settings')" title="Click to view & edit admin profile" style="cursor: pointer;">
+          <div class="kinobi-user-avatar user-avatar-img" id="admin-sidebar-avatar" style="position: relative; overflow: hidden;">A</div>
           <div class="kinobi-user-info">
-            <div class="kinobi-user-name user-display-name">Admin Lead</div>
-            <div class="kinobi-user-role">CLUB ADMIN</div>
+            <div class="kinobi-user-name user-display-name">sathwik shetty</div>
+            <div class="kinobi-user-role" style="display: flex; align-items: center; gap: 4px;">
+              <span>CLUB ADMIN</span>
+              <span style="font-size: 11px; opacity: 0.8;" title="Edit profile">✏️</span>
+            </div>
           </div>
-          <button type="button" class="kinobi-logout-btn" onclick="Auth.logout()" title="Logout">
+          <button type="button" class="kinobi-logout-btn" onclick="event.stopPropagation(); Auth.logout()" title="Logout">
             🚪
           </button>
         </div>
@@ -802,32 +805,59 @@
         </section>
 
         <!-- ===================================================================== -->
-        <!-- 9. TAB: CLUB SETTINGS & ADMIN PROFILE                                  -->
+        <!-- 9. TAB: CLUB ADMIN PROFILE                                            -->
         <!-- ===================================================================== -->
         <section class="kinobi-section" id="section-settings">
           <div class="kinobi-view-header">
             <div class="kinobi-view-title-wrap">
-              <h1 class="kinobi-view-title">CLUB ADMIN SETTINGS & PROFILE</h1>
-              <span class="kinobi-info-icon" title="Manage your administrator account credentials and profile">ⓘ</span>
+              <h1 class="kinobi-view-title" id="admin-profile-view-title">ADMIN PROFILE & ACCOUNT DETAILS</h1>
+              <span class="kinobi-info-icon" title="View and edit your administrator account profile, contact info, and club pillar">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-tool" onclick="loadAdminProfile()">
+                🔄 REFRESH
+              </button>
             </div>
           </div>
 
-          <div class="kinobi-card-panel" style="max-width: 820px; margin: 0 auto;">
-            <div class="kinobi-panel-header">
-              <h3 class="kinobi-panel-title">Administrator Account Details</h3>
-              <span class="kinobi-status-pill upcoming">Role: CLUB ADMIN</span>
+          <div class="kinobi-card-panel" style="max-width: 840px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border-radius: 10px; overflow: hidden;">
+            <!-- Profile Banner & Live Avatar Strip -->
+            <div style="display: flex; align-items: center; gap: 20px; padding: 24px; background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%); border-bottom: 1px solid #e2e8f0;">
+              <div style="position: relative; cursor: pointer;" onclick="document.getElementById('admin-profile-file-input').click()" title="Click to upload new profile photo">
+                <div class="kinobi-user-avatar user-avatar-img" id="admin-profile-header-avatar" style="width: 74px; height: 74px; font-size: 1.7rem; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.12); overflow: hidden;">
+                  A
+                </div>
+                <div style="position: absolute; bottom: 0; right: 0; background: #2563eb; color: #ffffff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 2px solid #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                  📷
+                </div>
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap;">
+                  <h2 style="margin: 0; font-size: 1.3rem; font-weight: 700; color: #0f172a;" id="admin-header-display-name">sathwik shetty</h2>
+                  <span class="kinobi-status-pill upcoming" style="font-size: 0.72rem; padding: 2px 8px; font-weight: 700;">Role: CLUB ADMIN</span>
+                  <span class="kinobi-team-pill" id="admin-header-display-team" style="font-size: 0.72rem;">TECH</span>
+                </div>
+                <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;" id="admin-header-display-email">analytix63@gmail.com</div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                  <button type="button" class="kinobi-btn-tool" onclick="document.getElementById('admin-profile-file-input').click()" style="padding: 6px 14px; font-size: 0.82rem; background: #ffffff; font-weight: 600; color: #2563eb;">
+                    📷 Upload Real Photo
+                  </button>
+                  <input type="file" id="admin-profile-file-input" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;" onchange="handleAdminProfilePhotoUpload(event)">
+                  <span id="admin-photo-upload-status" style="font-size: 0.78rem; color: #64748b;">Supports JPG, PNG, WEBP (Max 5MB)</span>
+                </div>
+              </div>
             </div>
 
-            <div class="kinobi-panel-body">
+            <div class="kinobi-panel-body" style="padding: 24px;">
               <form id="admin-profile-form" onsubmit="handleAdminProfileSubmit(event)">
                 <div class="kinobi-form-row">
                   <div class="kinobi-form-group">
                     <label class="kinobi-label" for="admin-profile-name">Full Name *</label>
-                    <input type="text" id="admin-profile-name" class="kinobi-input" required>
+                    <input type="text" id="admin-profile-name" class="kinobi-input" placeholder="Your full name" required>
                   </div>
                   <div class="kinobi-form-group">
                     <label class="kinobi-label" for="admin-profile-email">Email (Account ID - Read Only)</label>
-                    <input type="email" id="admin-profile-email" class="kinobi-input" disabled>
+                    <input type="email" id="admin-profile-email" class="kinobi-input" disabled style="background-color: #f8fafc; color: #64748b; cursor: not-allowed;">
                   </div>
                 </div>
 
@@ -845,13 +875,19 @@
                 <div class="kinobi-form-row">
                   <div class="kinobi-form-group">
                     <label class="kinobi-label" for="admin-profile-year">Year of Study</label>
-                    <input type="text" id="admin-profile-year" class="kinobi-input" placeholder="4th Year">
+                    <input type="text" id="admin-profile-year" class="kinobi-input" placeholder="3rd Year">
                   </div>
                   <div class="kinobi-form-group">
-                    <label class="kinobi-label" for="admin-profile-photo">Profile Avatar URL</label>
-                    <input type="url" id="admin-profile-photo" class="kinobi-input" placeholder="https://images.unsplash.com/...">
+                    <label class="kinobi-label" for="admin-profile-team">Club Pillar / Team</label>
+                    <select id="admin-profile-team" class="kinobi-select-tool" style="width: 100%; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; font-size: 0.86rem; background: #fff;">
+                      <option value="Tech">Tech Track</option>
+                      <option value="Design">Design & Media Track</option>
+                      <option value="MOC">MOC & Operations Track</option>
+                    </select>
                   </div>
                 </div>
+
+                <input type="hidden" id="admin-profile-photo">
 
                 <div class="kinobi-form-group">
                   <label class="kinobi-label" for="admin-profile-skills">Technical & Leadership Skills</label>
@@ -860,13 +896,14 @@
 
                 <div class="kinobi-form-group">
                   <label class="kinobi-label" for="admin-profile-bio">Bio / Statement</label>
-                  <textarea id="admin-profile-bio" class="kinobi-textarea" rows="3"></textarea>
+                  <textarea id="admin-profile-bio" class="kinobi-textarea" rows="3" placeholder="Tell the club about your vision and leadership role..."></textarea>
                 </div>
 
-                <div style="margin-top: 20px;">
-                  <button type="submit" class="kinobi-btn-action-primary">
-                    SAVE PROFILE SETTINGS
+                <div style="margin-top: 24px; display: flex; align-items: center; justify-content: space-between;">
+                  <button type="submit" class="kinobi-btn-action-primary" style="padding: 11px 26px; font-weight: 600; font-size: 0.9rem;">
+                    💾 SAVE PROFILE CHANGES
                   </button>
+                  <span id="admin-profile-save-status" style="font-size: 0.85rem; color: #16a34a; font-weight: 600;"></span>
                 </div>
               </form>
             </div>
@@ -892,6 +929,30 @@
               </button>
               <button type="button" class="kinobi-btn-action-primary" onclick="exportEntireDatabase()">
                 ⬇️ BACKUP ENTIRE DB (JSON)
+              </button>
+            </div>
+          </div>
+
+          <!-- Supabase Cloud Sync & Connection Banner -->
+          <div id="supabase-cloud-banner" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: #fff; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 15px rgba(49, 46, 129, 0.2);">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="font-size: 2rem;">⚡</div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-weight: 700; font-size: 1rem; letter-spacing: 0.5px;">SUPABASE CLOUD DATABASE</span>
+                  <span id="supabase-status-pill" style="background: #fbbf24; color: #78350f; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px;">SCHEMA PENDING</span>
+                </div>
+                <div style="font-size: 0.82rem; color: #c7d2fe; margin-top: 2px;" id="supabase-status-desc">
+                  Project: <strong style="color: #fff;">xqvlzdndukbibndylzfw</strong> · Credentials active in <code>.env</code>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <a href="https://supabase.com/dashboard/project/xqvlzdndukbibndylzfw/sql/new" target="_blank" class="kinobi-btn-tool" style="background: #4f46e5; color: #fff; text-decoration: none; border-color: #6366f1; padding: 8px 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                📝 Open Supabase SQL Editor
+              </a>
+              <button type="button" class="kinobi-btn-action-primary" onclick="syncSupabaseData()" style="padding: 8px 16px; background: #10b981; border-color: #10b981; font-weight: 600;">
+                🔄 Test & Sync Cloud DB
               </button>
             </div>
           </div>
@@ -1336,7 +1397,7 @@
 
   <!-- Scripts -->
   <script src="js/api.js"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/auth.js?v=2.2"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

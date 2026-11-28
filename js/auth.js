@@ -194,12 +194,23 @@ const Auth = {
     const userTeam = document.querySelectorAll('.user-display-team');
     userTeam.forEach(el => el.textContent = user.team || 'None');
 
+    const initial = (user.full_name || 'U').charAt(0).toUpperCase();
+    const safePhoto = user.profile_photo ? API.sanitizeUrl(user.profile_photo) : '';
+
     const userAvatar = document.querySelectorAll('.user-avatar-img');
     userAvatar.forEach(el => {
-      if (user.profile_photo) {
-        el.src = user.profile_photo;
+      if (safePhoto) {
+        if (el.tagName === 'IMG') {
+          el.src = safePhoto;
+        } else {
+          el.innerHTML = `<img src="${safePhoto}" alt="${user.full_name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" onerror="this.onerror=null;this.parentElement.textContent='${initial}';">`;
+        }
       } else {
-        el.textContent = (user.full_name || 'U').charAt(0).toUpperCase();
+        if (el.tagName === 'IMG') {
+          el.style.display = 'none';
+        } else {
+          el.textContent = initial;
+        }
       }
     });
 
@@ -207,9 +218,8 @@ const Auth = {
     const navAuthActions = document.getElementById('nav-auth-actions');
     if (navAuthActions) {
       const targetDashboard = user.role === 'admin' ? 'admin-dashboard.html' : 'member-dashboard.html';
-      const initial = (user.full_name || 'U').charAt(0).toUpperCase();
-      const avatarContent = user.profile_photo 
-        ? `<img src="${user.profile_photo}" alt="${user.full_name}">`
+      const avatarContent = safePhoto 
+        ? `<img src="${safePhoto}" alt="${user.full_name}" onerror="this.style.display='none';this.parentElement.textContent='${initial}';">`
         : initial;
 
       navAuthActions.innerHTML = `
@@ -221,10 +231,10 @@ const Auth = {
           </button>
           <div class="apple-dropdown">
             <div class="apple-dropdown-user">
-              <div class="apple-dropdown-name">${user.full_name}</div>
-              <div class="apple-dropdown-email">${user.email}</div>
+              <div class="apple-dropdown-name">${API.escapeHtml(user.full_name)}</div>
+              <div class="apple-dropdown-email">${API.escapeHtml(user.email)}</div>
               <div class="apple-dropdown-badges">
-                <span class="apple-badge">${user.role.toUpperCase()}</span>
+                <span class="apple-badge">${(user.role || 'MEMBER').toUpperCase()}</span>
                 <span class="apple-badge" style="background: rgba(73, 49, 124, 0.25); color: var(--starlight-lavender); border: 1px solid rgba(185, 167, 232, 0.2);">TEAM: ${(user.team || 'None').toUpperCase()}</span>
               </div>
             </div>
@@ -232,10 +242,6 @@ const Auth = {
             <a href="${targetDashboard}" class="apple-dropdown-item">
               <span class="apple-item-icon">📊</span>
               <span>Dashboard</span>
-            </a>
-            <a href="${targetDashboard}#profile" class="apple-dropdown-item">
-              <span class="apple-item-icon">👤</span>
-              <span>My Profile</span>
             </a>
             <div class="apple-dropdown-divider"></div>
             <button type="button" onclick="Auth.logout()" class="apple-dropdown-item apple-dropdown-item-danger">
@@ -256,6 +262,49 @@ window.toggleAppleAccountMenu = function(e) {
   if (e) e.stopPropagation();
   const menu = document.getElementById('apple-account-menu');
   if (menu) menu.classList.toggle('open');
+};
+
+window.triggerAvatarUpload = function() {
+  const input = document.getElementById('nav-avatar-file-input');
+  if (input) input.click();
+};
+
+window.handleNavbarAvatarUpload = async function(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    API.toast('Please select a valid image file (JPG, PNG, WEBP)', 'error');
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    API.toast('Image size must be less than 5MB', 'error');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    API.toast('Uploading profile photo...', 'info');
+    const res = await API.upload('/api/members/upload-photo', formData);
+    if (res && (res.user || res.url)) {
+      const updatedUser = res.user || { ...API.getUser(), profile_photo: res.url };
+      API.setUser(updatedUser);
+      Auth.updateNavbarUser(updatedUser);
+      API.toast('Profile photo updated successfully!', 'success');
+      
+      if (typeof loadMemberProfileForm === 'function') {
+        currentMember = updatedUser;
+        loadMemberProfileForm();
+      }
+    }
+  } catch (err) {
+    API.toast('Photo upload failed: ' + (err.message || 'Error'), 'error');
+  } finally {
+    event.target.value = '';
+  }
 };
 
 document.addEventListener('click', (e) => {

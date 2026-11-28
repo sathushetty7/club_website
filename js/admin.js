@@ -79,7 +79,7 @@ function switchKinobiTab(tabName) {
     hackathons: 'Featured Club Hackathons',
     announcements: 'Official Club Bulletins',
     leaderboard: 'Club Merit Leaderboard',
-    settings: 'Club Settings & Profile',
+    settings: 'Admin Profile & Account Details',
     database: 'Database Explorer & Live Records'
   };
   const pageTitle = document.getElementById('kinobi-page-title');
@@ -107,7 +107,12 @@ function switchKinobiTab(tabName) {
 function setupGlobalClickDismissal() {
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.cell-action-menu-wrap')) {
-      document.querySelectorAll('.dot-dropdown.open').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.dot-dropdown.open').forEach(d => {
+        d.classList.remove('open');
+        d.classList.remove('drop-up');
+        d.closest('.cell-action-menu-wrap')?.classList.remove('active');
+        d.closest('tr')?.classList.remove('has-open-dropdown');
+      });
     }
     if (!e.target.closest('.kinobi-dropdown-container')) {
       const filterPop = document.getElementById('events-filter-popover');
@@ -119,10 +124,32 @@ function setupGlobalClickDismissal() {
 function toggleDotDropdown(id, event) {
   event.stopPropagation();
   const menu = document.getElementById(`dropdown-${id}`);
-  const wasOpen = menu ? menu.classList.contains('open') : false;
-  document.querySelectorAll('.dot-dropdown.open').forEach(d => d.classList.remove('open'));
-  if (menu && !wasOpen) {
+  if (!menu) return;
+
+  const wasOpen = menu.classList.contains('open');
+
+  // Close all other open dropdowns
+  document.querySelectorAll('.dot-dropdown.open').forEach(d => {
+    d.classList.remove('open');
+    d.classList.remove('drop-up');
+    d.closest('.cell-action-menu-wrap')?.classList.remove('active');
+    d.closest('tr')?.classList.remove('has-open-dropdown');
+  });
+
+  if (!wasOpen) {
     menu.classList.add('open');
+    const wrap = menu.closest('.cell-action-menu-wrap');
+    const row = menu.closest('tr');
+    if (wrap) wrap.classList.add('active');
+    if (row) row.classList.add('has-open-dropdown');
+
+    // Smart vertical positioning:
+    // If the dropdown extends near or beyond the bottom of the viewport, flip it upward
+    const rect = menu.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < 20 || rect.bottom > window.innerHeight) {
+      menu.classList.add('drop-up');
+    }
   }
 }
 
@@ -471,12 +498,16 @@ function renderMembersTable(members) {
 
     const teamPill = `<span class="kinobi-team-pill">${(m.team || 'None').toUpperCase()}</span>`;
     const initial = (m.full_name || 'U').charAt(0).toUpperCase();
+    const safePhoto = m.profile_photo ? API.sanitizeUrl(m.profile_photo) : '';
+    const avatarContent = safePhoto
+      ? `<img src="${safePhoto}" alt="${API.escapeHtml(m.full_name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.onerror=null;this.parentElement.textContent='${initial}';">`
+      : initial;
 
     return `
       <tr>
         <td>
           <div style="display: flex; align-items: center; gap: 12px;">
-            <div class="kinobi-user-avatar" style="width: 34px; height: 34px; font-size: 0.82rem;">${initial}</div>
+            <div class="kinobi-user-avatar" style="width: 34px; height: 34px; font-size: 0.82rem; overflow: hidden;">${avatarContent}</div>
             <div>
               <strong style="color: #0f172a;">${API.escapeHtml(m.full_name)}</strong>
               <div style="font-size: 0.78rem; color: #64748b;">${API.escapeHtml(m.email)}</div>
@@ -511,6 +542,10 @@ function renderMembersTable(members) {
             <div class="cell-action-menu-wrap">
               <button type="button" class="btn-dot-menu" onclick="toggleDotDropdown('mem-${m.id}', event)">⋮</button>
               <div class="dot-dropdown" id="dropdown-mem-${m.id}">
+                ${m.role === 'admin' 
+                  ? `<button type="button" class="dot-item" onclick="updateMemberRole('${m.id}', 'member')">👤 Change to Member</button>`
+                  : `<button type="button" class="dot-item" onclick="updateMemberRole('${m.id}', 'admin')" style="color: #0d6efd; font-weight: 600;">🛡️ Promote to Admin</button>`
+                }
                 <button type="button" class="dot-item" onclick="openAwardPointsModal('${m.id}')">⭐ Award Points</button>
                 <button type="button" class="dot-item" onclick="editMemberModal('${m.id}')">✏️ Edit Details</button>
                 <button type="button" class="dot-item danger" onclick="deleteMember('${m.id}', '${escapeQuotes(m.full_name)}')">🗑️ Remove Member</button>
@@ -1139,37 +1174,159 @@ async function loadOverview() {
    ============================================================================= */
 
 function loadAdminProfile() {
+  if (!currentAdmin) {
+    currentAdmin = API.getUser();
+  }
   if (!currentAdmin) return;
-  document.getElementById('admin-profile-name').value = currentAdmin.full_name || '';
-  document.getElementById('admin-profile-email').value = currentAdmin.email || '';
-  document.getElementById('admin-profile-phone').value = currentAdmin.phone || '';
-  document.getElementById('admin-profile-dept').value = currentAdmin.department || '';
-  document.getElementById('admin-profile-year').value = currentAdmin.year || '';
-  document.getElementById('admin-profile-photo').value = currentAdmin.profile_photo || '';
-  document.getElementById('admin-profile-skills').value = currentAdmin.skills || '';
-  document.getElementById('admin-profile-bio').value = currentAdmin.bio || '';
+
+  const nameInput = document.getElementById('admin-profile-name');
+  if (nameInput) nameInput.value = currentAdmin.full_name || '';
+
+  const emailInput = document.getElementById('admin-profile-email');
+  if (emailInput) emailInput.value = currentAdmin.email || '';
+
+  const phoneInput = document.getElementById('admin-profile-phone');
+  if (phoneInput) phoneInput.value = currentAdmin.phone || '';
+
+  const deptInput = document.getElementById('admin-profile-dept');
+  if (deptInput) deptInput.value = currentAdmin.department || '';
+
+  const yearInput = document.getElementById('admin-profile-year');
+  if (yearInput) yearInput.value = currentAdmin.year || '';
+
+  const photoInput = document.getElementById('admin-profile-photo');
+  if (photoInput) photoInput.value = currentAdmin.profile_photo || '';
+
+  const skillsInput = document.getElementById('admin-profile-skills');
+  if (skillsInput) skillsInput.value = currentAdmin.skills || '';
+
+  const bioInput = document.getElementById('admin-profile-bio');
+  if (bioInput) bioInput.value = currentAdmin.bio || '';
+
+  const teamSelect = document.getElementById('admin-profile-team');
+  if (teamSelect && currentAdmin.team) {
+    teamSelect.value = currentAdmin.team;
+  }
+
+  // Header display details
+  const headerName = document.getElementById('admin-header-display-name');
+  if (headerName) headerName.textContent = currentAdmin.full_name || 'Admin';
+
+  const headerEmail = document.getElementById('admin-header-display-email');
+  if (headerEmail) headerEmail.textContent = currentAdmin.email || '';
+
+  const headerTeam = document.getElementById('admin-header-display-team');
+  if (headerTeam) headerTeam.textContent = (currentAdmin.team || 'TECH').toUpperCase();
+
+  const initial = (currentAdmin.full_name || 'A').charAt(0).toUpperCase();
+  const safePhoto = currentAdmin.profile_photo ? API.sanitizeUrl(currentAdmin.profile_photo) : '';
+
+  const headerAvatar = document.getElementById('admin-profile-header-avatar');
+  if (headerAvatar) {
+    if (safePhoto) {
+      headerAvatar.innerHTML = `<img src="${safePhoto}" alt="${currentAdmin.full_name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.onerror=null;this.parentElement.textContent='${initial}';">`;
+    } else {
+      headerAvatar.textContent = initial;
+    }
+  }
+
+  // Also sync sidebar avatar
+  const sidebarAvatar = document.getElementById('admin-sidebar-avatar');
+  if (sidebarAvatar) {
+    if (safePhoto) {
+      sidebarAvatar.innerHTML = `<img src="${safePhoto}" alt="${currentAdmin.full_name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.onerror=null;this.parentElement.textContent='${initial}';">`;
+    } else {
+      sidebarAvatar.textContent = initial;
+    }
+  }
 }
 
 async function handleAdminProfileSubmit(e) {
   e.preventDefault();
+  const nameVal = document.getElementById('admin-profile-name').value.trim();
+  const photoVal = document.getElementById('admin-profile-photo').value.trim();
+
   const payload = {
-    full_name: document.getElementById('admin-profile-name').value.trim(),
+    full_name: nameVal || (currentAdmin ? currentAdmin.full_name : 'Admin'),
     phone: document.getElementById('admin-profile-phone').value.trim(),
     department: document.getElementById('admin-profile-dept').value.trim(),
     year: document.getElementById('admin-profile-year').value.trim(),
-    profile_photo: document.getElementById('admin-profile-photo').value.trim(),
+    profile_photo: photoVal || (currentAdmin ? currentAdmin.profile_photo : '') || 'assets/uploads/sathwik_avatar.jpg',
     skills: document.getElementById('admin-profile-skills').value.trim(),
     bio: document.getElementById('admin-profile-bio').value.trim()
   };
+
+  const teamSelect = document.getElementById('admin-profile-team');
+  if (teamSelect) {
+    payload.team = teamSelect.value;
+  }
+
+  const statusEl = document.getElementById('admin-profile-save-status');
+  if (statusEl) statusEl.textContent = 'Saving changes...';
 
   try {
     const updated = await API.put('/api/members/me', payload);
     API.setUser(updated);
     currentAdmin = updated;
     Auth.updateNavbarUser(updated);
+    loadAdminProfile();
     API.toast('Admin profile updated successfully!', 'success');
+    if (statusEl) {
+      statusEl.textContent = 'Saved successfully ✓';
+      setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3500);
+    }
   } catch (err) {
     API.toast('Failed to update profile: ' + err.message, 'error');
+    if (statusEl) statusEl.textContent = 'Failed to save';
+  }
+}
+
+async function handleAdminProfilePhotoUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    API.toast('Please select an image file (PNG, JPG, WEBP)', 'error');
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    API.toast('Image size must be under 5MB', 'error');
+    return;
+  }
+
+  const statusEl = document.getElementById('admin-photo-upload-status');
+  if (statusEl) statusEl.textContent = 'Uploading photo...';
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    API.toast('Uploading profile photo...', 'info');
+    const res = await API.upload('/api/members/upload-photo', formData);
+    if (res && res.url) {
+      const photoInput = document.getElementById('admin-profile-photo');
+      if (photoInput) photoInput.value = res.url;
+
+      if (res.user) {
+        currentAdmin = res.user;
+        API.setUser(res.user);
+        Auth.updateNavbarUser(res.user);
+      } else {
+        currentAdmin.profile_photo = res.url;
+        API.setUser(currentAdmin);
+        Auth.updateNavbarUser(currentAdmin);
+      }
+
+      loadAdminProfile();
+      API.toast('Profile photo uploaded and saved!', 'success');
+      if (statusEl) statusEl.textContent = 'Photo uploaded ✓';
+    }
+  } catch (err) {
+    API.toast('Upload failed: ' + (err.message || 'Error'), 'error');
+    if (statusEl) statusEl.textContent = 'Upload failed';
+  } finally {
+    e.target.value = '';
   }
 }
 
@@ -1235,7 +1392,34 @@ async function checkDbConnectionStatus() {
 async function loadDatabaseExplorer() {
   await checkDbConnectionStatus();
   try {
+    // Check Supabase Cloud Database status
+    try {
+      const supa = await API.get('/api/supabase/status');
+      const pill = document.getElementById('supabase-status-pill');
+      const desc = document.getElementById('supabase-status-desc');
+      if (supa && supa.status === 'connected' && supa.tables_exist) {
+        if (pill) {
+          pill.style.background = '#10b981';
+          pill.style.color = '#ffffff';
+          pill.textContent = '🟢 CLOUD POSTGRESQL CONNECTED';
+        }
+        if (desc) {
+          desc.innerHTML = `Project: <strong style="color: #fff;">xqvlzdndukbibndylzfw</strong> · Tables active & synced`;
+        }
+      } else if (supa && supa.status === 'tables_pending') {
+        if (pill) {
+          pill.style.background = '#fbbf24';
+          pill.style.color = '#78350f';
+          pill.textContent = '🟡 SCHEMA PENDING';
+        }
+        if (desc) {
+          desc.innerHTML = `Project: <strong style="color: #fff;">xqvlzdndukbibndylzfw</strong> · Run <code>supabase_schema.sql</code> in SQL Editor to finish cloud setup`;
+        }
+      }
+    } catch (_) {}
+
     const status = await API.get('/api/admin/database/status');
+
 
     // Update metric cards
     const elEngine = document.getElementById('db-stat-engine');
@@ -1431,3 +1615,58 @@ function exportCurrentTable(format) {
   const url = `${API.BASE_URL}/api/admin/database/tables/${currentDbTable}/export`;
   window.open(url, '_blank');
 }
+
+async function handleAdminAvatarUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    API.toast('Please select an image file (PNG, JPG, WEBP)', 'error');
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    API.toast('Image size must be under 5MB', 'error');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    API.toast('Uploading admin profile photo...', 'info');
+    const res = await API.upload('/api/members/upload-photo', formData);
+    if (res && (res.user || res.url)) {
+      const updatedUser = res.user || { ...API.getUser(), profile_photo: res.url };
+      API.setUser(updatedUser);
+      Auth.updateNavbarUser(updatedUser);
+      
+      const adminAvatarEl = document.getElementById('admin-sidebar-avatar');
+      if (adminAvatarEl) {
+        adminAvatarEl.innerHTML = `<img src="${res.url}" alt="${updatedUser.full_name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      }
+      API.toast('Admin profile photo updated successfully!', 'success');
+    }
+  } catch (err) {
+    API.toast('Upload failed: ' + (err.message || 'Error'), 'error');
+  } finally {
+    e.target.value = '';
+  }
+}
+
+async function syncSupabaseData() {
+  API.toast('Checking Supabase connection & syncing data...', 'info');
+  try {
+    const res = await API.post('/api/admin/supabase/sync', {});
+    if (res && res.status === 'success') {
+      API.toast('🎉 ' + res.message, 'success');
+      await loadDatabaseExplorer();
+    } else {
+      API.toast(res.message || 'Supabase schema pending. Opening SQL editor...', 'warning');
+      window.open('https://supabase.com/dashboard/project/xqvlzdndukbibndylzfw/sql/new', '_blank');
+    }
+  } catch (err) {
+    API.toast('Sync failed: ' + (err.message || 'Error connecting to Supabase'), 'error');
+  }
+}
+
