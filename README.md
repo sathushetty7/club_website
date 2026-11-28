@@ -7,7 +7,7 @@
 
 ## 🌟 Overview
 
-This repository hosts the official web platform for **Analytix Club**, transformed to follow the visual layout and structural composition of the **MVJCE Inter-Department Championship**, branded with Analytix's identity, content, and technology theme.
+This repository hosts the official web platform for **Analytix Club**, branded with Analytix's identity, content, and technology theme.
 
 - **Visual Identity:** Midnight Navy & Electric Blue (`#080D1A` + `#1769FF` + `#FFFFFF`)
 - **Strict Brand Rule:** 100% blue technology theme — absolutely zero green or teal accents.
