@@ -1219,3 +1219,85 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* =============================================================================
+   DATABASE EXPLORER STYLING
+   ============================================================================= */
+.db-tables-nav-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 0;
+}
+
+.db-table-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: var(--surface-card);
+  border: 1px solid var(--line);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.db-table-pill:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+  border-color: rgba(185, 167, 232, 0.35);
+}
+
+.db-table-pill.active {
+  background: linear-gradient(135deg, var(--galaxy-purple), var(--deep-violet));
+  color: #FFFFFF;
+  border-color: var(--starlight-lavender);
+  box-shadow: 0 4px 16px rgba(73, 49, 124, 0.4);
+}
+
+.db-pill-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.db-table-pill.active .db-pill-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.db-action-btn {
+  padding: 4px 10px;
+  font-size: 0.76rem;
+  border-radius: 6px;
+  background: rgba(185, 167, 232, 0.12);
+  color: var(--starlight-lavender);
+  border: 1px solid rgba(185, 167, 232, 0.2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.db-action-btn:hover {
+  background: rgba(185, 167, 232, 0.25);
+  color: #FFFFFF;
+}
+
+.db-action-btn.danger {
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.db-action-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.22);
+  color: #ffffff;
+}

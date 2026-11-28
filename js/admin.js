@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 2. Setup navigation and listeners
   setupKinobiNavigation();
   setupGlobalClickDismissal();
+  checkDbConnectionStatus();
 
   // 3. Load default view (Featured Club Events)
   switchKinobiTab('events');
@@ -78,7 +79,8 @@ function switchKinobiTab(tabName) {
     hackathons: 'Featured Club Hackathons',
     announcements: 'Official Club Bulletins',
     leaderboard: 'Club Merit Leaderboard',
-    settings: 'Club Settings & Profile'
+    settings: 'Club Settings & Profile',
+    database: 'Database Explorer & Live Records'
   };
   const pageTitle = document.getElementById('kinobi-page-title');
   if (pageTitle) pageTitle.textContent = titleMap[tabName] || 'Admin Portal';
@@ -96,6 +98,7 @@ function switchKinobiTab(tabName) {
   else if (tabName === 'leaderboard') loadLeaderboard();
   else if (tabName === 'overview') loadOverview();
   else if (tabName === 'settings') loadAdminProfile();
+  else if (tabName === 'database') loadDatabaseExplorer();
 }
 
 /**
@@ -1203,4 +1206,228 @@ function downloadCSV(filename, headers, rows) {
   link.click();
   document.body.removeChild(link);
   API.toast(`Exported ${filename} successfully!`, 'success');
+}
+
+/* =============================================================================
+   10. DATABASE EXPLORER & LIVE RECORDS
+   ============================================================================= */
+
+let currentDbTable = 'users';
+let currentDbData = null;
+let currentSelectedRowJson = null;
+let dbSearchTimeout = null;
+
+async function checkDbConnectionStatus() {
+  try {
+    const status = await API.get('/api/admin/database/status');
+    const badge = document.getElementById('db-connection-label');
+    if (badge) {
+      badge.textContent = `${status.engine}: Connected (${status.total_records} rows)`;
+    }
+  } catch (e) {
+    const badge = document.getElementById('db-connection-label');
+    if (badge) {
+      badge.textContent = 'DB: Reconnecting...';
+    }
+  }
+}
+
+async function loadDatabaseExplorer() {
+  await checkDbConnectionStatus();
+  try {
+    const status = await API.get('/api/admin/database/status');
+
+    // Update metric cards
+    const elEngine = document.getElementById('db-stat-engine');
+    if (elEngine) elEngine.textContent = status.engine || 'SQLite 3';
+
+    const elStatus = document.getElementById('db-stat-status');
+    if (elStatus) elStatus.textContent = `● Connected (${status.journal_mode || 'WAL'})`;
+
+    const elRecords = document.getElementById('db-stat-records');
+    if (elRecords) elRecords.textContent = status.total_records || 0;
+
+    const elTables = document.getElementById('db-stat-tables');
+    if (elTables) elTables.textContent = `${status.total_tables || 7} Core Tables`;
+
+    const elSize = document.getElementById('db-stat-size');
+    if (elSize) elSize.textContent = status.database_size_human || '0 KB';
+
+    const elFile = document.getElementById('db-stat-file');
+    if (elFile) elFile.textContent = status.database_file || 'analytix.db';
+
+    // Render table pills
+    const pillsContainer = document.getElementById('db-tables-pills');
+    if (pillsContainer && status.tables) {
+      pillsContainer.innerHTML = Object.entries(status.tables).map(([tbl, cnt]) => `
+        <button type="button" class="db-table-pill ${tbl === currentDbTable ? 'active' : ''}" onclick="selectDbTable('${tbl}')">
+          <span>${formatTableName(tbl)}</span>
+          <span class="db-pill-count">${cnt}</span>
+        </button>
+      `).join('');
+    }
+
+    // Load active table data
+    await selectDbTable(currentDbTable);
+  } catch (err) {
+    API.toast('Failed to query database status: ' + err.message, 'error');
+  }
+}
+
+function formatTableName(tbl) {
+  const map = {
+    users: '👤 Users & Members',
+    events: '📅 Events',
+    hackathons: '🚀 Hackathons',
+    announcements: '📢 Bulletins',
+    event_registrations: '📋 Event Regs',
+    hackathon_registrations: '⚡ Hackathon Regs',
+    activities: '🕒 Activity Log'
+  };
+  return map[tbl] || tbl;
+}
+
+async function selectDbTable(tableName) {
+  currentDbTable = tableName;
+
+  // Update active pill UI
+  document.querySelectorAll('.db-table-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(`'${tableName}'`));
+  });
+
+  const activeBadge = document.getElementById('db-active-table-badge');
+  if (activeBadge) activeBadge.textContent = `Table: ${tableName}`;
+
+  const statActiveTable = document.getElementById('db-stat-active-table');
+  if (statActiveTable) statActiveTable.textContent = tableName;
+
+  const searchInput = document.getElementById('db-search-input');
+  const searchVal = searchInput ? searchInput.value.trim() : '';
+
+  const tbody = document.getElementById('db-explorer-tbody');
+  const thead = document.getElementById('db-explorer-thead');
+  if (tbody) tbody.innerHTML = `<tr><td class="kinobi-loading-cell">Loading records from ${tableName}...</td></tr>`;
+
+  try {
+    const query = searchVal ? `?search=${encodeURIComponent(searchVal)}` : '';
+    const res = await API.get(`/api/admin/database/tables/${tableName}${query}`);
+    currentDbData = res;
+
+    // Update table stats
+    const statTableCount = document.getElementById('db-stat-table-count');
+    if (statTableCount) statTableCount.textContent = `${res.total_count} rows matching`;
+
+    const summary = document.getElementById('db-table-summary');
+    if (summary) summary.textContent = `Showing ${res.rows.length} of ${res.total_count} entries in '${tableName}'`;
+
+    const ts = document.getElementById('db-sync-timestamp');
+    if (ts) ts.textContent = `Last synced: ${new Date().toLocaleTimeString()}`;
+
+    // Render table headers
+    if (thead) {
+      thead.innerHTML = `
+        <tr>
+          <th style="width: 50px;">#</th>
+          ${res.columns.map(col => `<th>${API.escapeHtml(col)}</th>`).join('')}
+          <th style="width: 120px; text-align: right;">Actions</th>
+        </tr>
+      `;
+    }
+
+    // Render table rows
+    if (!res.rows || res.rows.length === 0) {
+      if (tbody) tbody.innerHTML = `<tr><td colspan="${res.columns.length + 2}" class="kinobi-loading-cell">No entries found in ${tableName}.</td></tr>`;
+      return;
+    }
+
+    if (tbody) {
+      tbody.innerHTML = res.rows.map((row, idx) => {
+        const rowId = row.id || row.rowid || idx;
+        return `
+          <tr>
+            <td style="color: #8E87A5; font-size: 0.78rem;">${idx + 1}</td>
+            ${res.columns.map(col => {
+              const val = row[col];
+              let displayVal = val;
+              if (val === null || val === undefined) displayVal = '<span style="color:#64748b;font-style:italic;">null</span>';
+              else if (typeof val === 'string' && (val.startsWith('http://') || val.startsWith('https://'))) {
+                displayVal = `<a href="${API.sanitizeUrl(val)}" target="_blank" style="color:#55A0FF;text-decoration:underline;">link ↗</a>`;
+              } else if (typeof val === 'string' && val.length > 50) {
+                displayVal = `${API.escapeHtml(val.substring(0, 50))}...`;
+              } else {
+                displayVal = API.escapeHtml(String(val));
+              }
+              return `<td>${displayVal}</td>`;
+            }).join('')}
+            <td style="text-align: right;">
+              <div style="display: inline-flex; gap: 6px;">
+                <button type="button" class="db-action-btn" onclick="viewDbRowDetails(${idx})" title="View complete JSON details">
+                  👁️ View
+                </button>
+                <button type="button" class="db-action-btn danger" onclick="deleteDbRow('${tableName}', '${rowId}')" title="Delete record">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    if (tbody) tbody.innerHTML = `<tr><td colspan="6" class="kinobi-loading-cell" style="color:#ef4444;">Failed to load table: ${API.escapeHtml(err.message)}</td></tr>`;
+  }
+}
+
+function debounceDbSearch() {
+  clearTimeout(dbSearchTimeout);
+  dbSearchTimeout = setTimeout(() => {
+    selectDbTable(currentDbTable);
+  }, 250);
+}
+
+function viewDbRowDetails(rowIndex) {
+  if (!currentDbData || !currentDbData.rows || !currentDbData.rows[rowIndex]) return;
+  const row = currentDbData.rows[rowIndex];
+  currentSelectedRowJson = JSON.stringify(row, null, 2);
+
+  const metaEl = document.getElementById('db-record-meta-info');
+  if (metaEl) metaEl.textContent = `Table: ${currentDbTable} | ID: ${row.id || 'N/A'}`;
+
+  const preEl = document.getElementById('db-record-json-view');
+  if (preEl) preEl.textContent = currentSelectedRowJson;
+
+  openKinobiModal('db-record-modal');
+}
+
+function copyRecordJson() {
+  if (!currentSelectedRowJson) return;
+  navigator.clipboard.writeText(currentSelectedRowJson).then(() => {
+    API.toast('Record JSON copied to clipboard!', 'success');
+  }).catch(() => {
+    API.toast('Failed to copy to clipboard', 'error');
+  });
+}
+
+async function deleteDbRow(tableName, recordId) {
+  if (!confirm(`Are you sure you want to delete this record (${recordId}) from '${tableName}'? This cannot be undone.`)) {
+    return;
+  }
+  try {
+    await API.request(`/api/admin/database/tables/${tableName}/${recordId}`, { method: 'DELETE' });
+    API.toast(`Deleted entry from ${tableName}`, 'success');
+    await loadDatabaseExplorer();
+  } catch (err) {
+    API.toast(`Delete failed: ${err.message}`, 'error');
+  }
+}
+
+function exportEntireDatabase() {
+  const token = API.getToken();
+  const url = `${API.BASE_URL}/api/admin/database/export`;
+  window.open(url, '_blank');
+}
+
+function exportCurrentTable(format) {
+  const url = `${API.BASE_URL}/api/admin/database/tables/${currentDbTable}/export`;
+  window.open(url, '_blank');
 }

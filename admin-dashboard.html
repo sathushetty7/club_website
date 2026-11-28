@@ -72,6 +72,10 @@
               <span class="kinobi-item-icon">📢</span>
               <span class="kinobi-item-text">Club Bulletins</span>
             </a>
+            <a class="kinobi-nav-item" data-tab="database">
+              <span class="kinobi-item-icon">🗄️</span>
+              <span class="kinobi-item-text">Database Explorer</span>
+            </a>
             <a class="kinobi-nav-item" data-tab="settings">
               <span class="kinobi-item-icon">⚙️</span>
               <span class="kinobi-item-text">Club Settings</span>
@@ -138,9 +142,9 @@
         </div>
 
         <div class="kinobi-topbar-right">
-          <div class="kinobi-system-status">
-            <span class="status-dot-green"></span>
-            <span>Live Workspace</span>
+          <div class="kinobi-system-status" id="db-connection-badge" title="Live Database Status" onclick="switchKinobiTab('database')" style="cursor: pointer;">
+            <span class="status-pulse-dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#b9a7e8; box-shadow:0 0 8px #b9a7e8; margin-right:6px;"></span>
+            <span id="db-connection-label">SQLite: Connected</span>
           </div>
           <a href="index.html" class="kinobi-btn-outline-sm" target="_blank">
             Club Site ↗
@@ -869,6 +873,116 @@
           </div>
         </section>
 
+        <!-- ===================================================================== -->
+        <!-- 10. TAB: DATABASE EXPLORER & SYSTEM RECORDS                            -->
+        <!-- ===================================================================== -->
+        <section class="kinobi-section" id="section-database">
+          <!-- View Header -->
+          <div class="kinobi-view-header">
+            <div class="kinobi-view-title-wrap">
+              <h1 class="kinobi-view-title">DATABASE EXPLORER & LIVE RECORDS</h1>
+              <span class="kinobi-info-icon" title="Direct view and management of all database tables and rows">ⓘ</span>
+            </div>
+            <div class="kinobi-view-actions">
+              <button type="button" class="kinobi-btn-tool" onclick="loadDatabaseExplorer()">
+                🔄 REFRESH
+              </button>
+              <button type="button" class="kinobi-btn-tool" onclick="exportCurrentTable('csv')">
+                📄 EXPORT CSV
+              </button>
+              <button type="button" class="kinobi-btn-action-primary" onclick="exportEntireDatabase()">
+                ⬇️ BACKUP ENTIRE DB (JSON)
+              </button>
+            </div>
+          </div>
+
+          <!-- Database Connection Pulse Banner / Metrics Strip -->
+          <div class="kinobi-metric-strip">
+            <div class="kinobi-metric-cards-grid" style="grid-template-columns: repeat(4, 1fr); width: 100%;">
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="db-stat-engine" style="font-size: 1.25rem;">SQLite 3</span>
+                    <span class="metric-label">Database Engine</span>
+                  </div>
+                </div>
+                <div class="metric-delta-sub" id="db-stat-status" style="color: #b9a7e8;">● Connected (WAL Mode)</div>
+              </div>
+
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="db-stat-records">0</span>
+                    <span class="metric-label">Total Stored Records</span>
+                  </div>
+                </div>
+                <div class="metric-delta-sub" id="db-stat-tables">7 Core Tables</div>
+              </div>
+
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="db-stat-size" style="font-size: 1.25rem;">0 KB</span>
+                    <span class="metric-label">Database File Size</span>
+                  </div>
+                </div>
+                <div class="metric-delta-sub" id="db-stat-file">analytix.db</div>
+              </div>
+
+              <div class="kinobi-metric-card">
+                <div class="metric-header-row">
+                  <div class="metric-number-title">
+                    <span class="metric-val" id="db-stat-active-table" style="font-size: 1.25rem;">users</span>
+                    <span class="metric-label">Selected Table</span>
+                  </div>
+                </div>
+                <div class="metric-delta-sub" id="db-stat-table-count">0 rows loaded</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Switcher Pills -->
+          <div class="db-tables-nav-bar" id="db-tables-pills" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-bottom: 8px;">
+            <!-- Dynamic table pills rendered here -->
+          </div>
+
+          <!-- Table Controls & Live Data Panel -->
+          <div class="kinobi-table-panel" style="margin-top: 14px;">
+            <div class="kinobi-table-toolbar">
+              <div class="toolbar-left">
+                <div class="kinobi-search-box">
+                  <span class="search-lens">🔍</span>
+                  <input type="text" id="db-search-input" class="kinobi-search-input" placeholder="Search entries in selected table..." oninput="debounceDbSearch()">
+                </div>
+                <span class="toolbar-filter-tag" id="db-active-table-badge">Table: users</span>
+              </div>
+              <div class="toolbar-right">
+                <button type="button" class="kinobi-btn-tool" onclick="exportCurrentTable('json')">
+                  { } Export JSON
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="kinobi-table-responsive" style="max-height: 600px; overflow-y: auto;">
+              <table class="kinobi-data-table" id="db-explorer-table">
+                <thead id="db-explorer-thead">
+                  <!-- Rendered dynamically -->
+                </thead>
+                <tbody id="db-explorer-tbody">
+                  <tr><td class="kinobi-loading-cell">Loading table entries...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Footer summary -->
+            <div class="kinobi-panel-footer" style="padding: 12px 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: #8E87A5;">
+              <span id="db-table-summary">Showing records</span>
+              <span id="db-sync-timestamp">Last synced: Just now</span>
+            </div>
+          </div>
+        </section>
+
       </div>
     </main>
   </div>
@@ -1194,6 +1308,28 @@
       </div>
       <div class="kinobi-modal-footer">
         <button type="button" class="kinobi-btn-action-primary" onclick="closeKinobiModal('event-registrations-modal')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. DATABASE RECORD DETAILS MODAL -->
+  <div class="kinobi-modal-backdrop" id="db-record-modal">
+    <div class="kinobi-modal-dialog" style="max-width: 680px;">
+      <div class="kinobi-modal-header">
+        <h3 class="modal-heading" id="db-record-modal-title">Database Record Inspector</h3>
+        <button type="button" class="modal-close-cross" onclick="closeKinobiModal('db-record-modal')">&times;</button>
+      </div>
+      <div class="kinobi-modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 0.82rem; color: #8E87A5;" id="db-record-meta-info">Record details</span>
+          <button type="button" class="kinobi-btn-tool" onclick="copyRecordJson()" style="font-size: 0.78rem;">
+            📋 Copy JSON
+          </button>
+        </div>
+        <pre id="db-record-json-view" style="background: #08080D; border: 1px solid rgba(185,167,232,0.2); border-radius: 8px; padding: 14px; font-family: monospace; font-size: 0.82rem; color: #F7F5FF; max-height: 420px; overflow: auto; white-space: pre-wrap; word-break: break-all; margin: 0;"></pre>
+      </div>
+      <div class="kinobi-modal-footer">
+        <button type="button" class="kinobi-btn-cancel" onclick="closeKinobiModal('db-record-modal')">Close</button>
       </div>
     </div>
   </div>

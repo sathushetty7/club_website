@@ -14,9 +14,12 @@ const API = {
   // If served on localhost:8000, use localhost:8000.
   // Otherwise default to the live Render backend so all auth/data work out-of-the-box!
   get BASE_URL() {
-    if (typeof window === 'undefined') return 'https://analytix-web-238f.onrender.com';
+    if (typeof window === 'undefined') return 'http://127.0.0.1:8000';
     const origin = window.location.origin;
-    if (origin.includes('onrender.com') || origin.includes(':8000')) {
+    if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes(':8000')) {
+      return origin.startsWith('http') ? origin : 'http://127.0.0.1:8000';
+    }
+    if (origin.includes('onrender.com') || (origin.startsWith('http') && !origin.includes('file:'))) {
       return origin;
     }
     return this.RENDER_BACKEND;

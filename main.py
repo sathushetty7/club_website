@@ -50,8 +50,15 @@ app.add_middleware(
 # ==============================================================================
 
 def get_db():
-    conn = sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_FILE, timeout=15.0)
     conn.row_factory = sqlite3.Row
+    try:
+        conn.execute("PRAGMA journal_mode = WAL")
+        conn.execute("PRAGMA synchronous = NORMAL")
+        conn.execute("PRAGMA busy_timeout = 5000")
+        conn.execute("PRAGMA foreign_keys = ON")
+    except Exception:
+        pass
     return conn
 
 def hash_password(password: str) -> str:
@@ -934,17 +941,33 @@ def api_award_leaderboard_points(req: LeaderboardAward, admin: dict = Depends(ge
 def api_admin_registrations(admin: dict = Depends(get_current_admin)):
     with get_db() as conn:
         c = conn.cursor()
-        # Event registrations
+        # 1. Event registrations
         c.execute("""
             SELECT r.id, r.status, r.created_at, 'event' as type,
                    u.id as user_id, u.full_name as member_name, u.email as member_email, u.department, u.team, u.year,
-                   e.id as item_id, e.title as event_title, e.event_date as event_date, e.venue as venue
+                   e.id as item_id, e.title as event_title, e.event_date as event_date, e.venue as venue, '' as team_name
             FROM event_registrations r
             JOIN users u ON r.user_id = u.id
             JOIN events e ON r.event_id = e.id
             ORDER BY r.created_at DESC
         """)
-        return [dict(r) for r in c.fetchall()]
+        event_regs = [dict(r) for r in c.fetchall()]
+
+        # 2. Hackathon team registrations
+        c.execute("""
+            SELECT r.id, 'approved' as status, r.created_at, 'hackathon' as type,
+                   u.id as user_id, u.full_name as member_name, u.email as member_email, u.department, u.team, u.year,
+                   h.id as item_id, h.title as event_title, h.start_date as event_date, h.location as venue, r.team_name
+            FROM hackathon_registrations r
+            JOIN users u ON r.user_id = u.id
+            JOIN hackathons h ON r.hackathon_id = h.id
+            ORDER BY r.created_at DESC
+        """)
+        hack_regs = [dict(r) for r in c.fetchall()]
+
+        combined = event_regs + hack_regs
+        combined.sort(key=lambda x: x["created_at"], reverse=True)
+        return combined
 
 @app.patch("/api/registrations/events/{reg_id}/status")
 @app.put("/api/registrations/{reg_id}/status")
@@ -1144,6 +1167,209 @@ def api_admin_overview(admin: dict = Depends(get_current_admin)):
             "total_event_registrations": registrations,
             "recent_activities": recent_activities
         }
+
+# ==============================================================================
+# DATABASE MANAGEMENT & EXPLORER API (ADMIN ONLY)
+# ==============================================================================
+
+ALLOWED_TABLES = {
+    "users": "Club Members & Admins",
+    "events": "Events & Workshops",
+    "hackathons": "Hackathons & Sprints",
+    "announcements": "Club Bulletins & Announcements",
+    "event_registrations": "Event Registrations",
+    "hackathon_registrations": "Hackathon Team Registrations",
+    "activities": "Club Activity Log"
+}
+
+@app.get("/api/admin/database/status")
+def api_admin_database_status(admin: dict = Depends(get_current_admin)):
+    """Returns database connection health, engine info, table statistics, and record counts."""
+    with get_db() as conn:
+        c = conn.cursor()
+        table_counts = {}
+        total_records = 0
+        for tbl in ALLOWED_TABLES:
+            try:
+                c.execute(f"SELECT COUNT(*) FROM {tbl}")
+                cnt = c.fetchone()[0]
+                table_counts[tbl] = cnt
+                total_records += cnt
+            except Exception:
+                table_counts[tbl] = 0
+
+        db_size_bytes = os.path.getsize(DB_FILE) if os.path.exists(DB_FILE) else 0
+
+        return {
+            "status": "connected",
+            "engine": "SQLite 3",
+            "database_file": os.path.basename(DB_FILE),
+            "database_path": DB_FILE,
+            "database_size_bytes": db_size_bytes,
+            "database_size_human": f"{db_size_bytes / 1024:.1f} KB" if db_size_bytes < 1024*1024 else f"{db_size_bytes / (1024*1024):.2f} MB",
+            "journal_mode": "WAL",
+            "tables": table_counts,
+            "total_tables": len(ALLOWED_TABLES),
+            "total_records": total_records,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
+@app.get("/api/admin/database/tables")
+def api_admin_database_tables(admin: dict = Depends(get_current_admin)):
+    """Returns all database tables with column names, column types, and row counts."""
+    with get_db() as conn:
+        c = conn.cursor()
+        tables_meta = []
+        for tbl, label in ALLOWED_TABLES.items():
+            c.execute(f"PRAGMA table_info({tbl})")
+            columns = [{"name": r["name"], "type": r["type"], "pk": bool(r["pk"]), "notnull": bool(r["notnull"])} for r in c.fetchall()]
+            c.execute(f"SELECT COUNT(*) FROM {tbl}")
+            count = c.fetchone()[0]
+            tables_meta.append({
+                "table_name": tbl,
+                "display_label": label,
+                "columns": columns,
+                "row_count": count
+            })
+        return tables_meta
+
+@app.get("/api/admin/database/tables/{table_name}")
+def api_admin_get_table_data(
+    table_name: str,
+    search: Optional[str] = Query(None),
+    limit: int = Query(100, ge=1, le=1000),
+    offset: int = Query(0, ge=0),
+    admin: dict = Depends(get_current_admin)
+):
+    """Returns raw rows and column definitions for any database table with optional search."""
+    if table_name not in ALLOWED_TABLES:
+        raise HTTPException(status_code=404, detail=f"Table '{table_name}' does not exist or is not exposed.")
+
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute(f"PRAGMA table_info({table_name})")
+        columns = [r["name"] for r in c.fetchall()]
+
+        # Query all rows with search if provided
+        query = f"SELECT * FROM {table_name}"
+        params = []
+        if search and search.strip():
+            # Search across all text columns
+            search_clause = " OR ".join([f"CAST({col} AS TEXT) LIKE ?" for col in columns])
+            query += f" WHERE {search_clause}"
+            params = [f"%{search.strip()}%"] * len(columns)
+
+        query += f" ORDER BY ROWID DESC LIMIT {limit} OFFSET {offset}"
+        c.execute(query, params)
+        raw_rows = c.fetchall()
+
+        # Sanitize sensitive fields such as password hashes
+        sanitized_rows = []
+        for r in raw_rows:
+            d = dict(r)
+            if "password_hash" in d:
+                d["password_hash"] = "•••••••••••••••• (Hashed SHA-256)"
+            sanitized_rows.append(d)
+
+        # Count total matching
+        count_query = f"SELECT COUNT(*) FROM {table_name}"
+        count_params = []
+        if search and search.strip():
+            search_clause = " OR ".join([f"CAST({col} AS TEXT) LIKE ?" for col in columns])
+            count_query += f" WHERE {search_clause}"
+            count_params = [f"%{search.strip()}%"] * len(columns)
+        c.execute(count_query, count_params)
+        total_matching = c.fetchone()[0]
+
+        return {
+            "table_name": table_name,
+            "display_label": ALLOWED_TABLES[table_name],
+            "columns": columns,
+            "rows": sanitized_rows,
+            "total_count": total_matching,
+            "limit": limit,
+            "offset": offset
+        }
+
+@app.delete("/api/admin/database/tables/{table_name}/{record_id}")
+def api_admin_delete_table_row(table_name: str, record_id: str, admin: dict = Depends(get_current_admin)):
+    """Deletes an entry by ID from any table."""
+    if table_name not in ALLOWED_TABLES:
+        raise HTTPException(status_code=404, detail="Invalid table")
+
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute(f"DELETE FROM {table_name} WHERE id = ?", (record_id,))
+        if c.rowcount == 0:
+            raise HTTPException(status_code=404, detail=f"Record not found in {table_name}")
+        log_activity(conn, "db_delete", f"Deleted record {record_id} from table '{table_name}'", admin["id"])
+        conn.commit()
+        return {"message": f"Record deleted successfully from {table_name}"}
+
+@app.get("/api/admin/database/export")
+def api_admin_export_database(admin: dict = Depends(get_current_admin)):
+    """Exports the entire database as a complete JSON dump."""
+    with get_db() as conn:
+        c = conn.cursor()
+        full_dump = {
+            "database": "analytix.db",
+            "exported_at": datetime.now(timezone.utc).isoformat(),
+            "exported_by": admin["email"],
+            "tables": {}
+        }
+        for tbl in ALLOWED_TABLES:
+            c.execute(f"SELECT * FROM {tbl}")
+            rows = [dict(r) for r in c.fetchall()]
+            for r in rows:
+                if "password_hash" in r:
+                    r["password_hash"] = "[PROTECTED]"
+            full_dump["tables"][tbl] = {
+                "count": len(rows),
+                "data": rows
+            }
+
+        from fastapi.responses import Response
+        import json
+        content = json.dumps(full_dump, indent=2, ensure_ascii=False)
+        return Response(
+            content=content,
+            media_type="application/json",
+            headers={
+                "Content-Disposition": f"attachment; filename=analytix_database_dump_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            }
+        )
+
+@app.get("/api/admin/database/tables/{table_name}/export")
+def api_admin_export_table_csv(table_name: str, admin: dict = Depends(get_current_admin)):
+    """Exports any table as CSV."""
+    if table_name not in ALLOWED_TABLES:
+        raise HTTPException(status_code=404, detail="Invalid table")
+
+    with get_db() as conn:
+        c = conn.cursor()
+        c.execute(f"SELECT * FROM {table_name}")
+        rows = [dict(r) for r in c.fetchall()]
+
+        import csv
+        import io
+        from fastapi.responses import Response
+
+        output = io.StringIO()
+        if rows:
+            writer = csv.DictWriter(output, fieldnames=list(rows[0].keys()))
+            writer.writeheader()
+            for r in rows:
+                if "password_hash" in r:
+                    r["password_hash"] = "[PROTECTED]"
+                writer.writerow(r)
+
+        return Response(
+            content=output.getvalue(),
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": f"attachment; filename={table_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            }
+        )
 
 # ==============================================================================
 # STATIC FILES & HOMEPAGE SERVING
